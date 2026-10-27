@@ -10,8 +10,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('carts', function (Blueprint $table){
-            $table->id()->primary();
-            $table->foreign_id('user_id')->constrained()->nullable();
+            $table->id();
+            $table->foreignId('user_id')->constrained()->nullable();
             $table->char('token_hash', 64)->nullable()->unique();
             $table->timestamps();
             

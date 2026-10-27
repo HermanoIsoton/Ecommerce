@@ -10,8 +10,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table){
-            $table->id()->primery();
-            $table->foreign('user_id')->constrained();
+            $table->id();
+            $table->foreignId('user_id')->constrained();
             $table->enum('status', ['pendente', 'pago', 'enviado', 'entregue', 'cancelado'])->default('pendente');
             $table->decimal('subtotal_cents', 10,2)->unsigned();
             $table->decimal('shipping_cents', 10,2)->unsigned();

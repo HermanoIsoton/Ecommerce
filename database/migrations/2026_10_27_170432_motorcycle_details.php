@@ -9,8 +9,8 @@ return new class extends Migration
     
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table){
-            $table->foreign('product_id')->constrained()->primary();
+        Schema::create('motorcycle_details', function (Blueprint $table){
+            $table->foreignId('product_id')->constrained()->primary();
             $table->decimal('power_w', 8,2)->unsigned();
             $table->decimal('range_km', 5,2)->unsigned();
             $table->decimal('top_speed_kmh', 5,2)->unsigned();
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->decimal('charge_time_h', 4,2)->unsigned();
             $table->decimal('battery_capacity_wh', 8,2)->unsigned();
             $table->decimal('battery_voltage_v', 5,2)->unsigned();
-            $table->boolean('is_battery_removable')->default('false');
+            $table->boolean('is_battery_removable');
            
         });
     }

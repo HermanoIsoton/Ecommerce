@@ -10,12 +10,12 @@ return new class extends Migration
     public function up(): void
     {
          Schema::create('order_items', function (Blueprint $table){
-          $table->id()->primary();
-          $table->foreign('order_id')->constrained();  
-          $table->foreign('product_id')->constrained();        
+          $table->id();
+          $table->foreignId('order_id')->constrained();  
+          $table->foreignId('product_id')->constrained();        
           $table->string('product_name');
           $table->decimal('unit_price', 10,2)->unsigned();       
-          $table->int('quantity');
+          $table->decimal('quantity');
           $table->decimal('subtotal_cents', 10,2)->unsigned();            
         });
     }

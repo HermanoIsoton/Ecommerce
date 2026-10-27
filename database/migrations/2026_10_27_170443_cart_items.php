@@ -10,10 +10,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('carts_items', function (Blueprint $table){
-          $table->id()->primary();
-          $table->foreign('cart_id')->constrained();  
-          $table->foreign('product_id')->constrained();        
-          $table->int('quantity')->unsigned();       
+          $table->id();
+          $table->foreignId('cart_id')->constrained();  
+          $table->foreignId('product_id')->constrained();        
+          $table->decimal('quantity')->unsigned();       
         });
     }
 
