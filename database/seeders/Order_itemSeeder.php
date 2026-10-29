@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Order_item;
 
 class Order_itemSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('order_items')->insert([
+        $order_items = [
             [
                 'order_id' => 1,
                 'product_id' => 1,
@@ -34,6 +34,9 @@ class Order_itemSeeder extends Seeder
                 'quantity' => 1,
                 'subtotal_cents' => 15990.00,
             ],
-        ]);
+        ];
+        foreach($order_items as $order_item){
+            Order_item::create($order_item);
+        }
     }
 }

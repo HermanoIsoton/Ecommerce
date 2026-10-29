@@ -3,16 +3,19 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Categorie;
 
 class CategorieSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('categories')->insert([
+        $categories = [
             ['name' => 'Carros elétricos', 'slug' => 'carros-eletricos'],
             ['name' => 'Autopropelidos', 'slug' => 'autopropelidos'],
             ['name' => 'Ciclomotores', 'slug' => 'ciclomotores'],
-        ]);
+        ];
+        foreach($categories as $categorie){
+            Categorie::create($categorie);
+        }
     }
 }

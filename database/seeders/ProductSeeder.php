@@ -3,15 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Product;
 
 class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $now = now();
-
-        DB::table('products')->insert([
+        $products = [
             [
                 'category_id' => 1,
                 'name' => 'Carro Elétrico Urbano E4',
@@ -21,11 +19,11 @@ class ProductSeeder extends Seeder
                 'price' => 119900.00,
                 'stock' => 5,
                 'is_active' => true,
-                'deleted_at' => $now,
                 'model_year' => 2026,
                 'seating_capacity' => 4,
                 'doors_count' => 4,
                 'trunk_capacity_l' => 300,
+                'type' => 'ciclomotor',
                 'power' => 100000,
                 'range_km' => 300,
                 'top_speed_kmh' => 150,
@@ -35,9 +33,7 @@ class ProductSeeder extends Seeder
                 'max_charge_power_kw' => 50,
                 'battery_voltage_v' => 400.0,
                 'is_battery_removable' => false,
-                'warranty_months' => 36,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'warranty_months' => 36
             ],
             [
                 'category_id' => 2,
@@ -48,11 +44,11 @@ class ProductSeeder extends Seeder
                 'price' => 7990.00,
                 'stock' => 10,
                 'is_active' => true,
-                'deleted_at' => $now,
                 'model_year' => 2026,
                 'seating_capacity' => 1,
                 'doors_count' => 0,
                 'trunk_capacity_l' => null,
+                'type' => 'autopropelido',
                 'power' => 1000,
                 'range_km' => 40,
                 'top_speed_kmh' => 32,
@@ -62,9 +58,7 @@ class ProductSeeder extends Seeder
                 'max_charge_power_kw' => null,
                 'battery_voltage_v' => 48.0,
                 'is_battery_removable' => true,
-                'warranty_months' => 12,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'warranty_months' => 12
             ],
             [
                 'category_id' => 3,
@@ -75,11 +69,11 @@ class ProductSeeder extends Seeder
                 'price' => 15990.00,
                 'stock' => 7,
                 'is_active' => true,
-                'deleted_at' => $now,
                 'model_year' => 2026,
                 'seating_capacity' => 2,
                 'doors_count' => 0,
                 'trunk_capacity_l' => 20,
+                'type' => 'ciclomotor',
                 'power' => 3000,
                 'range_km' => 120,
                 'top_speed_kmh' => 50,
@@ -89,10 +83,11 @@ class ProductSeeder extends Seeder
                 'max_charge_power_kw' => null,
                 'battery_voltage_v' => 72.0,
                 'is_battery_removable' => true,
-                'warranty_months' => 12,
-                'created_at' => $now,
-                'updated_at' => $now,
+                'warranty_months' => 12
             ],
-        ]);
+        ];
+        foreach($products as $product){
+            Product::create($product);
+        }
     }
 }

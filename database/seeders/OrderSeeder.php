@@ -3,15 +3,15 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Order;
 
 class OrderSeeder extends Seeder
 {
     public function run(): void
     {
-        $now = now();
+        $now = now();       
 
-        DB::table('orders')->insert([
+        $orders = [
             [
                 'user_id' => 2,
                 'status' => 'entregue',
@@ -30,8 +30,6 @@ class OrderSeeder extends Seeder
                 'shipped_at' => $now->copy()->subDays(4),
                 'delivered_at' => $now->copy()->subDays(2),
                 'cancelled_at' => null,
-                'created_at' => $now->copy()->subDays(5),
-                'updated_at' => $now,
             ],
             [
                 'user_id' => 3,
@@ -51,8 +49,6 @@ class OrderSeeder extends Seeder
                 'shipped_at' => null,
                 'delivered_at' => null,
                 'cancelled_at' => null,
-                'created_at' => $now->copy()->subDay(),
-                'updated_at' => $now,
             ],
             [
                 'user_id' => 4,
@@ -72,9 +68,10 @@ class OrderSeeder extends Seeder
                 'shipped_at' => null,
                 'delivered_at' => null,
                 'cancelled_at' => null,
-                'created_at' => $now,
-                'updated_at' => $now,
             ],
-        ]);
+        ];
+        foreach($orders as $order){
+            Order::create($order);
+        }
     }
 }

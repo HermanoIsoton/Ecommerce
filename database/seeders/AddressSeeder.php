@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Address;
 
 class AddressSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('addresses')->insert([
+        $addresses = [
             [
                 'user_id' => 2,
                 'recipient' => 'João Silva',
@@ -43,6 +43,9 @@ class AddressSeeder extends Seeder
                 'city' => 'Belo Horizonte',
                 'state' => 'MG',
             ],
-        ]);
+        ];
+        foreach($addresses as $address){
+            Address::create($address);
+        }
     }
 }

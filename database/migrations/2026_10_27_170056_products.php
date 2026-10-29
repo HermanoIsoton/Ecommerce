@@ -19,12 +19,12 @@ return new class extends Migration
             $table->decimal('price', 10,2)->unsigned();
             $table->decimal('stock')->unsigned();
             $table->boolean('is_active'); 
-            $table->timestamp('deleted_at');
             // Gerais do Veículo
             $table->unsignedSmallInteger('model_year')->nullable();        
             $table->unsignedTinyInteger('seating_capacity')->nullable();   
             $table->unsignedSmallInteger('doors_count')->nullable();   
             $table->unsignedMediumInteger('trunk_capacity_l')->nullable();
+            $table->enum('type', ['autopropelido', 'ciclomotor']);
             //details
             $table->unsignedInteger('power');
             $table->unsignedSmallInteger('range_km');

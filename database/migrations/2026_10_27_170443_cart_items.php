@@ -9,7 +9,7 @@ return new class extends Migration
     
     public function up(): void
     {
-        Schema::create('carts_items', function (Blueprint $table){
+        Schema::create('cart_items', function (Blueprint $table){
           $table->id();
           $table->foreignId('cart_id')->constrained();  
           $table->foreignId('product_id')->constrained();        

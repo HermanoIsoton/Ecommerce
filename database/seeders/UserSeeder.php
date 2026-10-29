@@ -1,16 +1,15 @@
 <?php
 
 namespace Database\Seeders;
-
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('users')->insert([
+        $users = [
             [
                 'name' => 'Administrador',
                 'email' => 'admin@ecommerce.test',
@@ -39,6 +38,9 @@ class UserSeeder extends Seeder
                 'role' => 'user',
                 'remember_token' => null,
             ],
-        ]);
+        ];
+        foreach($users as $user){
+            User::create($user);
+        }
     }
 }
