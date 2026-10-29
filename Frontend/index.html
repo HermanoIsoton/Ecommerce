@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-bs-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VoltAhead | Veículos Elétricos</title>
+<meta name="description" content="Loja de veículos elétricos: carros elétricos, autopropelidos e ciclomotores.">
+<!-- Bootstrap 5.3 -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sticky-top site-nav">
+  <div class="container">
+    <a href="#inicio" class="navbar-brand logo d-flex align-items-center gap-2 me-3" aria-label="VoltAhead">
+      <svg viewBox="0 0 48 48" fill="none"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00f0a8"/><stop offset="1" stop-color="#2d9cff"/></linearGradient></defs><circle cx="24" cy="24" r="21" stroke="url(#lg)" stroke-width="3"/><path d="M27 7 14 27h9l-2 14 13-20h-9z" fill="url(#lg)"/></svg>
+      <span>Volt<span class="text-grad">Ahead</span></span>
+    </a>
+    <div class="slogan text-body-secondary d-none d-xl-block">O futuro não faz barulho. Ele acelera em silêncio.</div>
+
+    <div class="d-flex align-items-center gap-2 ms-auto order-lg-last">
+      <button class="cart-btn btn btn-light border rounded-pill d-flex align-items-center gap-2" data-bs-toggle="offcanvas" data-bs-target="#cartDrawer" aria-controls="cartDrawer">
+        🛒 <span class="d-none d-sm-inline">Carrinho</span> <span class="badge rounded-pill bg-grad" id="cartCount">0</span>
+      </button>
+
+      <!-- Botão Entrar / menu do usuário -->
+      <button class="btn btn-outline-primary btn-login rounded-pill px-3" id="loginBtn" data-bs-toggle="modal" data-bs-target="#authModal">👤 Entrar</button>
+      <div class="dropdown d-none" id="userMenu">
+        <button class="btn btn-outline-primary btn-login rounded-pill px-3 dropdown-toggle d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false">
+          <span id="navIcon">👤</span><img id="navAvatar" class="avatar-sm d-none" alt=""><span id="userName"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="conta.html">👤 Informações da conta</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><button class="dropdown-item text-danger" id="logoutBtn" type="button">Sair</button></li>
+        </ul>
+      </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav" aria-controls="nav" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+
+    <div class="collapse navbar-collapse justify-content-end" id="nav">
+      <ul class="navbar-nav gap-lg-3 py-3 py-lg-0">
+        <li class="nav-item"><a class="nav-link" href="#categorias">Categorias</a></li>
+        <li class="nav-item"><a class="nav-link" href="#loja">Loja</a></li>
+        <li class="nav-item"><a class="nav-link" href="#vantagens">Vantagens</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contato">Contato</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <!-- HERO -->
+  <section class="hero text-center py-5" id="inicio">
+    <div class="container py-5">
+      <span class="tag d-inline-block rounded-pill px-3 py-1 small text-uppercase mb-4">A revolução já começou</span>
+      <h1 class="display-3 fw-bold mb-3">Mova-se para o <span class="text-grad">futuro</span><br>com energia limpa</h1>
+      <p class="lead text-body-secondary mx-auto mb-4" style="max-width:620px">Carros elétricos, autopropelidos e ciclomotores com tecnologia de ponta, zero emissões e o menor custo por quilômetro que você já viu.</p>
+      <div class="d-flex flex-wrap justify-content-center gap-2">
+        <a href="#loja" class="btn btn-grad btn-lg rounded-pill px-4">Explorar veículos</a>
+        <a href="#categorias" class="btn btn-outline-secondary btn-lg rounded-pill px-4">Ver categorias</a>
+      </div>
+      <div class="row justify-content-center g-4 mt-4 pt-3">
+        <div class="col-6 col-md-3"><strong class="fs-2 text-grad d-block" data-count="0">0</strong><span class="small text-body-secondary">Emissões de CO₂</span></div>
+        <div class="col-6 col-md-3"><strong class="fs-2 text-grad d-block" data-count="80" data-suffix="%">0</strong><span class="small text-body-secondary">Economia vs. combustível</span></div>
+        <div class="col-12 col-md-3"><strong class="fs-2 text-grad d-block" data-count="500" data-suffix="+">0</strong><span class="small text-body-secondary">km de autonomia</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIAS -->
+  <section class="py-5" id="categorias">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Escolha seu jeito de ir além</h2>
+        <p class="text-body-secondary">Três categorias, uma só direção: o futuro elétrico.</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <button class="cat card h-100 w-100 text-start p-4" data-go="carros">
+            <svg class="ico mb-3" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 40v-8l6-10c1-2 3-3 5-3h26c2 0 4 1 5 3l9 10v8"/><path d="M4 40h56"/><circle cx="17" cy="44" r="6" fill="#ffffff"/><circle cx="47" cy="44" r="6" fill="#ffffff"/><path d="M20 22l-4 10h32l-6-10"/></svg>
+            <h3 class="h4">Carros Elétricos</h3>
+            <p class="text-body-secondary">Conforto, tecnologia e autonomia para toda a família.</p>
+            <span class="text-neon fw-semibold small mt-auto">Ver carros →</span>
+          </button>
+        </div>
+        <div class="col-md-4">
+          <button class="cat card h-100 w-100 text-start p-4" data-go="autopropelidos">
+            <svg class="ico mb-3" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="50" r="6"/><circle cx="50" cy="50" r="6"/><path d="M14 50 22 14h10"/><path d="M18 36h26l6 14"/><path d="M42 14l8 36"/></svg>
+            <h3 class="h4">Autopropelidos</h3>
+            <p class="text-body-secondary">Patinetes e bikes elétricas até 32 km/h, sem CNH e sem burocracia.</p>
+            <span class="text-neon fw-semibold small mt-auto">Ver autopropelidos →</span>
+          </button>
+        </div>
+        <div class="col-md-4">
+          <button class="cat card h-100 w-100 text-start p-4" data-go="ciclomotores">
+            <svg class="ico mb-3" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="14" cy="46" r="8"/><circle cx="50" cy="46" r="8"/><path d="M14 46l10-18h14l6 18"/><path d="M38 28l4-12h8"/><path d="M24 28h-8"/></svg>
+            <h3 class="h4">Ciclomotores</h3>
+            <p class="text-body-secondary">Scooters elétricas até 50 km/h para a cidade com economia total.</p>
+            <span class="text-neon fw-semibold small mt-auto">Ver ciclomotores →</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOJA -->
+  <section class="store py-5" id="loja">
+    <div class="container py-4">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold">Nossa linha elétrica</h2>
+        <p class="text-body-secondary">Frete grátis e instalação do carregador nos modelos selecionados.</p>
+      </div>
+      <div class="d-flex flex-wrap justify-content-center justify-content-lg-between align-items-center gap-3 mb-5">
+        <div class="nav nav-pills justify-content-center gap-2" id="filters">
+          <button class="filter nav-link rounded-pill px-4 active" data-filter="todos">Todos</button>
+          <button class="filter nav-link rounded-pill px-4" data-filter="carros">Carros Elétricos</button>
+          <button class="filter nav-link rounded-pill px-4" data-filter="autopropelidos">Autopropelidos</button>
+          <button class="filter nav-link rounded-pill px-4" data-filter="ciclomotores">Ciclomotores</button>
+        </div>
+        <form class="search-box input-group rounded-pill" id="searchForm" role="search" onsubmit="return false">
+          <span class="input-group-text border-0 ps-3" aria-hidden="true">🔍</span>
+          <input type="search" id="search" class="form-control border-0" placeholder="Pesquisar veículo..." aria-label="Pesquisar veículo" autocomplete="off">
+        </form>
+      </div>
+      <div class="row g-4" id="grid"></div>
+      <p class="text-center text-body-secondary mt-4 d-none" id="noResults">Nenhum veículo encontrado. Tente outro nome ou categoria ⚡</p>
+    </div>
+  </section>
+
+  <!-- VANTAGENS -->
+  <section class="py-5" id="vantagens">
+    <div class="container py-4">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold">Por que ir de elétrico?</h2>
+        <p class="text-body-secondary">Mais economia, menos manutenção, nenhum arrependimento.</p>
+      </div>
+      <div class="row g-4">
+        <div class="col-sm-6 col-lg-3"><div class="card h-100 p-4"><span class="fs-2">🌱</span><h4 class="h6 mt-2 fw-bold">Zero emissões</h4><p class="small text-body-secondary mb-0">Ar mais limpo nas cidades e pegada de carbono muito menor.</p></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card h-100 p-4"><span class="fs-2">💰</span><h4 class="h6 mt-2 fw-bold">Custo por km mínimo</h4><p class="small text-body-secondary mb-0">Recarregar custa uma fração do preço de abastecer.</p></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card h-100 p-4"><span class="fs-2">🔧</span><h4 class="h6 mt-2 fw-bold">Pouca manutenção</h4><p class="small text-body-secondary mb-0">Menos peças móveis, sem troca de óleo e menos visitas à oficina.</p></div></div>
+        <div class="col-sm-6 col-lg-3"><div class="card h-100 p-4"><span class="fs-2">🛡️</span><h4 class="h6 mt-2 fw-bold">Garantia da bateria</h4><p class="small text-body-secondary mb-0">Cobertura estendida e suporte especializado em todo o Brasil.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="pb-5" id="contato">
+    <div class="container pb-4">
+      <div class="cta card text-center px-3 py-5">
+        <h2 class="fw-bold">Receba ofertas do futuro</h2>
+        <p class="text-body-secondary">Cadastre seu e-mail e ganhe um cupom de boas-vindas.</p>
+        <form id="newsletter" class="row g-2 justify-content-center mt-2">
+          <div class="col-12 col-md-5"><input type="email" id="email" class="form-control form-control-lg rounded-pill px-4" placeholder="seu@email.com" required></div>
+          <div class="col-12 col-md-auto"><button class="btn btn-grad btn-lg rounded-pill px-4 w-100" type="submit">Quero meu cupom</button></div>
+        </form>
+        <div class="text-neon mt-3" id="msg" style="min-height:24px"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="border-top py-4 small text-body-secondary">
+  <div class="container d-flex flex-wrap justify-content-between gap-2">
+    <div>⚡ <strong class="text-body">VoltAhead</strong> — O futuro não faz barulho.</div>
+    <div>© <span id="year"></span> VoltAhead. Todos os direitos reservados.</div>
+  </div>
+</footer>
+
+<!-- CARRINHO (Offcanvas) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="cartDrawer" aria-labelledby="cartTitle">
+  <div class="offcanvas-header border-bottom">
+    <h5 class="offcanvas-title fw-bold" id="cartTitle">Seu carrinho</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column gap-3" id="items"></div>
+  <div class="border-top p-3">
+    <div class="d-flex justify-content-between fs-5 fw-bold mb-3"><span>Total</span><span id="total">R$ 0,00</span></div>
+    <button class="btn btn-grad w-100 rounded-pill py-2" id="checkout">Finalizar compra</button>
+  </div>
+</div>
+
+<!-- LOGIN / CADASTRO (Modal) -->
+<div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content p-2">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body pt-0 px-4 pb-4">
+        <div class="auth-icon mb-3">⚡</div>
+        <h2 class="h4 fw-bold text-center mb-1" id="authTitle">Entrar na sua conta</h2>
+        <p class="text-center text-body-secondary small mb-4" id="authSubtitle">Acesse seus pedidos e favoritos.</p>
+
+        <form id="authForm" novalidate>
+          <div class="mb-3 d-none" id="nameField">
+            <label for="authName" class="form-label small fw-semibold">Nome</label>
+            <input type="text" id="authName" class="form-control rounded-pill px-3" placeholder="Seu nome" autocomplete="name">
+          </div>
+          <div class="mb-3">
+            <label for="authEmail" class="form-label small fw-semibold">E-mail</label>
+            <input type="email" id="authEmail" class="form-control rounded-pill px-3" placeholder="seu@email.com" autocomplete="email" required>
+          </div>
+          <div class="mb-3">
+            <label for="authPass" class="form-label small fw-semibold">Senha</label>
+            <input type="password" id="authPass" class="form-control rounded-pill px-3" placeholder="Mínimo 6 caracteres" autocomplete="current-password" required minlength="6">
+          </div>
+          <div class="text-danger small mb-3 d-none" id="authError" role="alert"></div>
+          <button type="submit" class="btn btn-grad w-100 rounded-pill py-2" id="authSubmit">Entrar</button>
+        </form>
+
+        <p class="text-center small mt-3 mb-0">
+          <span id="authSwitchText">Ainda não tem conta?</span>
+          <button type="button" class="btn btn-link btn-sm p-0 align-baseline fw-semibold" id="authSwitch">Criar conta</button>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3">
+  <div class="toast toast-grad border-0 rounded-pill" id="toast" role="status" aria-live="polite" aria-atomic="true">
+    <div class="toast-body px-4" id="toastMsg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
