@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreOrdersRequest;
+use App\Http\Requests\UpdateOrdersRequest;
+use App\Http\Resources\OrderResource;
 use App\Services\OrderService;
 
 class OrderController extends Controller
@@ -11,36 +13,35 @@ class OrderController extends Controller
     public function __construct(
         private OrderService $orderService
     ) {}
-   
+
     public function index()
     {
         $orders = $this->orderService->listAll();
-        return response()->json($orders);
+
+        return OrderResource::collection($orders);
     }
 
-   
-    public function store(Request $request)
+    public function store(StoreOrdersRequest $request)
     {
-        $order = $this->orderService->create($request->all());
-        return response()->json($order, 201);
+        $order = $this->orderService->create($request->validated());
+
+        return new OrderResource($order);
     }
 
-    
     public function show(string $id)
     {
-         $order = $this->orderService->findById($id);
+        $order = $this->orderService->findById($id);
 
-        return response()->json($order);
+        return new OrderResource($order);
     }
 
     // soamente admin ->
-    public function update(Request $request, string $id)
+    public function update(UpdateOrdersRequest $request, string $id)
     {
-          $order = $this->orderService->update($id, $request->all());
+        $order = $this->orderService->update($id, $request->validated());
 
-        return response()->json($order);
+        return new OrderResource($order);
     }
-
 
     public function destroy(string $id)
     {

@@ -2,28 +2,24 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateOrderItemsRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'order_id' => ['sometimes', 'required', 'integer', 'exists:orders,id'],
+            'product_id' => ['sometimes', 'nullable', 'integer', 'exists:products,id'],
+            'product_name' => ['sometimes', 'required', 'string', 'max:255'],
+            'unit_price' => ['sometimes', 'required', 'numeric', 'min:0'],
+            'quantity' => ['sometimes', 'required', 'numeric', 'gt:0'],
+            'subtotal_cents' => ['sometimes', 'required', 'numeric', 'min:0'],
         ];
     }
 }

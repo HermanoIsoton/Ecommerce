@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreProductsRequest;
+use App\Http\Requests\UpdateProductsRequest;
+use App\Http\Resources\ProductResource;
 use App\Services\ProductService;
 
 class ProductController extends Controller
@@ -11,36 +13,35 @@ class ProductController extends Controller
     public function __construct(
         private ProductService $productService
     ) {}
-   
+
     public function index()
     {
         $products = $this->productService->listAll();
-        return response()->json($products);
+
+        return ProductResource::collection($products);
     }
 
-   // soamente admin ->
-    public function store(Request $request)
+    // soamente admin ->
+    public function store(StoreProductsRequest $request)
     {
-        $product = $this->productService->create($request->all());
-        return response()->json($product, 201);
+        $product = $this->productService->create($request->validated());
+
+        return new ProductResource($product);
     }
 
-    
     public function show(string $id)
     {
-         $product = $this->productService->findById($id);
+        $product = $this->productService->findById($id);
 
-        return response()->json($product);
+        return new ProductResource($product);
     }
 
-   
-    public function update(Request $request, string $id)
+    public function update(UpdateProductsRequest $request, string $id)
     {
-          $product = $this->productService->update($id, $request->all());
+        $product = $this->productService->update($id, $request->validated());
 
-        return response()->json($product);
+        return new ProductResource($product);
     }
-
 
     public function destroy(string $id)
     {

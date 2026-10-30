@@ -2,11 +2,12 @@ services:
   mysql:
     image: mysql:8.4
     restart: unless-stopped
+    container_name: mysql
     environment:
-      MYSQL_DATABASE: "${DB_DATABASE:-amperemotor}"
-      MYSQL_USER: "${DB_USERNAME:-amperemotor}"
-      MYSQL_PASSWORD: "${DB_PASSWORD:-eletric}"
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
+      MYSQL_DATABASE: "amperemotor"
+      MYSQL_USER: "amperemotor"
+      MYSQL_PASSWORD: "eletric"
+      MYSQL_ROOT_PASSWORD: "eletric"
     ports:
       - "3306:3306"
     volumes:
@@ -35,9 +36,10 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_DATABASE: "${DB_DATABASE:-amperemotor}"
-      DB_USERNAME: "${DB_USERNAME:-amperemotor}"
-      DB_PASSWORD: "${DB_PASSWORD:-eletric}"
+      DB_DATABASE: "amperemotor"
+      DB_USERNAME: "amperemotor"
+      DB_PASSWORD: "eletric"
+    container_name: api
     ports:
       - "8000:8000"
     command:

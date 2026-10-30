@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreAddressesRequest;
+use App\Http\Requests\UpdateAddressesRequest;
+use App\Http\Resources\AddressResource;
 use App\Services\AddressService;
 
 class AddressController extends Controller
@@ -11,36 +13,34 @@ class AddressController extends Controller
     public function __construct(
         private AddressService $addressService
     ) {}
-   
+
     public function index()
     {
-        $addresss = $this->addressService->listAll();
-        return response()->json($addresss);
+        $addresses = $this->addressService->listAll();
+
+        return AddressResource::collection($addresses);
     }
 
-   
-    public function store(Request $request)
+    public function store(StoreAddressesRequest $request)
     {
-        $address = $this->addressService->create($request->all());
-        return response()->json($address, 201);
+        $address = $this->addressService->create($request->validated());
+
+        return new AddressResource($address);
     }
 
-    
     public function show(string $id)
     {
-         $address = $this->addressService->findById($id);
+        $address = $this->addressService->findById($id);
 
-        return response()->json($address);
+        return new AddressResource($address);
     }
 
-   
-    public function update(Request $request, string $id)
+    public function update(UpdateAddressesRequest $request, string $id)
     {
-          $address = $this->addressService->update($id, $request->all());
+        $address = $this->addressService->update($id, $request->validated());
 
-        return response()->json($address);
+        return new AddressResource($address);
     }
-
 
     public function destroy(string $id)
     {
