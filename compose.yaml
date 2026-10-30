@@ -1,0 +1,51 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE:-amperemotor}"
+      MYSQL_USER: "${DB_USERNAME:-amperemotor}"
+      MYSQL_PASSWORD: "${DB_PASSWORD:-eletric}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD:-root}"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD}
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      APP_ENV: "${APP_ENV:-local}"
+      APP_DEBUG: "${APP_DEBUG:-true}"
+      APP_KEY: "${APP_KEY:-}"
+      APP_URL: "${APP_URL:-http://localhost:8000}"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: "${DB_DATABASE:-amperemotor}"
+      DB_USERNAME: "${DB_USERNAME:-amperemotor}"
+      DB_PASSWORD: "${DB_PASSWORD:-eletric}"
+    ports:
+      - "8000:8000"
+    command:
+      - php
+      - artisan
+      - serve
+      - --host=0.0.0.0
+      - --port=8000
+
+volumes:
+  mysql_data:

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Order extends Model
 {
      protected $fillable = [
-        'id',
         'user_id',
         'status',
         'subtotal_cents',
@@ -32,7 +31,7 @@ class Order extends Model
     public function user(): belongsTo{
         return $this->belongsTo(User::class);
     }
-     public function Order_items(): hasMany{
-        return $this->belongsTo(Order_items::class);
+     public function Order_item(): hasMany{
+        return $this->hasMany(Order_item::class);
     }
 }

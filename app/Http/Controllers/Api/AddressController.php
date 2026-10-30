@@ -4,46 +4,48 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\AddressService;
 
 class AddressController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(
+        private AddressService $addressService
+    ) {}
+   
     public function index()
     {
-        //
+        $addresss = $this->addressService->listAll();
+        return response()->json($addresss);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+   
     public function store(Request $request)
     {
-        //
+        $address = $this->addressService->create($request->all());
+        return response()->json($address, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $id)
     {
-        //
+         $address = $this->addressService->findById($id);
+
+        return response()->json($address);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(Request $request, string $id)
     {
-        //
+          $address = $this->addressService->update($id, $request->all());
+
+        return response()->json($address);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+        $this->addressService->delete($id);
+
+        return response()->noContent();
     }
 }

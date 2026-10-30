@@ -8,11 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     protected $fillable = [
-        'id',
         'name', 
-        'email',
-        'password_hash', 
-        'role'
+        'email'
     ];
 
     public function address(): hasMany{

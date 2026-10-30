@@ -4,46 +4,48 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(
+        private ProductService $productService
+    ) {}
+   
     public function index()
     {
-        //
+        $products = $this->productService->listAll();
+        return response()->json($products);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+   // soamente admin ->
     public function store(Request $request)
     {
-        //
+        $product = $this->productService->create($request->all());
+        return response()->json($product, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
+    
     public function show(string $id)
     {
-        //
+         $product = $this->productService->findById($id);
+
+        return response()->json($product);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+   
     public function update(Request $request, string $id)
     {
-        //
+          $product = $this->productService->update($id, $request->all());
+
+        return response()->json($product);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(string $id)
     {
-        //
+        $this->productService->delete($id);
+
+        return response()->noContent();
     }
 }

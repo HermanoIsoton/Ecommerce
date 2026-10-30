@@ -11,7 +11,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table){
             $table->id();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->restrictOnDelete();
             $table->enum('status', ['pendente', 'pago', 'enviado', 'entregue', 'cancelado'])->default('pendente');
             $table->decimal('subtotal_cents', 10,2)->unsigned();
             $table->decimal('shipping_cents', 10,2)->unsigned();
