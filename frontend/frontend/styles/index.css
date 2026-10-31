@@ -1,0 +1,457 @@
+/* EletricWay - estilos compartilhados (Bootstrap 5.3 + ajustes da marca) */
+
+:root {
+  --ew-navy: #0b2a4a;
+  --ew-navy-2: #11406f;
+  --ew-green: #2ef08a;
+  --ew-green-dark: #00875a;
+  --ew-gray: #4a5b70;
+  --ew-bg: #f2f5f8;
+  --bs-body-font-family: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --bs-body-bg: var(--ew-bg);
+  --bs-body-color: #1b2b3d;
+  --bs-link-color: var(--ew-navy-2);
+  --bs-link-hover-color: var(--ew-navy);
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* ---------- Navbar ---------- */
+.ew-navbar {
+  background: var(--ew-navy);
+}
+
+.ew-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.04em;
+  color: #fff;
+  text-decoration: none;
+}
+
+.ew-brand:hover {
+  color: #fff;
+}
+
+.ew-brand .way {
+  color: var(--ew-green);
+}
+
+.ew-navbar .nav-link {
+  color: #d5e0ec;
+  font-weight: 500;
+}
+
+.ew-navbar .nav-link:hover,
+.ew-navbar .nav-link.active {
+  color: #fff;
+}
+
+.ew-navbar .nav-link.active {
+  box-shadow: inset 0 -2px 0 var(--ew-green);
+}
+
+.ew-icon-btn {
+  position: relative;
+  color: #fff;
+  font-size: 1.35rem;
+  line-height: 1;
+  padding: 0.35rem 0.5rem;
+  text-decoration: none;
+}
+
+.ew-icon-btn:hover {
+  color: var(--ew-green);
+}
+
+.ew-badge {
+  position: absolute;
+  top: -2px;
+  right: -4px;
+  min-width: 1.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--ew-navy);
+  background: var(--ew-green);
+  border-radius: 999px;
+  padding: 0.1rem 0.35rem;
+  text-align: center;
+}
+
+/* ---------- Botoes da marca ---------- */
+.btn-ew {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--ew-navy);
+  --bs-btn-border-color: var(--ew-navy);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--ew-navy-2);
+  --bs-btn-hover-border-color: var(--ew-navy-2);
+  --bs-btn-active-bg: var(--ew-navy-2);
+  --bs-btn-active-border-color: var(--ew-navy-2);
+  --bs-btn-disabled-bg: var(--ew-navy);
+  --bs-btn-disabled-border-color: var(--ew-navy);
+  font-weight: 600;
+}
+
+.btn-ew-accent {
+  --bs-btn-color: var(--ew-navy);
+  --bs-btn-bg: var(--ew-green);
+  --bs-btn-border-color: var(--ew-green);
+  --bs-btn-hover-color: var(--ew-navy);
+  --bs-btn-hover-bg: #5af6a5;
+  --bs-btn-hover-border-color: #5af6a5;
+  --bs-btn-active-bg: #5af6a5;
+  --bs-btn-active-border-color: #5af6a5;
+  font-weight: 700;
+}
+
+.btn-outline-ew {
+  --bs-btn-color: var(--ew-navy);
+  --bs-btn-border-color: var(--ew-navy);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--ew-navy);
+  --bs-btn-hover-border-color: var(--ew-navy);
+  --bs-btn-active-bg: var(--ew-navy);
+  font-weight: 600;
+}
+
+.form-control:focus,
+.form-select:focus,
+.btn:focus-visible {
+  border-color: var(--ew-navy-2);
+  box-shadow: 0 0 0 0.25rem rgba(17, 64, 111, 0.25);
+}
+
+/* ---------- Hero (pagina inicial) ---------- */
+.hero {
+  color: #fff;
+  background: linear-gradient(135deg, var(--ew-navy) 0%, var(--ew-navy-2) 100%);
+  overflow: hidden;
+}
+
+.hero h1 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.hero h1 .destaque {
+  color: var(--ew-green);
+}
+
+.hero .lead {
+  color: #c9d8e8;
+}
+
+.hero-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-visual svg {
+  width: min(280px, 60vw);
+  height: auto;
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.35));
+}
+
+/* ---------- Beneficios ---------- */
+.beneficio {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.beneficio i {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.75rem;
+  height: 2.75rem;
+  font-size: 1.25rem;
+  color: var(--ew-green-dark);
+  background: #e3f8ee;
+  border-radius: 0.75rem;
+}
+
+/* ---------- Cards de produto ---------- */
+.produto-card {
+  border: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(11, 42, 74, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.produto-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(11, 42, 74, 0.14);
+}
+
+.produto-img {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #e4ecf4 0%, #cfdcea 100%);
+  color: var(--ew-navy-2);
+  font-size: 4rem;
+}
+
+.produto-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.produto-img .badge-tipo {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spec-lista {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spec-lista li {
+  text-align: center;
+  padding: 0.45rem 0.25rem;
+  background: var(--ew-bg);
+  border-radius: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--ew-gray);
+  line-height: 1.25;
+}
+
+.spec-lista strong {
+  display: block;
+  font-size: 0.95rem;
+  color: var(--ew-navy);
+}
+
+.preco {
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ew-navy);
+}
+
+.filtro-btn.active {
+  background: var(--ew-navy);
+  border-color: var(--ew-navy);
+  color: #fff;
+}
+
+/* ---------- Conta ---------- */
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 4.25rem;
+  height: 4.25rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ew-navy);
+  background: var(--ew-green);
+  border-radius: 50%;
+}
+
+.conta-menu .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--ew-navy);
+  font-weight: 600;
+  border-radius: 0.75rem;
+  padding: 0.7rem 1rem;
+}
+
+.conta-menu .nav-link.active {
+  color: #fff;
+  background: var(--ew-navy);
+}
+
+.card-ew {
+  border: 0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(11, 42, 74, 0.08);
+}
+
+.endereco-card {
+  border: 1px solid #dde5ee;
+  border-radius: 0.9rem;
+  background: #fff;
+}
+
+.pedido-item .accordion-button:not(.collapsed) {
+  color: var(--ew-navy);
+  background: #eaf1f8;
+}
+
+.linha-tempo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.linha-tempo li {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.2rem 0;
+  font-size: 0.9rem;
+}
+
+.linha-tempo i {
+  color: var(--ew-green-dark);
+}
+
+/* ---------- Carrinho ---------- */
+.carrinho-img {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  font-size: 2rem;
+  color: var(--ew-navy-2);
+  background: linear-gradient(160deg, #e4ecf4 0%, #cfdcea 100%);
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+.carrinho-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.qtd-controle {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cfd9e4;
+  border-radius: 0.7rem;
+  background: #fff;
+}
+
+.qtd-controle button {
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  background: transparent;
+  color: var(--ew-navy);
+  font-size: 1.1rem;
+}
+
+.qtd-controle button:disabled {
+  color: #a9b6c4;
+}
+
+.qtd-controle span {
+  min-width: 2rem;
+  text-align: center;
+  font-weight: 700;
+}
+
+.resumo-sticky {
+  position: sticky;
+  top: 1.25rem;
+}
+
+/* ---------- Autopropelido x Ciclomotor ---------- */
+.tipo-card {
+  border: 1px solid #dde5ee;
+  border-top-width: 5px;
+  border-radius: 1rem;
+  background: #fff;
+}
+
+.tipo-autopropelido {
+  border-top-color: var(--ew-green);
+}
+
+.tipo-ciclomotor {
+  border-top-color: #ffc107;
+}
+
+.tipo-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tipo-lista li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.tipo-lista i {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--ew-navy-2);
+  background: var(--ew-bg);
+  border-radius: 0.55rem;
+}
+
+/* ---------- Filtros do catalogo ---------- */
+.filtros-painel .accordion-button {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ew-navy);
+  background: transparent;
+  box-shadow: none;
+}
+
+.filtros-painel .accordion-button:not(.collapsed) {
+  color: var(--ew-navy);
+  background: transparent;
+}
+
+@media (min-width: 992px) {
+  .filtros-painel {
+    position: sticky;
+    top: 5.5rem;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+  }
+}
+
+/* ---------- Rodape ---------- */
+.ew-footer {
+  background: var(--ew-navy);
+  color: #b8c7d9;
+}
+
+.ew-footer a {
+  color: #d5e0ec;
+  text-decoration: none;
+}
+
+.ew-footer a:hover {
+  color: var(--ew-green);
+}

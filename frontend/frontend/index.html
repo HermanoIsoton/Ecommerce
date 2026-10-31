@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EletricWay | Autopropelidos e ciclomotores elétricos</title>
+  <meta name="description" content="Loja de veículos elétricos: autopropelidos e ciclomotores.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles/index.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== Menu ========== -->
+  <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg ew-navbar" data-bs-theme="dark" aria-label="Menu principal">
+      <div class="container">
+        <a class="ew-brand" href="index.html" aria-label="EletricWay - página inicial">
+          <svg width="38" height="38" viewBox="0 0 120 120" role="img" aria-label="Símbolo EletricWay" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 18 A42 42 0 1 1 22.5 79" fill="none" stroke="#2EF08A" stroke-width="8" stroke-linecap="round"/>
+            <polygon points="66,30 40,64 56,64 50,92 80,54 63,54" fill="#FFFFFF"/>
+          </svg>
+          <span>Eletric<span class="way">Way</span></span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2 order-lg-last">
+          <a class="ew-icon-btn" href="conta.html" aria-label="Minha conta"><i class="bi bi-person-circle"></i></a>
+          <a class="ew-icon-btn" href="carrinho.html" aria-label="Carrinho">
+            <i class="bi bi-cart3"></i>
+            <span class="ew-badge js-cart-badge d-none">0</span>
+          </a>
+          <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <ul class="navbar-nav mx-lg-4 mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Início</a></li>
+            <li class="nav-item"><a class="nav-link" href="#catalogo" data-filtro-link="autopropelido">Autopropelidos</a></li>
+            <li class="nav-item"><a class="nav-link" href="#catalogo" data-filtro-link="ciclomotor">Ciclomotores</a></li>
+            <li class="nav-item"><a class="nav-link" href="#tipos">Qual escolher?</a></li>
+          </ul>
+          <form class="d-flex flex-grow-1 ms-lg-auto my-2 my-lg-0" role="search" id="formBusca">
+            <label class="visually-hidden" for="campoBusca">Buscar veículos</label>
+            <input class="form-control" type="search" id="campoBusca" placeholder="Buscar veículos elétricos" autocomplete="off">
+            <button class="btn btn-ew-accent ms-2" type="submit" aria-label="Buscar"><i class="bi bi-search"></i></button>
+          </form>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ========== Destaque ========== -->
+    <section class="hero py-5">
+      <div class="container py-lg-4">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-7">
+            <p class="text-uppercase small fw-semibold mb-2" style="letter-spacing: 0.12em; color: var(--ew-green);">Mobilidade elétrica</p>
+            <h1 class="display-4 mb-3">Seu caminho começa <span class="destaque">sem fazer barulho</span></h1>
+            <p class="lead mb-4">Autopropelidos e ciclomotores elétricos com autonomia, velocidade, bateria e garantia explicadas em cada produto.</p>
+            <div class="d-flex flex-wrap gap-2">
+              <a href="#catalogo" class="btn btn-ew-accent btn-lg px-4">Ver catálogo</a>
+              <a href="conta.html" class="btn btn-outline-light btn-lg px-4">Minha conta</a>
+            </div>
+          </div>
+          <div class="col-lg-5 hero-visual" aria-hidden="true">
+            <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+              <rect width="120" height="120" rx="30" fill="#0B2A4A" stroke="#2EF08A" stroke-opacity="0.35" stroke-width="1.5"/>
+              <path d="M60 18 A42 42 0 1 1 22.5 79" fill="none" stroke="#2EF08A" stroke-width="8" stroke-linecap="round"/>
+              <polygon points="66,30 40,64 56,64 50,92 80,54 63,54" fill="#FFFFFF"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Beneficios ========== -->
+    <section class="bg-white border-bottom" aria-label="Diferenciais">
+      <div class="container py-4">
+        <div class="row g-3">
+          <div class="col-6 col-lg-3">
+            <div class="beneficio"><i class="bi bi-speedometer2" aria-hidden="true"></i><div><strong class="d-block">Ficha completa</strong><span class="small text-secondary">Autonomia, potência e velocidade</span></div></div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="beneficio"><i class="bi bi-battery-charging" aria-hidden="true"></i><div><strong class="d-block">Bateria detalhada</strong><span class="small text-secondary">Tempo de carga e voltagem</span></div></div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="beneficio"><i class="bi bi-shield-check" aria-hidden="true"></i><div><strong class="d-block">Garantia informada</strong><span class="small text-secondary">Prazo em meses em cada item</span></div></div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="beneficio"><i class="bi bi-truck" aria-hidden="true"></i><div><strong class="d-block">Pedido acompanhado</strong><span class="small text-secondary">Do pagamento à entrega</span></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Autopropelido x Ciclomotor ========== -->
+    <section class="py-5 bg-white border-bottom" id="tipos" aria-labelledby="tituloTipos">
+      <div class="container">
+        <div class="text-center mx-auto mb-4" style="max-width: 46rem;">
+          <h2 class="fw-bold" id="tituloTipos">Autopropelido ou ciclomotor?</h2>
+          <p class="text-secondary mb-0">Os dois são elétricos, mas seguem regras de trânsito diferentes. Entenda a diferença antes de escolher o seu.</p>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-6">
+            <article class="card tipo-card tipo-autopropelido h-100">
+              <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                  <div>
+                    <h3 class="h4 fw-bold mb-1">Autopropelido</h3>
+                    <p class="text-secondary mb-0">Patinetes, bikes elétricas e scooters pequenas</p>
+                  </div>
+                  <span class="badge text-bg-success fs-6">Sem CNH</span>
+                </div>
+                <ul class="tipo-lista mb-4">
+                  <li><i class="bi bi-person-check" aria-hidden="true"></i><span><strong>Sem CNH:</strong> não precisa de habilitação para conduzir.</span></li>
+                  <li><i class="bi bi-file-earmark-check" aria-hidden="true"></i><span><strong>Sem burocracia:</strong> não exige registro, emplacamento nem licenciamento.</span></li>
+                  <li><i class="bi bi-speedometer2" aria-hidden="true"></i><span><strong>Velocidade limitada</strong> a 32 km/h.</span></li>
+                  <li><i class="bi bi-lightning-charge" aria-hidden="true"></i><span><strong>Potência</strong> de até 1.000 W.</span></li>
+                  <li><i class="bi bi-signpost-split" aria-hidden="true"></i><span>Circula em ciclovias, ciclofaixas e áreas liberadas pela prefeitura. Não pode andar em rodovias.</span></li>
+                  <li><i class="bi bi-shield-check" aria-hidden="true"></i><span>Use sempre capacete. A obrigatoriedade pode variar conforme o município.</span></li>
+                </ul>
+                <a href="#catalogo" class="btn btn-ew mt-auto align-self-start" data-filtro-link="autopropelido">Ver autopropelidos</a>
+              </div>
+            </article>
+          </div>
+
+          <div class="col-md-6">
+            <article class="card tipo-card tipo-ciclomotor h-100">
+              <div class="card-body p-4 d-flex flex-column">
+                <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                  <div>
+                    <h3 class="h4 fw-bold mb-1">Ciclomotor</h3>
+                    <p class="text-secondary mb-0">Scooters e ciclomotores elétricos mais potentes</p>
+                  </div>
+                  <span class="badge text-bg-warning fs-6">CNH A ou ACC</span>
+                </div>
+                <ul class="tipo-lista mb-4">
+                  <li><i class="bi bi-person-vcard" aria-hidden="true"></i><span><strong>Habilitação:</strong> CNH categoria A ou ACC (Autorização para Conduzir Ciclomotor).</span></li>
+                  <li><i class="bi bi-card-text" aria-hidden="true"></i><span><strong>Documentação:</strong> registro, emplacamento e licenciamento obrigatórios.</span></li>
+                  <li><i class="bi bi-speedometer2" aria-hidden="true"></i><span><strong>Velocidade</strong> de até 50 km/h.</span></li>
+                  <li><i class="bi bi-lightning-charge" aria-hidden="true"></i><span><strong>Potência</strong> do motor elétrico de 1.000 W até 4.000 W.</span></li>
+                  <li><i class="bi bi-signpost-2" aria-hidden="true"></i><span>Circula nas vias comuns, com as mesmas regras das motocicletas.</span></li>
+                  <li><i class="bi bi-shield-check" aria-hidden="true"></i><span>Capacete de moto obrigatório.</span></li>
+                </ul>
+                <a href="#catalogo" class="btn btn-ew mt-auto align-self-start" data-filtro-link="ciclomotor">Ver ciclomotores</a>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <p class="small text-secondary text-center mt-4 mb-0">
+          Informações baseadas na Resolução 996/2023 do Contran, em vigor em 2026. Podem existir regras locais: confirme com o Detran e a prefeitura da sua cidade.
+          Fontes:
+          <a href="https://www.portaldotransito.com.br/noticias/fiscalizacao-e-legislacao/detran-explica-como-conduzir-bicicletas-eletricas-autopropelidos-ou-ciclomotores/amp/" target="_blank" rel="noopener">Portal do Trânsito</a>
+          e
+          <a href="https://revistacarro.com.br/regras-para-bicicletas-eletricas-patinetes-e-ciclomotores-vai-mudar-em-2026-confira/" target="_blank" rel="noopener">Revista Carro</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== Catalogo ========== -->
+    <section class="py-5" id="catalogo" aria-labelledby="tituloCatalogo">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
+          <div>
+            <h2 class="fw-bold mb-1" id="tituloCatalogo">Nossos veículos</h2>
+            <p class="text-secondary mb-0">Escolha o tipo que combina com o seu dia a dia.</p>
+          </div>
+          <div class="btn-group" role="group" aria-label="Filtrar por tipo">
+            <button type="button" class="btn btn-outline-ew filtro-btn active" data-filtro="todos" aria-pressed="true">Todos</button>
+            <button type="button" class="btn btn-outline-ew filtro-btn" data-filtro="autopropelido" aria-pressed="false">Autopropelidos</button>
+            <button type="button" class="btn btn-outline-ew filtro-btn" data-filtro="ciclomotor" aria-pressed="false">Ciclomotores</button>
+          </div>
+        </div>
+
+        <div class="row g-4">
+
+          <!-- ===== Filtros (campos da tabela products) ===== -->
+          <aside class="col-lg-3" aria-label="Filtros do catálogo">
+            <button class="btn btn-outline-ew w-100 d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#painelFiltros" aria-expanded="false" aria-controls="painelFiltros">
+              <i class="bi bi-funnel me-1" aria-hidden="true"></i>Filtros
+              <span class="badge text-bg-success js-filtros-ativos d-none">0</span>
+            </button>
+
+            <div class="collapse d-lg-block" id="painelFiltros">
+              <form class="card card-ew filtros-painel" id="formFiltros" novalidate>
+                <div class="card-body p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h3 class="h6 fw-bold mb-0">
+                      <i class="bi bi-funnel me-1" aria-hidden="true"></i>Filtros
+                      <span class="badge text-bg-success js-filtros-ativos d-none">0</span>
+                    </h3>
+                    <button type="reset" class="btn btn-link btn-sm p-0">Limpar</button>
+                  </div>
+
+                  <div class="accordion accordion-flush" id="accFiltros">
+
+                    <!-- Preco -->
+                    <div class="accordion-item">
+                      <h4 class="accordion-header">
+                        <button class="accordion-button px-1" type="button" data-bs-toggle="collapse" data-bs-target="#ac-preco" aria-expanded="true" aria-controls="ac-preco">Preço</button>
+                      </h4>
+                      <div id="ac-preco" class="accordion-collapse collapse show">
+                        <div class="accordion-body px-1">
+                          <label class="form-label small" for="f-price-min">Faixa de preço (R$)</label>
+                          <div class="input-group input-group-sm">
+                            <input type="number" min="0" step="any" class="form-control" id="f-price-min" data-min="price" placeholder="Mín." aria-label="Preço mínimo">
+                            <span class="input-group-text">a</span>
+                            <input type="number" min="0" step="any" class="form-control" data-max="price" placeholder="Máx." aria-label="Preço máximo">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Veiculo -->
+                    <div class="accordion-item">
+                      <h4 class="accordion-header">
+                        <button class="accordion-button px-1" type="button" data-bs-toggle="collapse" data-bs-target="#ac-veiculo" aria-expanded="true" aria-controls="ac-veiculo">Veículo</button>
+                      </h4>
+                      <div id="ac-veiculo" class="accordion-collapse collapse show">
+                        <div class="accordion-body px-1">
+                          <fieldset class="mb-3">
+                            <legend class="form-label small">Categoria</legend>
+                            <div id="filtroCategorias" data-lista="category_id"></div>
+                          </fieldset>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-model_year">Ano do modelo (a partir de)</label>
+                            <select class="form-select form-select-sm" id="f-model_year" data-min="model_year">
+                              <option value="">Qualquer</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-seating_capacity">Lugares (mínimo)</label>
+                            <select class="form-select form-select-sm" id="f-seating_capacity" data-min="seating_capacity">
+                              <option value="">Qualquer</option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-doors_count">Portas (mínimo)</label>
+                            <select class="form-select form-select-sm" id="f-doors_count" data-min="doors_count">
+                              <option value="">Qualquer</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label class="form-label small" for="f-trunk_capacity_l">Porta-malas (mínimo)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" class="form-control" id="f-trunk_capacity_l" data-min="trunk_capacity_l" placeholder="0">
+                              <span class="input-group-text">L</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Desempenho -->
+                    <div class="accordion-item">
+                      <h4 class="accordion-header">
+                        <button class="accordion-button collapsed px-1" type="button" data-bs-toggle="collapse" data-bs-target="#ac-desempenho" aria-expanded="false" aria-controls="ac-desempenho">Desempenho</button>
+                      </h4>
+                      <div id="ac-desempenho" class="accordion-collapse collapse">
+                        <div class="accordion-body px-1">
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-power-min">Potência (W)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" class="form-control" id="f-power-min" data-min="power" placeholder="Mín." aria-label="Potência mínima">
+                              <span class="input-group-text">a</span>
+                              <input type="number" min="0" class="form-control" data-max="power" placeholder="Máx." aria-label="Potência máxima">
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-range_km">Autonomia (mínima)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" class="form-control" id="f-range_km" data-min="range_km" placeholder="0">
+                              <span class="input-group-text">km</span>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-top_speed_kmh-min">Velocidade máxima (km/h)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" class="form-control" id="f-top_speed_kmh-min" data-min="top_speed_kmh" placeholder="Mín." aria-label="Velocidade mínima">
+                              <span class="input-group-text">a</span>
+                              <input type="number" min="0" class="form-control" data-max="top_speed_kmh" placeholder="Máx." aria-label="Velocidade máxima">
+                            </div>
+                          </div>
+                          <div>
+                            <label class="form-label small" for="f-weight_kg-min">Peso (kg)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" step="any" class="form-control" id="f-weight_kg-min" data-min="weight_kg" placeholder="Mín." aria-label="Peso mínimo">
+                              <span class="input-group-text">a</span>
+                              <input type="number" min="0" step="any" class="form-control" data-max="weight_kg" placeholder="Máx." aria-label="Peso máximo">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Bateria -->
+                    <div class="accordion-item">
+                      <h4 class="accordion-header">
+                        <button class="accordion-button collapsed px-1" type="button" data-bs-toggle="collapse" data-bs-target="#ac-bateria" aria-expanded="false" aria-controls="ac-bateria">Bateria</button>
+                      </h4>
+                      <div id="ac-bateria" class="accordion-collapse collapse">
+                        <div class="accordion-body px-1">
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-battery_capaciy-min">Capacidade (Wh)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" step="any" class="form-control" id="f-battery_capaciy-min" data-min="battery_capaciy" placeholder="Mín." aria-label="Capacidade mínima">
+                              <span class="input-group-text">a</span>
+                              <input type="number" min="0" step="any" class="form-control" data-max="battery_capaciy" placeholder="Máx." aria-label="Capacidade máxima">
+                            </div>
+                          </div>
+                          <fieldset class="mb-3">
+                            <legend class="form-label small">Tensão</legend>
+                            <div id="filtroTensoes" data-lista="battery_voltage_v"></div>
+                          </fieldset>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-charge_time_h">Tempo de carga (máximo)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" step="any" class="form-control" id="f-charge_time_h" data-max="charge_time_h" placeholder="Sem limite">
+                              <span class="input-group-text">h</span>
+                            </div>
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-max_charge_power_kw">Potência de recarga (mínima)</label>
+                            <div class="input-group input-group-sm">
+                              <input type="number" min="0" class="form-control" id="f-max_charge_power_kw" data-min="max_charge_power_kw" placeholder="0">
+                              <span class="input-group-text">kW</span>
+                            </div>
+                          </div>
+                          <div>
+                            <label class="form-label small" for="f-is_battery_removable">Bateria removível</label>
+                            <select class="form-select form-select-sm" id="f-is_battery_removable" data-igual="is_battery_removable">
+                              <option value="">Tanto faz</option>
+                              <option value="1">Sim</option>
+                              <option value="0">Não</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Garantia e estoque -->
+                    <div class="accordion-item">
+                      <h4 class="accordion-header">
+                        <button class="accordion-button collapsed px-1" type="button" data-bs-toggle="collapse" data-bs-target="#ac-garantia" aria-expanded="false" aria-controls="ac-garantia">Garantia e estoque</button>
+                      </h4>
+                      <div id="ac-garantia" class="accordion-collapse collapse">
+                        <div class="accordion-body px-1">
+                          <div class="mb-3">
+                            <label class="form-label small" for="f-warranty_months">Garantia (mínima)</label>
+                            <select class="form-select form-select-sm" id="f-warranty_months" data-min="warranty_months">
+                              <option value="">Qualquer</option>
+                              <option value="12">12 meses</option>
+                              <option value="24">24 meses</option>
+                              <option value="36">36 meses</option>
+                            </select>
+                          </div>
+                          <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="filtroEstoque">
+                            <label class="form-check-label small" for="filtroEstoque">Mostrar só o que tem em estoque</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+          </aside>
+
+          <!-- ===== Cards dos veiculos ===== -->
+          <div class="col-lg-9">
+            <p class="small text-secondary mb-3" id="contagemResultados" aria-live="polite"></p>
+            <div class="row g-4" id="listaProdutos" aria-live="polite"></div>
+
+            <div class="text-center text-secondary py-5 d-none" id="estadoVazio">
+              <i class="bi bi-emoji-neutral fs-1 d-block mb-2" aria-hidden="true"></i>
+              Nenhum veículo encontrado com esses filtros.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========== Rodape ========== -->
+  <footer class="ew-footer py-4 mt-auto">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <span class="fw-bold text-white">Eletric<span style="color: var(--ew-green);">Way</span></span>
+      <nav class="d-flex gap-3 small" aria-label="Rodapé">
+        <a href="index.html">Início</a>
+        <a href="conta.html">Minha conta</a>
+        <a href="carrinho.html">Carrinho</a>
+      </nav>
+      <small>&copy; 2026 EletricWay. Todos os direitos reservados.</small>
+    </div>
+  </footer>
+
+  <!-- Aviso ao adicionar no carrinho (demonstracao) -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastCarrinho" class="toast text-bg-dark" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body"><i class="bi bi-check-circle-fill text-success me-2"></i><span id="toastCarrinhoTexto"></span></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts/comum.js"></script>
+  <script src="scripts/index.js"></script>
+</body>
+</html>

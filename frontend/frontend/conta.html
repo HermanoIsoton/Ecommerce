@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minha conta | EletricWay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="styles/index.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== Menu ========== -->
+  <header class="sticky-top">
+    <nav class="navbar navbar-expand-lg ew-navbar" data-bs-theme="dark" aria-label="Menu principal">
+      <div class="container">
+        <a class="ew-brand" href="index.html" aria-label="EletricWay - página inicial">
+          <svg width="38" height="38" viewBox="0 0 120 120" role="img" aria-label="Símbolo EletricWay" xmlns="http://www.w3.org/2000/svg">
+            <path d="M60 18 A42 42 0 1 1 22.5 79" fill="none" stroke="#2EF08A" stroke-width="8" stroke-linecap="round"/>
+            <polygon points="66,30 40,64 56,64 50,92 80,54 63,54" fill="#FFFFFF"/>
+          </svg>
+          <span>Eletric<span class="way">Way</span></span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2 order-lg-last">
+          <a class="ew-icon-btn" href="conta.html" aria-label="Minha conta" aria-current="page"><i class="bi bi-person-circle" style="color: var(--ew-green);"></i></a>
+          <a class="ew-icon-btn" href="carrinho.html" aria-label="Carrinho"><i class="bi bi-cart3"></i></a>
+          <button class="navbar-toggler ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="menuPrincipal">
+          <ul class="navbar-nav mx-lg-4 mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#catalogo">Autopropelidos</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.html#catalogo">Ciclomotores</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="py-4 py-lg-5">
+    <div class="container">
+
+      <!-- Cabecalho da conta (tabela users) -->
+      <section class="card card-ew mb-4" aria-label="Resumo da conta">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+          <div class="avatar" id="avatarIniciais" aria-hidden="true">--</div>
+          <div class="flex-grow-1">
+            <h1 class="h4 fw-bold mb-1" id="resumoNome">Carregando...</h1>
+            <p class="text-secondary mb-0" id="resumoEmail"></p>
+          </div>
+          <span class="badge rounded-pill text-bg-light border fs-6" id="resumoPapel"></span>
+          <button type="button" class="btn btn-outline-danger" id="btnSair"><i class="bi bi-box-arrow-right me-1"></i>Sair</button>
+        </div>
+      </section>
+
+      <div class="row g-4">
+        <!-- Menu lateral -->
+        <div class="col-lg-3">
+          <div class="card card-ew">
+            <div class="card-body p-2">
+              <div class="nav flex-column nav-pills conta-menu" id="menuConta" role="tablist" aria-orientation="vertical" aria-label="Seções da conta">
+                <button class="nav-link active" id="tab-dados" data-bs-toggle="pill" data-bs-target="#aba-dados" type="button" role="tab" aria-controls="aba-dados" aria-selected="true"><i class="bi bi-person"></i>Dados pessoais</button>
+                <button class="nav-link" id="tab-enderecos" data-bs-toggle="pill" data-bs-target="#aba-enderecos" type="button" role="tab" aria-controls="aba-enderecos" aria-selected="false"><i class="bi bi-geo-alt"></i>Endereços</button>
+                <button class="nav-link" id="tab-pedidos" data-bs-toggle="pill" data-bs-target="#aba-pedidos" type="button" role="tab" aria-controls="aba-pedidos" aria-selected="false"><i class="bi bi-bag-check"></i>Meus pedidos</button>
+                <button class="nav-link" id="tab-seguranca" data-bs-toggle="pill" data-bs-target="#aba-seguranca" type="button" role="tab" aria-controls="aba-seguranca" aria-selected="false"><i class="bi bi-shield-lock"></i>Segurança</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conteudo -->
+        <div class="col-lg-9">
+          <div class="tab-content">
+
+            <!-- Dados pessoais -->
+            <div class="tab-pane fade show active" id="aba-dados" role="tabpanel" aria-labelledby="tab-dados" tabindex="0">
+              <div class="card card-ew">
+                <div class="card-body p-4">
+                  <h2 class="h5 fw-bold mb-4">Dados pessoais</h2>
+                  <form id="formDados" novalidate>
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label for="campoNome" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="campoNome" name="name" required autocomplete="name">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="campoEmail" class="form-label">E-mail</label>
+                        <input type="email" class="form-control" id="campoEmail" name="email" required autocomplete="email">
+                      </div>
+                      <div class="col-md-6">
+                        <label for="campoPapel" class="form-label">Tipo de conta</label>
+                        <input type="text" class="form-control" id="campoPapel" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="campoMembro" class="form-label">Cliente desde</label>
+                        <input type="text" class="form-control" id="campoMembro" readonly>
+                      </div>
+                    </div>
+                    <div class="mt-4">
+                      <button type="submit" class="btn btn-ew px-4">Salvar alterações</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <!-- Enderecos (tabela addresses) -->
+            <div class="tab-pane fade" id="aba-enderecos" role="tabpanel" aria-labelledby="tab-enderecos" tabindex="0">
+              <div class="card card-ew">
+                <div class="card-body p-4">
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                    <h2 class="h5 fw-bold mb-0">Endereços de entrega</h2>
+                    <button type="button" class="btn btn-ew-accent" id="btnNovoEndereco"><i class="bi bi-plus-lg me-1"></i>Novo endereço</button>
+                  </div>
+                  <div class="row g-3" id="listaEnderecos"></div>
+                  <p class="text-secondary text-center py-4 mb-0 d-none" id="semEnderecos">Você ainda não cadastrou nenhum endereço.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pedidos (tabelas orders e order_items) -->
+            <div class="tab-pane fade" id="aba-pedidos" role="tabpanel" aria-labelledby="tab-pedidos" tabindex="0">
+              <div class="card card-ew">
+                <div class="card-body p-4">
+                  <h2 class="h5 fw-bold mb-4">Meus pedidos</h2>
+                  <div class="accordion" id="listaPedidos"></div>
+                  <p class="text-secondary text-center py-4 mb-0 d-none" id="semPedidos">Você ainda não fez nenhum pedido.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Seguranca -->
+            <div class="tab-pane fade" id="aba-seguranca" role="tabpanel" aria-labelledby="tab-seguranca" tabindex="0">
+              <div class="card card-ew">
+                <div class="card-body p-4">
+                  <h2 class="h5 fw-bold mb-4">Alterar senha</h2>
+                  <form id="formSenha" class="col-md-8 px-0" novalidate>
+                    <div class="mb-3">
+                      <label for="senhaAtual" class="form-label">Senha atual</label>
+                      <input type="password" class="form-control" id="senhaAtual" autocomplete="current-password" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="senhaNova" class="form-label">Nova senha</label>
+                      <input type="password" class="form-control" id="senhaNova" autocomplete="new-password" minlength="8" required>
+                      <div class="form-text">Use pelo menos 8 caracteres.</div>
+                    </div>
+                    <div class="mb-4">
+                      <label for="senhaConfirmar" class="form-label">Confirmar nova senha</label>
+                      <input type="password" class="form-control" id="senhaConfirmar" autocomplete="new-password" required>
+                      <div class="invalid-feedback">As senhas não coincidem.</div>
+                    </div>
+                    <button type="submit" class="btn btn-ew px-4">Atualizar senha</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========== Modal de endereco ========== -->
+  <div class="modal fade" id="modalEndereco" tabindex="-1" aria-labelledby="tituloModalEndereco" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <form class="modal-content" id="formEndereco" novalidate>
+        <div class="modal-header">
+          <h2 class="modal-title h5 fw-bold" id="tituloModalEndereco">Novo endereço</h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="enderecoId">
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="enderecoDestinatario" class="form-label">Destinatário</label>
+              <input type="text" class="form-control" id="enderecoDestinatario" name="recipient" required>
+            </div>
+            <div class="col-md-4">
+              <label for="enderecoCep" class="form-label">CEP</label>
+              <input type="text" class="form-control" id="enderecoCep" name="cep" inputmode="numeric" maxlength="9" placeholder="00000-000" required>
+            </div>
+            <div class="col-md-8">
+              <label for="enderecoRua" class="form-label">Rua</label>
+              <input type="text" class="form-control" id="enderecoRua" name="street" required>
+            </div>
+            <div class="col-md-4">
+              <label for="enderecoNumero" class="form-label">Número</label>
+              <input type="text" class="form-control" id="enderecoNumero" name="number" required>
+            </div>
+            <div class="col-md-8">
+              <label for="enderecoComplemento" class="form-label">Complemento <span class="text-secondary">(opcional)</span></label>
+              <input type="text" class="form-control" id="enderecoComplemento" name="complement">
+            </div>
+            <div class="col-md-5">
+              <label for="enderecoBairro" class="form-label">Bairro</label>
+              <input type="text" class="form-control" id="enderecoBairro" name="district" required>
+            </div>
+            <div class="col-md-5">
+              <label for="enderecoCidade" class="form-label">Cidade</label>
+              <input type="text" class="form-control" id="enderecoCidade" name="city" required>
+            </div>
+            <div class="col-md-2">
+              <label for="enderecoUf" class="form-label">UF</label>
+              <input type="text" class="form-control text-uppercase" id="enderecoUf" name="state" maxlength="2" minlength="2" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-ew px-4">Salvar endereço</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========== Rodape ========== -->
+  <footer class="ew-footer py-4 mt-auto">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <span class="fw-bold text-white">Eletric<span style="color: var(--ew-green);">Way</span></span>
+      <nav class="d-flex gap-3 small" aria-label="Rodapé">
+        <a href="index.html">Início</a>
+        <a href="conta.html">Minha conta</a>
+        <a href="carrinho.html">Carrinho</a>
+      </nav>
+      <small>&copy; 2026 EletricWay. Todos os direitos reservados.</small>
+    </div>
+  </footer>
+
+  <!-- Aviso de demonstracao -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastConta" class="toast text-bg-dark" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body"><i class="bi bi-check-circle-fill text-success me-2"></i><span id="toastContaTexto"></span></div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Fechar"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="scripts/comum.js"></script>
+  <script src="scripts/conta.js"></script>
+</body>
+</html>
