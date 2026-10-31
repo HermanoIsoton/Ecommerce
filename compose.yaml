@@ -1,7 +1,6 @@
 services:
   mysql:
     image: mysql:8.4
-    restart: unless-stopped
     container_name: mysql
     environment:
       MYSQL_DATABASE: "amperemotor"
@@ -13,41 +12,38 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test:
-        - CMD-SHELL
-        - mysqladmin ping -h 127.0.0.1 -u root -p$${MYSQL_ROOT_PASSWORD}
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--protocol=tcp"]
       interval: 5s
-      timeout: 5s
       retries: 10
 
   api:
+    container_name: api
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.dev
-    restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
-    environment:
-      APP_ENV: "${APP_ENV:-local}"
-      APP_DEBUG: "${APP_DEBUG:-true}"
-      APP_KEY: "${APP_KEY:-}"
-      APP_URL: "${APP_URL:-http://localhost:8000}"
-      DB_CONNECTION: mysql
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_DATABASE: "amperemotor"
-      DB_USERNAME: "amperemotor"
-      DB_PASSWORD: "eletric"
-    container_name: api
     ports:
       - "8000:8000"
-    command:
-      - php
-      - artisan
-      - serve
-      - --host=0.0.0.0
-      - --port=8000
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/up"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+
+
+
+  frontend:
+    image: nginx:alpine
+    container_name: pagina
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
 
 volumes:
   mysql_data:
