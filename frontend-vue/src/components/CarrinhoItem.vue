@@ -1,0 +1,55 @@
+<script setup>
+import { computed } from 'vue'
+import { formatarMoeda } from '@/utils/formatadores'
+import { ROTULO_TIPO } from '@/utils/rotulos'
+
+const props = defineProps({
+  item: { type: Object, required: true }, // linha de cart_items com `product`
+})
+
+defineEmits(['aumentar', 'diminuir', 'remover'])
+
+const produto = computed(() => props.item.product)
+const subtotal = computed(() => produto.value.price * props.item.quantity)
+const noLimiteDoEstoque = computed(() => props.item.quantity >= produto.value.stock)
+</script>
+
+<template>
+  <li class="list-group-item p-3 p-md-4">
+    <div class="d-flex gap-3">
+      <div class="carrinho-img">
+        <img v-if="produto.image_url" :src="produto.image_url" :alt="produto.name" loading="lazy">
+        <i v-else class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+      </div>
+      <div class="flex-grow-1">
+        <div class="d-flex flex-wrap justify-content-between gap-2">
+          <div>
+            <h2 class="h6 fw-bold mb-1">{{ produto.name }}</h2>
+            <p class="small text-secondary mb-2">
+              {{ ROTULO_TIPO[produto.type] }} · {{ produto.range_km }} km de autonomia · {{ produto.top_speed_kmh }} km/h
+            </p>
+          </div>
+          <strong class="fs-5">{{ formatarMoeda(subtotal) }}</strong>
+        </div>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+          <div class="d-flex align-items-center gap-3">
+            <div class="qtd-controle" role="group" :aria-label="`Quantidade de ${produto.name}`">
+              <button type="button" aria-label="Diminuir quantidade" :disabled="item.quantity <= 1" @click="$emit('diminuir')">
+                <i class="bi bi-dash-lg"></i>
+              </button>
+              <span aria-live="polite">{{ item.quantity }}</span>
+              <button type="button" aria-label="Aumentar quantidade" :disabled="noLimiteDoEstoque" @click="$emit('aumentar')">
+                <i class="bi bi-plus-lg"></i>
+              </button>
+            </div>
+            <span class="small text-secondary">{{ formatarMoeda(produto.price) }} cada</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-danger" @click="$emit('remover')">
+            <i class="bi bi-trash me-1" aria-hidden="true"></i>Remover
+          </button>
+        </div>
+        <p v-if="noLimiteDoEstoque" class="small text-warning-emphasis mt-2 mb-0">Quantidade máxima disponível em estoque.</p>
+      </div>
+    </div>
+  </li>
+</template>

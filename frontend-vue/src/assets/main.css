@@ -14,7 +14,8 @@
   --bs-link-hover-color: var(--ew-navy);
 }
 
-body {
+/* No Vue o conteudo fica dentro de #app (e nao direto no body), entao o #app e o flex container */
+#app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
