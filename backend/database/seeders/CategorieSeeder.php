@@ -10,9 +10,9 @@ class CategorieSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['name' => 'Carros elétricos', 'slug' => 'carros-eletricos'],
-            ['name' => 'Autopropelidos', 'slug' => 'autopropelidos'],
-            ['name' => 'Ciclomotores', 'slug' => 'ciclomotores'],
+            ['name' => 'Patinete Eletrico', 'slug' => 'patinetes-eletricos'],
+            ['name' => 'Bicicleta Eletrica', 'slug' => 'bicicletas-eletricas'],
+            ['name' => 'Moto Eletrica', 'slug' => 'motos-eletricas'],
         ];
         foreach($categories as $categorie){
             Categorie::create($categorie);

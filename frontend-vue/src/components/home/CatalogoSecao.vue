@@ -1,8 +1,16 @@
 <script setup>
 import { computed, onMounted  } from 'vue'
 import CardProduto from '@/components/home/CardProduto.vue'
-import FiltrosCatalogo from '@/components/home/FiltrosCatalogo.vue'
-import { carregando, carregarProdutos, erroCatalogo, filtroTipo, produtos, produtosFiltrados } from '@/stores/catalogo'
+import {
+  carregarCategorias,
+  carregarProdutos,
+  categoriasDisponiveis,
+  categoriaSelecionada,
+  erroCatalogo,
+  filtroTipo,
+  produtos,
+  produtosFiltrados,
+} from '@/stores/catalogo'
 import { adicionarAoCarrinho } from '@/stores/carrinho'
 import { avisar } from '@/stores/toast'
 
@@ -10,6 +18,7 @@ onMounted(() => {
   if (produtos.value.length === 0) {
     carregarProdutos()
   }
+  carregarCategorias()
 })
 
 const opcoesTipo = [
@@ -43,6 +52,7 @@ function adicionar(produto) {
           <p class="text-secondary mb-0">Escolha o tipo que combina com o seu dia a dia.</p>
         </div>
         <div class="btn-group" role="group" aria-label="Filtrar por tipo">
+          <!-- filtro por tipo -->
           <button
             v-for="opcao in opcoesTipo"
             :key="opcao.valor"
@@ -52,11 +62,32 @@ function adicionar(produto) {
             :aria-pressed="filtroTipo === opcao.valor"
             @click="filtroTipo = opcao.valor"
           >{{ opcao.rotulo }}</button>
+          <!-- filtro de categoria  -->
+            <select
+              id="filtroCategoria"
+              v-model="categoriaSelecionada"
+              class="btn btn-outline-ew filtro-btn"
+              aria-label="Filtrar por categoria"
+            >
+              <option value="">Todas as categorias</option>
+              <option
+                v-for="categoria in categoriasDisponiveis"
+                :key="categoria.id"
+                :value="categoria.id"
+              >
+                {{ categoria.nome }}
+              </option>
+          </select>
         </div>
-      </div>
 
+      </div>
+        
+      <!-- mensagem de erro -->
       <div class="row g-4">
-        <FiltrosCatalogo />
+        <p v-if="erroCatalogo" class="col-12 alert alert-danger" role="alert">
+          {{ erroCatalogo }}
+        </p>
+
 
         <!-- ===== Cards dos veiculos ===== -->
         <div class="col-lg-9">
@@ -69,7 +100,7 @@ function adicionar(produto) {
               @adicionar="adicionar"
             />
           </div>
-
+            <!-- mensagem de erro se nao tiver veiculo encontrados -->
           <div v-if="produtosFiltrados.length === 0" class="text-center text-secondary py-5">
             <i class="bi bi-emoji-neutral fs-1 d-block mb-2" aria-hidden="true"></i>
             Nenhum veículo encontrado com esses filtros.

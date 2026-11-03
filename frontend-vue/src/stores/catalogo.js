@@ -1,130 +1,74 @@
-// Estado do catalogo (filtro por tipo, busca do menu e filtros laterais).
-// Fica fora do componente porque o menu e a pagina inicial usam os mesmos valores.
-import { computed, reactive, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { listarProdutos } from '@/services/produtos'
+import { listarCategorias } from '@/services/categorias'
 
-export const filtroTipo = ref('todos') // 'todos' | 'autopropelido' | 'ciclomotor'
+//requisiçoes http produtos
+export const filtroTipo = ref('todos') 
 export const termoBusca = ref('')
-
+export const categoriaSelecionada = ref('') // vazio = todas
 export const produtos = ref([])
-export const carregando = ref(false)
 export const erroCatalogo = ref('')
 
-
 export async function carregarProdutos() {
-  carregando.value = true
+
   erroCatalogo.value = ''
   try {
     produtos.value = await listarProdutos()
   } catch (erro) {
     erroCatalogo.value = erro.message
-  } finally {
-    carregando.value = false
+  } 
+}
+// requisição http categorias
+export const categorias = ref([])
+
+export async function carregarCategorias() {
+  erroCatalogo.value = ''
+  try {
+    categorias.value = await listarCategorias()
+  } catch (erro) {
+    erroCatalogo.value = erro.message
   }
 }
 
-export function criarFiltros() {
-  return {
-    faixas: {
-      price: { min: '', max: '' },
-      model_year: { min: '' },
-      seating_capacity: { min: '' },
-      doors_count: { min: '' },
-      trunk_capacity_l: { min: '' },
-      power: { min: '', max: '' },
-      range_km: { min: '' },
-      top_speed_kmh: { min: '', max: '' },
-      weight_kg: { min: '', max: '' },
-      battery_capaciy: { min: '', max: '' },
-      charge_time_h: { max: '' },
-      max_charge_power_kw: { min: '' },
-      warranty_months: { min: '' },
-    },
-    listas: {
-      category_id: [],
-      battery_voltage_v: [],
-    },
-    is_battery_removable: '', // '' (tanto faz) | '1' (sim) | '0' (nao)
-    somenteEmEstoque: false,
-  }
-}
 
-export const filtros = reactive(criarFiltros())
-
-export function limparFiltros() {
-  Object.assign(filtros, criarFiltros())
-}
-
-// Opcoes que dependem dos dados: categorias, tensoes e anos
 export const categoriasDisponiveis = computed(() => {
-  const categorias = new Map()
-  produtos.value.forEach((produto) => categorias.set(produto.category.id, produto.category.name))
-  return [...categorias].map(([id, nome]) => ({ id, nome }))
+  return categorias.value.map((categoria) => ({
+    id: categoria.id,
+    nome: categoria.name,
+  }))
 })
-
-export const tensoesDisponiveis = computed(() => {
-  const tensoes = new Set(produtos.value.map((produto) => Number(produto.battery_voltage_v)))
-  return [...tensoes].sort((a, b) => a - b)
-})
-
-export const anosDisponiveis = computed(() => {
-  const anos = new Set(produtos.value.filter((produto) => produto.model_year).map((produto) => produto.model_year))
-  return [...anos].sort((a, b) => b - a)
-})
-
-function valorDoCampo(produto, campo) {
-  return campo === 'category_id' ? produto.category.id : produto[campo]
-}
-
-function produtoPassaNosFiltros(produto) {
-  const respeitaFaixas = Object.entries(filtros.faixas).every(([campo, limites]) => {
-    return Object.entries(limites).every(([lado, texto]) => {
-      if (texto === '' || texto === null) {
-        return true
-      }
-      const valor = valorDoCampo(produto, campo)
-      if (valor === null || valor === undefined) {
-        return false
-      }
-      return lado === 'min' ? Number(valor) >= Number(texto) : Number(valor) <= Number(texto)
-    })
-  })
-
-  const respeitaListas = Object.entries(filtros.listas).every(([campo, valores]) => {
-    return valores.length === 0 || valores.map(String).includes(String(valorDoCampo(produto, campo)))
-  })
-
-  const respeitaBateria =
-    filtros.is_battery_removable === '' ||
-    Boolean(produto.is_battery_removable) === (filtros.is_battery_removable === '1')
-
-  const respeitaEstoque = !filtros.somenteEmEstoque || Number(produto.stock) > 0
-
-  return respeitaFaixas && respeitaListas && respeitaBateria && respeitaEstoque
-}
 
 export const produtosFiltrados = computed(() => {
   const termo = termoBusca.value.trim().toLowerCase()
 
   return produtos.value.filter((produto) => {
+    // Garante que só pega produtos ativos
     if (!produto.is_active) {
       return false
     }
+
+    // Filtro por tipo (todos, autopropelido, ciclomotor)
     if (filtroTipo.value !== 'todos' && produto.type !== filtroTipo.value) {
       return false
     }
+
+    // Filtro simples por categoria (se houver alguma selecionada)
+    if (categoriaSelecionada.value !== '' && String(produto.category?.id) !== String(categoriaSelecionada.value)) {
+      return false
+    }
+
+    // Filtro por termo de busca (nome do produto ou categoria)
     const combinaComBusca =
-      !termo || produto.name.toLowerCase().includes(termo) || produto.category.name.toLowerCase().includes(termo)
-    return combinaComBusca && produtoPassaNosFiltros(produto)
+      !termo ||
+      produto.name.toLowerCase().includes(termo) ||
+      produto.category?.name.toLowerCase().includes(termo)
+
+    return combinaComBusca
   })
 })
 
-export const quantidadeFiltrosAtivos = computed(() => {
-  const faixas = Object.values(filtros.faixas)
-    .flatMap((limites) => Object.values(limites))
-    .filter((valor) => valor !== '' && valor !== null).length
-  const listas = Object.values(filtros.listas).filter((valores) => valores.length > 0).length
-  const bateria = filtros.is_battery_removable !== '' ? 1 : 0
-  const estoque = filtros.somenteEmEstoque ? 1 : 0
-  return faixas + listas + bateria + estoque
-})
+export function limparFiltros() {
+  filtroTipo.value = 'todos'
+  termoBusca.value = ''
+  categoriaSelecionada.value = ''
+}

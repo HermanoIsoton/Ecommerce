@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Order_itemController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\Cart_itemController;
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\CategorieController;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class)
@@ -29,3 +30,6 @@ Route::apiResource('cart_items', Cart_itemController::class)
 
 Route::apiResource('addresses', AddressController::class)
     ->whereNumber('address');
+
+Route::apiResource('categories', CategorieController::class)
+    ->whereNumber('category');
