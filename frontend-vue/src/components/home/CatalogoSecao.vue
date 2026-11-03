@@ -1,33 +1,26 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted  } from 'vue'
 import CardProduto from '@/components/home/CardProduto.vue'
 import FiltrosCatalogo from '@/components/home/FiltrosCatalogo.vue'
-import { filtroTipo, produtosFiltrados } from '@/stores/catalogo'
+import { carregando, carregarProdutos, erroCatalogo, filtroTipo, produtos, produtosFiltrados } from '@/stores/catalogo'
 import { adicionarAoCarrinho } from '@/stores/carrinho'
 import { avisar } from '@/stores/toast'
-import { listarProdutos } from '@/services/produtos'
-import { ref, onMounted } from 'vue'
 
+onMounted(() => {
+  if (produtos.value.length === 0) {
+    carregarProdutos()
+  }
+})
 
 const opcoesTipo = [
   { valor: 'todos', rotulo: 'Todos' },
   { valor: 'autopropelido', rotulo: 'Autopropelidos' },
   { valor: 'ciclomotor', rotulo: 'Ciclomotores' },
 ]
-const produtos = ref([])
-const erro = ref(null)
-const carregarDados = async () => {
-    try {  
-        produtos.value = await listarProdutos()
-    } 
-    catch (err) {
-        erro.value = err.message
-        console.error("Erro:", err)
-    }
-}
-carregarDados()
+
+
 const contagem = computed(() => {
-  const total = 9
+  const total = produtosFiltrados.value.length
   return `${total} ${total === 1 ? 'veículo encontrado' : 'veículos encontrados'}`
 })
 
@@ -70,7 +63,7 @@ function adicionar(produto) {
           <p class="small text-secondary mb-3" aria-live="polite">{{ contagem }}</p>
           <div class="row g-4" aria-live="polite">
             <CardProduto
-              v-for="produto in produtos"
+              v-for="produto in produtosFiltrados"
               :key="produto.id"
               :produto="produto"
               @adicionar="adicionar"

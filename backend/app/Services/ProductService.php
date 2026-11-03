@@ -11,7 +11,7 @@ class ProductService
     {
         $products = product::all();
 
-        return $products;
+        return product::with('category')->get();
     }
 
     public function create(array $data): product
@@ -26,7 +26,7 @@ class ProductService
     {
         $product = product::findOrFail($id);
 
-        return $product;
+        return product::with('category')->get();
     }
 
     public function update(int $id, array $data): product
