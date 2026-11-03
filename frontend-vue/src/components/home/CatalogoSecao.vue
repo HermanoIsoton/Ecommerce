@@ -5,15 +5,29 @@ import FiltrosCatalogo from '@/components/home/FiltrosCatalogo.vue'
 import { filtroTipo, produtosFiltrados } from '@/stores/catalogo'
 import { adicionarAoCarrinho } from '@/stores/carrinho'
 import { avisar } from '@/stores/toast'
+import { listarProdutos } from '@/services/produtos'
+import { ref, onMounted } from 'vue'
+
 
 const opcoesTipo = [
   { valor: 'todos', rotulo: 'Todos' },
   { valor: 'autopropelido', rotulo: 'Autopropelidos' },
   { valor: 'ciclomotor', rotulo: 'Ciclomotores' },
 ]
-
+const produtos = ref([])
+const erro = ref(null)
+const carregarDados = async () => {
+    try {  
+        produtos.value = await listarProdutos()
+    } 
+    catch (err) {
+        erro.value = err.message
+        console.error("Erro:", err)
+    }
+}
+carregarDados()
 const contagem = computed(() => {
-  const total = produtosFiltrados.value.length
+  const total = 9
   return `${total} ${total === 1 ? 'veículo encontrado' : 'veículos encontrados'}`
 })
 
@@ -27,6 +41,7 @@ function adicionar(produto) {
 </script>
 
 <template>
+
   <section class="py-5" id="catalogo" aria-labelledby="tituloCatalogo">
     <div class="container">
       <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-4">
@@ -55,7 +70,7 @@ function adicionar(produto) {
           <p class="small text-secondary mb-3" aria-live="polite">{{ contagem }}</p>
           <div class="row g-4" aria-live="polite">
             <CardProduto
-              v-for="produto in produtosFiltrados"
+              v-for="produto in produtos"
               :key="produto.id"
               :produto="produto"
               @adicionar="adicionar"
