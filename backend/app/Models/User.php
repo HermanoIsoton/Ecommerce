@@ -2,21 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Model
+class User extends Authenticatable
 {
     protected $fillable = [
         'name',
         'email',
         'password_hash',
+        'role',
     ];
 
-    protected $hidden = [
-        'password_hash',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password_hash' => 'hashed',
+        ];
+    }
+
+    public function getAuthPasswordName(): string
+    {
+        return 'password_hash';
+    }
 
     public function address(): HasMany
     {

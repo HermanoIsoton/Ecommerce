@@ -92,15 +92,17 @@ function buscar() {
           <!-- A busca so aparece na pagina inicial, onde fica o catalogo -->
           <form v-if="rota.name === 'home'" class="d-flex flex-grow-1 ms-lg-auto my-2 my-lg-0" role="search" @submit.prevent="buscar">
             <label class="visually-hidden" for="campoBusca">Buscar veículos</label>
-            <input
-              v-model="campoBusca"
-              class="form-control"
-              type="search"
-              id="campoBusca"
-              placeholder="Buscar veículos elétricos"
-              autocomplete="off"
-            >
-            <button class="btn btn-ew-accent ms-2" type="submit" aria-label="Buscar"><i class="bi bi-search"></i></button>
+            <div class="input-group ew-search">
+              <input
+                v-model="campoBusca"
+                class="form-control"
+                type="search"
+                id="campoBusca"
+                placeholder="Buscar veículos elétricos"
+                autocomplete="off"
+              >
+              <button class="btn ew-search-button" type="submit" aria-label="Buscar"><i class="bi bi-search"></i></button>
+            </div>
           </form>
         </div>
       </div>

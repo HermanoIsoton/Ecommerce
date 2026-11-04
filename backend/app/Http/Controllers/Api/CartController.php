@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartsRequest;
 use App\Http\Requests\UpdateCartsRequest;
 use App\Http\Resources\CartResource;
+use App\Models\Cart;
 use App\Services\CartService;
+use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
@@ -14,9 +16,11 @@ class CartController extends Controller
         private CartService $cartService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $carts = $this->cartService->listAll();
+        $carts = $request->user()->role === 'admin'
+            ? $this->cartService->listAll()
+            : Cart::query()->where('user_id', $request->user()->id)->get();
 
         return CartResource::collection($carts);
     }
@@ -28,9 +32,13 @@ class CartController extends Controller
         return new CartResource($cart);
     }
 
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $cart = $this->cartService->findById($id);
+        $cart = $request->user()->role === 'admin'
+            ? $this->cartService->findById($id)
+            : Cart::query()
+                ->where('user_id', $request->user()->id)
+                ->findOrFail($id);
 
         return new CartResource($cart);
     }

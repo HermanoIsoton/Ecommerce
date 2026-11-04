@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderItemsRequest;
 use App\Http\Requests\UpdateOrderItemsRequest;
 use App\Http\Resources\Order_itemResource;
+use App\Models\Order;
+use App\Models\Order_item;
 use App\Services\Order_itemService;
+use Illuminate\Http\Request;
 
 class Order_itemController extends Controller
 {
@@ -14,11 +17,17 @@ class Order_itemController extends Controller
         private Order_itemService $order_itemService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $order_items = $this->order_itemService->listAll();
+        $order_items = $request->user()->role === 'admin'
+            ? $this->order_itemService->listAll()
+            : Order_item::query()
+                ->whereIn('order_id', Order::query()
+                    ->where('user_id', $request->user()->id)
+                    ->select('id'))
+                ->get();
 
-        return  Order_itemResource::collection($order_items);
+        return Order_itemResource::collection($order_items);
     }
 
     public function store(StoreOrderItemsRequest $request)
@@ -28,9 +37,15 @@ class Order_itemController extends Controller
         return new Order_itemResource($order_item);
     }
 
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $order_item = $this->order_itemService->findById($id);
+        $order_item = $request->user()->role === 'admin'
+            ? $this->order_itemService->findById($id)
+            : Order_item::query()
+                ->whereIn('order_id', Order::query()
+                    ->where('user_id', $request->user()->id)
+                    ->select('id'))
+                ->findOrFail($id);
 
         return new Order_itemResource($order_item);
     }

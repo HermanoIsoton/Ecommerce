@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartItemsRequest;
 use App\Http\Requests\UpdateCartItemsRequest;
 use App\Http\Resources\Cart_itemResource;
+use App\Models\Cart;
+use App\Models\Cart_item;
 use App\Services\Cart_itemService;
+use Illuminate\Http\Request;
 
 class Cart_itemController extends Controller
 {
@@ -14,9 +17,15 @@ class Cart_itemController extends Controller
         private Cart_itemService $cart_itemService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $cart_items = $this->cart_itemService->listAll();
+        $cart_items = $request->user()->role === 'admin'
+            ? $this->cart_itemService->listAll()
+            : Cart_item::query()
+                ->whereIn('cart_id', Cart::query()
+                    ->where('user_id', $request->user()->id)
+                    ->select('id'))
+                ->get();
 
         return Cart_itemResource::collection($cart_items);
     }
@@ -28,9 +37,15 @@ class Cart_itemController extends Controller
         return new Cart_itemResource($cart_item);
     }
 
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $cart_item = $this->cart_itemService->findById($id);
+        $cart_item = $request->user()->role === 'admin'
+            ? $this->cart_itemService->findById($id)
+            : Cart_item::query()
+                ->whereIn('cart_id', Cart::query()
+                    ->where('user_id', $request->user()->id)
+                    ->select('id'))
+                ->findOrFail($id);
 
         return new Cart_itemResource($cart_item);
     }

@@ -35,13 +35,25 @@ services:
       retries: 20
       start_period: 30s
 
+  proxy:
+    container_name: proxy
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    depends_on:
+      api:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    ports:
+      - "80:80"
 
 
   frontend:
     image: nginx:alpine
     container_name: pagina
     ports:
-      - "8080:80"
+      - "8080:8000"
     volumes:
       - ./frontend:/usr/share/nginx/html:ro
 

@@ -21,7 +21,7 @@ class ProductController extends Controller
         return ProductResource::collection($products);
     }
 
-    // soamente admin ->
+  
     public function store(StoreProductsRequest $request)
     {
         $product = $this->productService->create($request->validated());

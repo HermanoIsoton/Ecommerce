@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Categorie;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,6 +13,8 @@ class CategoriesApiTest extends TestCase
 
     public function test_it_manages_categories_through_the_api(): void
     {
+        $this->actingAs($this->createUser('admin'));
+
         $category = Categorie::create([
             'name' => 'Patinetes elétricos',
             'slug' => 'patinetes-eletricos',
@@ -43,6 +46,8 @@ class CategoriesApiTest extends TestCase
 
     public function test_it_validates_category_creation_and_unique_slugs(): void
     {
+        $this->actingAs($this->createUser('admin'));
+
         $this->postJson('/api/categories', [])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['name', 'slug']);
@@ -58,5 +63,15 @@ class CategoriesApiTest extends TestCase
         ])
             ->assertUnprocessable()
             ->assertJsonValidationErrors(['slug']);
+    }
+
+    private function createUser(string $role): User
+    {
+        return User::query()->create([
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'password_hash' => 'password-hash',
+            'role' => $role,
+        ]);
     }
 }

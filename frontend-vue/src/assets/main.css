@@ -63,6 +63,46 @@ main {
   box-shadow: inset 0 -2px 0 var(--ew-green);
 }
 
+.ew-search {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #ced4da;
+  border-radius: var(--bs-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.ew-search:focus-within {
+  border-color: var(--ew-navy-2);
+  box-shadow: 0 0 0 0.25rem rgba(17, 64, 111, 0.25);
+}
+
+.ew-search .form-control,
+.ew-search .form-control:focus {
+  color: var(--ew-navy);
+  background-color: #fff;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.ew-search .form-control::placeholder {
+  color: #6c757d;
+}
+
+.ew-search-button {
+  --bs-btn-color: var(--ew-navy);
+  --bs-btn-bg: #fff;
+  --bs-btn-border-color: #fff;
+  --bs-btn-hover-color: var(--ew-navy);
+  --bs-btn-hover-bg: var(--ew-bg);
+  --bs-btn-hover-border-color: var(--ew-bg);
+  --bs-btn-active-color: var(--ew-navy);
+  --bs-btn-active-bg: #e6ebf0;
+  --bs-btn-active-border-color: #e6ebf0;
+  border-radius: 0;
+}
+
 .ew-icon-btn {
   position: relative;
   color: #fff;

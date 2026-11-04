@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrdersRequest;
 use App\Http\Requests\UpdateOrdersRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Order;
 use App\Services\OrderService;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -14,9 +16,11 @@ class OrderController extends Controller
         private OrderService $orderService
     ) {}
 
-    public function index()
+    public function index(Request $request)
     {
-        $orders = $this->orderService->listAll();
+        $orders = $request->user()->role === 'admin'
+            ? $this->orderService->listAll()
+            : Order::query()->where('user_id', $request->user()->id)->get();
 
         return OrderResource::collection($orders);
     }
@@ -28,9 +32,13 @@ class OrderController extends Controller
         return new OrderResource($order);
     }
 
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        $order = $this->orderService->findById($id);
+        $order = $request->user()->role === 'admin'
+            ? $this->orderService->findById($id)
+            : Order::query()
+                ->where('user_id', $request->user()->id)
+                ->findOrFail($id);
 
         return new OrderResource($order);
     }

@@ -21,14 +21,6 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    public function store(StoreUsersRequest $request)
-    {
-
-        $user = $this->userService->create($request->validated());
-
-        return new UserResource($user);
-    }
-
     public function show(string $id)
     {
         $user = $this->userService->findById($id);
