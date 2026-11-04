@@ -30,7 +30,7 @@ class RoleAuthorizationTest extends TestCase
     {
         $user = $this->createUser();
         $user->update([
-            'password_hash' => Hash::make('correct-password'),
+            'password' => Hash::make('correct-password'),
         ]);
 
         $headers = ['Origin' => 'http://localhost'];
@@ -162,7 +162,7 @@ class RoleAuthorizationTest extends TestCase
         return User::query()->create([
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password_hash' => Hash::make('unused-password'),
+            'password' => Hash::make('unused-password'),
             'role' => $role,
         ]);
     }

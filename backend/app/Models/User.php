@@ -11,7 +11,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password_hash',
+        'password',
         'role',
     ];
 
@@ -19,13 +19,8 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password_hash' => 'hashed',
+            'password' => 'hashed',
         ];
-    }
-
-    public function getAuthPasswordName(): string
-    {
-        return 'password_hash';
     }
 
     public function address(): HasMany

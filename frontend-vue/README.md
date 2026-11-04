@@ -36,3 +36,15 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### Run with Docker Compose
+
+From the repository root, build and start the application:
+
+```sh
+docker compose up --build
+```
+
+Open `http://localhost` to access the application through the main proxy, or
+`http://localhost:8080` to access the frontend container directly. The frontend
+container builds the Vue app and serves the generated files with Nginx.

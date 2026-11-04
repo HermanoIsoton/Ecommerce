@@ -50,12 +50,12 @@ services:
 
 
   frontend:
-    image: nginx:alpine
+    build:
+      context: ./frontend-vue
+      dockerfile: Dockerfile
     container_name: pagina
     ports:
-      - "8080:8000"
-    volumes:
-      - ./frontend-vue:/usr/share/nginx/html:ro
+      - "8080:80"
 
 volumes:
   mysql_data:

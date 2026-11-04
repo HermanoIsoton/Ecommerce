@@ -19,7 +19,7 @@ class UpdateUsersRequest extends FormRequest
             'email' => ['sometimes', 'required', 'string', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($this->route('user')),
             ],
-            'password_hash' => ['sometimes', 'required', 'string', 'min:8', 'max:255'],
+            'password' => ['sometimes', 'required', 'string', 'min:8', 'max:255'],
         ];
     }
 }

@@ -70,7 +70,7 @@ class CategoriesApiTest extends TestCase
         return User::query()->create([
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
-            'password_hash' => 'password-hash',
+            'password' => 'password-hash',
             'role' => $role,
         ]);
     }
