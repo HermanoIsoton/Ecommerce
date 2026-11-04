@@ -55,7 +55,7 @@ services:
     ports:
       - "8080:8000"
     volumes:
-      - ./frontend:/usr/share/nginx/html:ro
+      - ./frontend-vue:/usr/share/nginx/html:ro
 
 volumes:
   mysql_data:

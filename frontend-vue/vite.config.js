@@ -13,6 +13,10 @@ export default defineConfig({
    server: {
     port: 8080,
     strictPort: true,
+    proxy: {
+    '/api':     'http://localhost',
+    '/sanctum': 'http://localhost',
+    },
   },
   resolve: {
     alias: {
