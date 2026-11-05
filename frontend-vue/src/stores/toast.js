@@ -5,7 +5,7 @@ import { reactive } from 'vue'
 export const toast = reactive({
   visivel: false,
   texto: '',
-  tipo: 'sucesso', // 'sucesso' | 'info'
+  tipo: 'sucesso', // 'sucesso' | 'info' | 'erro'
 })
 
 let temporizador = null

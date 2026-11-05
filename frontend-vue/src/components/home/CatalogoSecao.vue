@@ -11,7 +11,7 @@ import {
   produtos,
   produtosFiltrados,
 } from '@/stores/catalogo'
-import { adicionarAoCarrinho } from '@/stores/carrinho'
+import { adicionarAoCarrinho, erroCarrinho } from '@/stores/carrinho'
 import { avisar } from '@/stores/toast'
 
 onMounted(() => {
@@ -35,7 +35,9 @@ const contagem = computed(() => {
 
 function adicionar(produto) {
   if (adicionarAoCarrinho(produto)) {
-    avisar(`${produto.name} foi adicionado ao carrinho (demonstração).`)
+    avisar(`${produto.name} foi adicionado ao carrinho.`)
+  } else if (erroCarrinho.value) {
+    avisar(erroCarrinho.value, { tipo: 'erro' })
   } else {
     avisar(`Você já tem todo o estoque de ${produto.name} no carrinho.`, { tipo: 'info' })
   }

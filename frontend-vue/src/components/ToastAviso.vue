@@ -15,7 +15,11 @@ import { fecharAviso, toast } from '@/stores/toast'
         <div class="toast-body">
           <i
             class="bi me-2"
-            :class="toast.tipo === 'info' ? 'bi-info-circle-fill text-info' : 'bi-check-circle-fill text-success'"
+            :class="{
+              'bi-info-circle-fill text-info': toast.tipo === 'info',
+              'bi-exclamation-triangle-fill text-warning': toast.tipo === 'erro',
+              'bi-check-circle-fill text-success': toast.tipo === 'sucesso',
+            }"
           ></i>
           <span>{{ toast.texto }}</span>
         </div>

@@ -6,7 +6,9 @@ import CarrinhoItem from '@/components/CarrinhoItem.vue'
 import {
   aumentarQuantidade,
   diminuirQuantidade,
+  erroCarrinho,
   itensDoCarrinho,
+  limparCarrinho,
   removerDoCarrinho,
   subtotalCarrinho,
   totalUnidades,
@@ -63,10 +65,19 @@ function finalizarCompra() {
       <h1 class="fw-bold mb-1">Seu carrinho</h1>
       <p class="text-secondary mb-4">{{ resumoQuantidade }}</p>
 
+      <p v-if="erroCarrinho" class="alert alert-warning" role="alert">
+        {{ erroCarrinho }}
+      </p>
+
       <div v-if="!vazio" class="row g-4">
         <!-- Itens (tabela cart_items) -->
         <div class="col-lg-8">
           <div class="card card-ew">
+            <div class="d-flex justify-content-end px-3 pt-3">
+              <button type="button" class="btn btn-sm btn-outline-danger" @click="limparCarrinho">
+                Limpar carrinho
+              </button>
+            </div>
             <ul class="list-group list-group-flush rounded-4" aria-live="polite">
               <CarrinhoItem
                 v-for="item in itensDoCarrinho"
