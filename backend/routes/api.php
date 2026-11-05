@@ -17,13 +17,17 @@ Route::post('register', [AuthController::class, 'register'])
 Route::post('login', [AuthController::class, 'login'])
     ->middleware('throttle:6,1');
 
+Route::apiResource('products', ProductController::class)
+    ->only(['index', 'show'])
+    ->whereNumber('product');
+
+ Route::apiResource('categories', CategorieController::class)
+        ->only(['index', 'show'])
+        ->whereNumber('category');
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
-
-    Route::apiResource('products', ProductController::class)
-        ->only(['index', 'show'])
-        ->whereNumber('product');
 
     Route::apiResource('orders', OrderController::class)
         ->only(['index', 'show'])
@@ -45,9 +49,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show'])
         ->whereNumber('address');
 
-    Route::apiResource('categories', CategorieController::class)
-        ->only(['index', 'show'])
-        ->whereNumber('category');
+   
 
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('users', UserController::class)

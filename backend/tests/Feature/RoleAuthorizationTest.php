@@ -17,7 +17,7 @@ class RoleAuthorizationTest extends TestCase
     public function test_api_routes_require_a_sanctum_authenticated_session(): void
     {
         $this->getJson('/api/me')->assertUnauthorized();
-        $this->getJson('/api/products')->assertUnauthorized();
+        $this->getJson('/api/products')->assertOk();
 
         $user = $this->createUser();
         $this->actingAs($user)

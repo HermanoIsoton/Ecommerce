@@ -7,6 +7,7 @@
   --ew-green-dark: #00875a;
   --ew-gray: #4a5b70;
   --ew-bg: #f2f5f8;
+  --ew-hero-gradient: linear-gradient(135deg, var(--ew-navy) 0%, var(--ew-navy-2) 100%);
   --bs-body-font-family: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --bs-body-bg: var(--ew-bg);
   --bs-body-color: #1b2b3d;
@@ -26,19 +27,36 @@ main {
 }
 
 /* ---------- Navbar ---------- */
+.ew-header {
+  z-index: 1020;
+  background: var(--ew-hero-gradient);
+  background-attachment: fixed;
+}
+
 .ew-navbar {
-  background: var(--ew-navy);
+  background: transparent;
+}
+
+.ew-header-main {
+  min-height: 5.25rem;
+  display: grid;
+  grid-template-columns: auto minmax(10rem, 13rem) minmax(14rem, 1fr) auto;
+  align-items: center;
+  gap: 1.25rem;
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
 }
 
 .ew-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.45rem;
   font-weight: 800;
   font-size: 1.5rem;
   letter-spacing: -0.04em;
   color: #fff;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .ew-brand:hover {
@@ -49,18 +67,39 @@ main {
   color: var(--ew-green);
 }
 
-.ew-navbar .nav-link {
-  color: #d5e0ec;
-  font-weight: 500;
+.ew-brand svg {
+  flex: 0 0 auto;
 }
 
-.ew-navbar .nav-link:hover,
-.ew-navbar .nav-link.active {
+.ew-location {
+  min-width: 0;
+  height: 2.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.7rem;
+  color: var(--ew-green);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 0.5rem;
+}
+
+.ew-location input {
+  width: 100%;
+  min-width: 0;
+  padding: 0;
   color: #fff;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 0.82rem;
 }
 
-.ew-navbar .nav-link.active {
-  box-shadow: inset 0 -2px 0 var(--ew-green);
+.ew-location input::placeholder {
+  color: #d5e0ec;
+}
+
+.ew-search-form {
+  min-width: 0;
 }
 
 .ew-search {
@@ -103,23 +142,145 @@ main {
   border-radius: 0;
 }
 
-.ew-icon-btn {
-  position: relative;
-  color: #fff;
-  font-size: 1.35rem;
-  line-height: 1;
-  padding: 0.35rem 0.5rem;
-  text-decoration: none;
+.ew-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
 }
 
-.ew-icon-btn:hover {
+.ew-account {
+  position: relative;
+}
+
+.ew-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.2rem 0;
+  color: #fff;
+  background: transparent;
+  border: 0;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ew-action-btn > i:first-child,
+.ew-cart-icon > i {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.ew-action-btn:hover,
+.ew-action-btn[aria-expanded="true"] {
   color: var(--ew-green);
+}
+
+.ew-action-btn span:not(.ew-cart-icon) {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  line-height: 1.15;
+}
+
+.ew-action-btn small {
+  color: #d5e0ec;
+  font-size: 0.68rem;
+}
+
+.ew-action-btn strong {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ew-chevron {
+  font-size: 0.7rem;
+}
+
+.ew-account-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1030;
+  min-width: max-content;
+  padding: 0.25rem 0;
+  color: var(--ew-navy);
+  background: #fff;
+  border: 1px solid #ced4da;
+}
+
+.ew-account-option {
+  display: block;
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.ew-account-option:hover,
+.ew-account-option:focus-visible {
+  color: var(--ew-navy);
+  background: #f2f5f8;
+}
+
+.ew-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1055;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(5, 20, 35, 0.65);
+}
+
+.ew-auth-modal {
+  position: relative;
+  width: min(100%, 28rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 2rem;
+  color: var(--bs-body-color);
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25);
+}
+
+.ew-modal-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.8rem;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--ew-gray);
+  background: transparent;
+  border: 0;
+  border-radius: 50%;
+}
+
+.ew-modal-close:hover {
+  color: var(--ew-navy);
+  background: var(--ew-bg);
+}
+
+.ew-cart-link {
+  position: relative;
+}
+
+.ew-cart-icon {
+  position: relative;
+  display: inline-flex;
 }
 
 .ew-badge {
   position: absolute;
-  top: -2px;
-  right: -4px;
+  top: -0.5rem;
+  right: -0.6rem;
   min-width: 1.25rem;
   font-size: 0.7rem;
   font-weight: 700;
@@ -128,6 +289,138 @@ main {
   border-radius: 999px;
   padding: 0.1rem 0.35rem;
   text-align: center;
+}
+
+.ew-subnav {
+  background: transparent;
+  border-bottom: 0;
+}
+
+.ew-subnav-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+  min-height: 2.75rem;
+}
+
+.ew-subnav-link {
+  display: inline-flex;
+  align-items: center;
+  color: #d5e0ec;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.ew-subnav-link:hover,
+.ew-subnav-link.active {
+  color: var(--ew-green);
+}
+
+@media (max-width: 991.98px) {
+  .ew-header-main {
+    grid-template-columns: auto minmax(8rem, 12rem) minmax(10rem, 1fr);
+    gap: 0.8rem;
+  }
+
+  .ew-header-actions {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .ew-search-form {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .ew-location {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .ew-header-actions {
+    background: var(--ew-navy);
+    padding-left: 0.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .ew-header-main {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.6rem 0.75rem;
+    padding-top: 0.55rem;
+    padding-bottom: 0.65rem;
+  }
+
+  .ew-brand {
+    gap: 0.3rem;
+    font-size: 1.25rem;
+  }
+
+  .ew-brand svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .ew-header-actions {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 0.8rem;
+    padding-left: 0;
+  }
+
+  .ew-action-btn {
+    gap: 0.35rem;
+  }
+
+  .ew-action-btn > i:first-child,
+  .ew-cart-icon > i {
+    font-size: 1.3rem;
+  }
+
+  .ew-action-btn small {
+    font-size: 0.62rem;
+  }
+
+  .ew-action-btn strong {
+    font-size: 0.72rem;
+  }
+
+  .ew-chevron {
+    display: none;
+  }
+
+  .ew-location,
+  .ew-search-form {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .ew-location {
+    height: 2.35rem;
+  }
+
+  .ew-subnav-inner {
+    gap: 1.25rem;
+    min-height: 2.6rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .ew-subnav-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ew-subnav-link {
+    font-size: 0.8rem;
+  }
+
+  .ew-auth-modal {
+    padding: 1.5rem;
+  }
 }
 
 /* ---------- Botoes da marca ---------- */
@@ -177,7 +470,8 @@ main {
 /* ---------- Hero (pagina inicial) ---------- */
 .hero {
   color: #fff;
-  background: linear-gradient(135deg, var(--ew-navy) 0%, var(--ew-navy-2) 100%);
+  background: var(--ew-hero-gradient);
+  background-attachment: fixed;
   overflow: hidden;
 }
 
