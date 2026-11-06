@@ -21,6 +21,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
+    environment:
+      PHP_CLI_SERVER_WORKERS: 4
+    command: php artisan serve --host=0.0.0.0 --no-reload
     depends_on:
       mysql:
         condition: service_healthy
@@ -30,9 +33,9 @@ services:
       - ./backend:/app
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/up"]
-      interval: 5s
+      interval: 30s
       timeout: 20s
-      retries: 20
+      retries: 3
       start_period: 30s
 
   proxy:

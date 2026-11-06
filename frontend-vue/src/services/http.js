@@ -7,8 +7,8 @@ export const http = axios.create({
   headers: { Accept: 'application/json' },
   withCredentials: true,
   withXSRFToken: true,
-  timeout: 10000,
+  timeout: 30000,
 })
 
 export const obterCsrf = () =>
-  axios.get(`${raiz}/sanctum/csrf-cookie`, { withCredentials: true })
+  axios.get(`${raiz}/sanctum/csrf-cookie`, { withCredentials: true, timeout: 30000 })

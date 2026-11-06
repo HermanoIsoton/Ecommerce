@@ -9,9 +9,7 @@ class ProductService
 {
     public function listAll(): Collection
     {
-        $products = product::all();
-
-        return product::with('category')->get();
+        return Product::with('category')->get();
     }
 
     public function create(array $data): product

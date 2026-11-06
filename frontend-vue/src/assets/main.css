@@ -438,6 +438,10 @@ main {
   font-weight: 600;
 }
 
+.ew-auth-modal .btn-ew:disabled {
+  opacity: 1;
+}
+
 .btn-ew-accent {
   --bs-btn-color: var(--ew-navy);
   --bs-btn-bg: var(--ew-green);

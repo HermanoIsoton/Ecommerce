@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { totalUnidades } from '@/stores/carrinho'
 import { filtroTipo, termoBusca } from '@/stores/catalogo'
 import { avisar } from '@/stores/toast'
+import { logout } from '@/services/auth'
 import AuthModal from '@/components/AuthModal.vue'
 
 defineProps({
@@ -12,6 +13,8 @@ defineProps({
     default: null,
   },
 })
+
+const emit = defineEmits(['authenticated', 'logged-out'])
 
 const rota = useRoute()
 const router = useRouter()
@@ -60,9 +63,16 @@ function abrirModalAutenticacao(modo) {
   modalAutenticacao.value = modo
 }
 
-function sairSemAutenticacao() {
+async function sair() {
   menuContaAberto.value = false
-  avisar('A autenticação ainda não está conectada.', { tipo: 'info' })
+
+  try {
+    await logout()
+    emit('logged-out')
+    avisar('Você saiu da sua conta.')
+  } catch (erro) {
+    avisar(erro.message, { tipo: 'erro' })
+  }
 }
 </script>
 
@@ -136,7 +146,7 @@ function sairSemAutenticacao() {
                 <RouterLink class="ew-account-option" :to="{ name: 'conta' }">
                   Informações da conta
                 </RouterLink>
-                <button type="button" class="ew-account-option" @click="sairSemAutenticacao">
+                <button type="button" class="ew-account-option" @click="sair">
                   Sair da conta
                 </button>
               </template>
@@ -192,6 +202,7 @@ function sairSemAutenticacao() {
       :mode="modalAutenticacao"
       @close="modalAutenticacao = ''"
       @change-mode="modalAutenticacao = $event"
+      @authenticated="emit('authenticated', $event)"
     />
   </header>
 </template>
