@@ -65,20 +65,20 @@ function adicionar(produto) {
             @click="filtroTipo = opcao.valor"
           >{{ opcao.rotulo }}</button>
           <!-- filtro de categoria  -->
-            <select
-              id="filtroCategoria"
-              v-model="categoriaSelecionada"
-              class="btn btn-outline-ew filtro-btn"
-              aria-label="Filtrar por categoria"
+          <select
+            id="filtroCategoria"
+            v-model="categoriaSelecionada"
+            class="form-select filtro-select"
+            aria-label="Filtrar por categoria"
+          >
+            <option value="">Todas as categorias</option>
+            <option
+              v-for="categoria in categoriasDisponiveis"
+              :key="categoria.id"
+              :value="categoria.id"
             >
-              <option value="">Todas as categorias</option>
-              <option
-                v-for="categoria in categoriasDisponiveis"
-                :key="categoria.id"
-                :value="categoria.id"
-              >
-                {{ categoria.nome }}
-              </option>
+              {{ categoria.nome }}
+            </option>
           </select>
         </div>
 

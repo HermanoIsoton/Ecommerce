@@ -27,6 +27,9 @@ const router = createRouter({
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
   ],
   scrollBehavior(to, from, posicaoSalva) {
+    if (from.matched.length === 0) {
+      return posicaoSalva || false
+    }
     if (posicaoSalva) {
       return posicaoSalva
     }

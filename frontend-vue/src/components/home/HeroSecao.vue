@@ -1,10 +1,21 @@
+<script setup>
+defineProps({
+  usuario: {
+    type: Object,
+    default: null,
+  },
+})
+</script>
 <template>
   <section class="hero py-5">
     <div class="container py-lg-4">
       <div class="row align-items-center g-4">
         <div class="col-lg-7">
           <p class="text-uppercase small fw-semibold mb-2" style="letter-spacing: 0.12em; color: var(--ew-green);">Mobilidade elétrica</p>
-          <h1 class="display-4 mb-3">Seu caminho começa <span class="destaque">sem fazer barulho</span></h1>
+          <h1 class="display-4 mb-3">
+            <template v-if="usuario?.name">Olá, {{ usuario.name }}! </template>
+            Seu caminho começa <span class="destaque">sem fazer barulho</span>
+          </h1>
           <p class="lead mb-4">Autopropelidos e ciclomotores elétricos com autonomia, velocidade, bateria e garantia explicadas em cada produto.</p>
           <div class="d-flex flex-wrap gap-2">
             <RouterLink :to="{ name: 'home', hash: '#catalogo' }" class="btn btn-ew-accent btn-lg px-4">Ver catálogo</RouterLink>

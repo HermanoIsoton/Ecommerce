@@ -23,7 +23,7 @@ onMounted(async () => {
     @authenticated="usuario = $event"
     @logged-out="usuario = null"
   />
-  <RouterView />
+  <RouterView :usuario="usuario" />
   <RodapeEw />
   <ToastAviso />
 </template>
