@@ -20,11 +20,9 @@ class ProductService
         return $product;
     }
 
-    public function findById(int $id): product
+    public function findById(int $id): Product
     {
-        $product = product::findOrFail($id);
-
-        return product::with('category')->get();
+        return Product::with('category')->findOrFail($id);
     }
 
     public function update(int $id, array $data): product

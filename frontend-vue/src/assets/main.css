@@ -73,29 +73,49 @@ main {
 
 .ew-location {
   min-width: 0;
-  height: 2.7rem;
+  min-height: 2.7rem;
   display: flex;
   align-items: center;
   gap: 0.55rem;
   padding: 0 0.7rem;
+  text-align: left;
   color: var(--ew-green);
+  background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 0.5rem;
+  cursor: pointer;
 }
 
-.ew-location input {
+.ew-location:hover,
+.ew-location:focus-visible {
+  border-color: var(--ew-green);
+}
+
+.ew-location-copy {
   width: 100%;
   min-width: 0;
-  padding: 0;
-  color: #fff;
-  background: transparent;
-  border: 0;
-  outline: 0;
-  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
 }
 
-.ew-location input::placeholder {
+.ew-location-copy small,
+.ew-location-copy strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ew-location-copy small {
   color: #d5e0ec;
+  font-size: 0.68rem;
+  line-height: 1.1;
+}
+
+.ew-location-copy strong {
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
 }
 
 .ew-search-form {
@@ -170,12 +190,25 @@ main {
   line-height: 1;
 }
 
+.ew-account-avatar {
+  display: grid;
+  place-items: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  flex: 0 0 auto;
+  color: var(--ew-navy);
+  background: var(--ew-green);
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+
 .ew-action-btn:hover,
 .ew-action-btn[aria-expanded="true"] {
   color: var(--ew-green);
 }
 
-.ew-action-btn span:not(.ew-cart-icon) {
+.ew-action-btn span:not(.ew-cart-icon):not(.ew-account-avatar) {
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -381,6 +414,11 @@ main {
     font-size: 1.3rem;
   }
 
+  .ew-account-avatar {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
   .ew-action-btn small {
     font-size: 0.62rem;
   }
@@ -400,7 +438,7 @@ main {
   }
 
   .ew-location {
-    height: 2.35rem;
+    min-height: 2.35rem;
   }
 
   .ew-subnav-inner {
@@ -550,6 +588,7 @@ main {
 .produto-img img {
   width: 100%;
   height: 100%;
+  max-height: 280px;
   object-fit: cover;
 }
 
@@ -560,6 +599,67 @@ main {
   font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.produto-detalhe {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.produto-detalhe-imagem {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  color: var(--ew-navy-2);
+  background: linear-gradient(160deg, #e4ecf4 0%, #cfdcea 100%);
+  font-size: 4rem;
+}
+
+.produto-detalhe-imagem img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.produto-detalhe-tecnico {
+  border: 0;
+  margin-top: 1.25rem;
+}
+
+.produto-especificacoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.produto-especificacoes > div {
+  padding: 0.55rem 0.7rem;
+  background: var(--ew-bg);
+  border-radius: 0.55rem;
+}
+
+.produto-especificacoes dt {
+  color: var(--ew-gray);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.produto-especificacoes dd {
+  margin: 0.1rem 0 0;
+  color: var(--ew-navy);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+@media (max-width: 380px) {
+  .produto-especificacoes {
+    grid-template-columns: 1fr;
+  }
 }
 
 .spec-lista {
@@ -678,6 +778,55 @@ main {
 .pedido-item .accordion-button:not(.collapsed) {
   color: var(--ew-navy);
   background: #eaf1f8;
+}
+
+.conta-page .card-ew,
+.conta-page .endereco-card,
+.conta-page .pedido-item,
+.conta-page .accordion-button,
+.conta-page .accordion-body,
+.conta-page .table > :not(caption) > * > * {
+  border: 0;
+  box-shadow: none;
+}
+
+.conta-page .card-ew {
+  background: transparent;
+}
+
+.conta-page .conta-resumo {
+  border: 1px solid #d5dce3;
+  border-radius: 0.75rem;
+}
+
+.conta-page .endereco-card {
+  border: 1px solid #d5dce3;
+  border-radius: 0.75rem;
+  background: #f5f7f9;
+}
+
+.conta-page .accordion-button:focus {
+  box-shadow: none;
+}
+
+.conta-page .form-control,
+.conta-page .form-select {
+  border: 1px solid #cbd3dc;
+  background-color: #f5f7f9;
+}
+
+.conta-page .form-control:focus,
+.conta-page .form-select:focus {
+  border-color: var(--ew-navy-2);
+}
+
+.conta-page .btn-outline-ew,
+.conta-page .btn-outline-danger {
+  border-color: transparent;
+}
+
+.conta-page .badge.border {
+  border: 0 !important;
 }
 
 .linha-tempo {

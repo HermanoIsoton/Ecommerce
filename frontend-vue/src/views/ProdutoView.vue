@@ -1,0 +1,119 @@
+<script setup>
+import { computed, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { buscarProduto } from '@/services/produtos'
+import { produtos } from '@/stores/catalogo'
+import { adicionarAoCarrinho, erroCarrinho } from '@/stores/carrinho'
+import { avisar } from '@/stores/toast'
+import { formatarMoeda } from '@/utils/formatadores'
+import { ROTULO_TIPO } from '@/utils/rotulos'
+
+const route = useRoute()
+const produto = ref(null)
+const carregando = ref(true)
+const erro = ref('')
+const semEstoque = computed(() => Number(produto.value?.stock ?? 0) <= 0)
+
+async function carregarProduto() {
+  const id = String(route.params.id)
+  produto.value = null
+  erro.value = ''
+  carregando.value = true
+
+  try {
+    const produtoDoCatalogo = produtos.value.find(
+      (item) => String(item.id) === id
+    )
+    const resultado = produtoDoCatalogo ?? await buscarProduto(id)
+    if (String(route.params.id) === id) produto.value = resultado
+  } catch (falha) {
+    if (String(route.params.id) === id) erro.value = falha.message
+  } finally {
+    if (String(route.params.id) === id) carregando.value = false
+  }
+}
+
+function adicionar() {
+  if (!produto.value || semEstoque.value) return
+
+  if (adicionarAoCarrinho(produto.value)) {
+    avisar(`${produto.value.name} foi adicionado ao carrinho.`)
+  } else if (erroCarrinho.value) {
+    avisar(erroCarrinho.value, { tipo: 'erro' })
+  } else {
+    avisar(`Você já tem todo o estoque de ${produto.value.name} no carrinho.`, { tipo: 'info' })
+  }
+}
+
+watch(() => route.params.id, carregarProduto, { immediate: true })
+</script>
+
+<template>
+  <main class="py-4 py-lg-5">
+    <div class="container">
+      <RouterLink :to="{ name: 'home', hash: '#catalogo' }" class="btn btn-link px-0 mb-3">
+        <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Continuar comprando
+      </RouterLink>
+
+      <p v-if="carregando" class="text-secondary py-5 text-center" role="status">
+        Carregando produto...
+      </p>
+
+      <div v-else-if="erro" class="alert alert-danger" role="alert">
+        {{ erro }}
+        <RouterLink :to="{ name: 'home', hash: '#catalogo' }" class="alert-link ms-2">
+          Voltar ao catálogo
+        </RouterLink>
+      </div>
+
+      <div v-else-if="produto" class="card card-ew produto-detalhe">
+        <div class="row g-0">
+          <div class="col-lg-6">
+            <div class="produto-detalhe-imagem">
+              <img v-if="produto.image_url" :src="produto.image_url" :alt="produto.name">
+              <i v-else class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="card-body p-4 p-xl-5">
+              <span class="badge mb-2" :class="produto.type === 'ciclomotor' ? 'text-bg-warning' : 'text-bg-success'">
+                {{ ROTULO_TIPO[produto.type] || produto.type }}
+              </span>
+              <h1 class="h2 fw-bold mb-2">{{ produto.name }}</h1>
+              <p class="text-secondary mb-4">{{ produto.description }}</p>
+              <p class="preco fs-3 mb-1">{{ formatarMoeda(produto.price) }}</p>
+              <p class="small mb-4" :class="semEstoque ? 'text-danger' : 'text-secondary'">
+                {{ semEstoque ? 'Indisponível no momento' : `${produto.stock} em estoque` }}
+              </p>
+
+              <button
+                type="button"
+                class="btn btn-ew-accent btn-lg w-100 mb-3"
+                :disabled="semEstoque"
+                @click="adicionar"
+              >
+                <i class="bi bi-cart-plus me-1" aria-hidden="true"></i>Adicionar ao carrinho
+              </button>
+              <section class="produto-detalhe-tecnico" aria-labelledby="tituloEspecificacoes">
+                <h2 class="h6 fw-bold mb-2" id="tituloEspecificacoes">Detalhes técnicos</h2>
+                <dl class="produto-especificacoes">
+                  <div><dt>Potência</dt><dd>{{ produto.power }} W</dd></div>
+                  <div><dt>Autonomia</dt><dd>{{ produto.range_km }} km</dd></div>
+                  <div><dt>Velocidade máxima</dt><dd>{{ produto.top_speed_kmh }} km/h</dd></div>
+                  <div><dt>Peso</dt><dd>{{ produto.weight_kg }} kg</dd></div>
+                  <div><dt>Capacidade da bateria</dt><dd>{{ produto.battery_capaciy }} Wh</dd></div>
+                  <div><dt>Tensão da bateria</dt><dd>{{ produto.battery_voltage_v }} V</dd></div>
+                  <div><dt>Bateria removível</dt><dd>{{ produto.is_battery_removable ? 'Sim' : 'Não' }}</dd></div>
+                  <div><dt>Tempo de recarga</dt><dd>{{ produto.charge_time_h }} h</dd></div>
+                  <div><dt>Potência máxima de recarga</dt><dd>{{ produto.max_charge_power_kw === null ? '—' : `${produto.max_charge_power_kw} kW` }}</dd></div>
+                  <div><dt>Garantia</dt><dd>{{ produto.warranty_months ? `${produto.warranty_months} meses` : '—' }}</dd></div>
+                </dl>
+              </section>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>

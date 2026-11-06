@@ -1,13 +1,15 @@
 <script setup>
 import { ref } from 'vue'
+import { alterarSenha } from '@/services/auth'
 import { avisar } from '@/stores/toast'
 
 const senhaAtual = ref('')
 const senhaNova = ref('')
 const senhaConfirmar = ref('')
 const confirmacaoInvalida = ref(false)
+const salvando = ref(false)
 
-function enviar(evento) {
+async function enviar(evento) {
   const formulario = evento.target
   const senhasIguais = senhaNova.value === senhaConfirmar.value
 
@@ -20,10 +22,23 @@ function enviar(evento) {
     return
   }
 
-  senhaAtual.value = ''
-  senhaNova.value = ''
-  senhaConfirmar.value = ''
-  avisar('Senha atualizada (demonstração).')
+  salvando.value = true
+  try {
+    await alterarSenha({
+      current_password: senhaAtual.value,
+      password: senhaNova.value,
+      password_confirmation: senhaConfirmar.value,
+    })
+    senhaAtual.value = ''
+    senhaNova.value = ''
+    senhaConfirmar.value = ''
+    confirmacaoInvalida.value = false
+    avisar('Senha atualizada com sucesso.')
+  } catch (erro) {
+    avisar(erro.message, { tipo: 'erro' })
+  } finally {
+    salvando.value = false
+  }
 }
 </script>
 
@@ -46,7 +61,9 @@ function enviar(evento) {
           <input v-model="senhaConfirmar" type="password" class="form-control" :class="{ 'is-invalid': confirmacaoInvalida }" id="senhaConfirmar" autocomplete="new-password" required>
           <div class="invalid-feedback">As senhas não coincidem.</div>
         </div>
-        <button type="submit" class="btn btn-ew px-4">Atualizar senha</button>
+        <button type="submit" class="btn btn-ew px-4" :disabled="salvando">
+          {{ salvando ? 'Atualizando...' : 'Atualizar senha' }}
+        </button>
       </form>
     </div>
   </div>

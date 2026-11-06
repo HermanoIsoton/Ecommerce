@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import CarrinhoView from '@/views/CarrinhoView.vue'
 import ContaView from '@/views/ContaView.vue'
+import ProdutoView from '@/views/ProdutoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,6 +18,12 @@ const router = createRouter({
       name: 'carrinho',
       component: CarrinhoView,
       meta: { titulo: 'Carrinho | EletricWay' },
+    },
+    {
+      path: '/produto/:id(\\d+)',
+      name: 'produto',
+      component: ProdutoView,
+      meta: { titulo: 'Detalhes do produto | EletricWay' },
     },
     {
       path: '/conta',

@@ -7,12 +7,15 @@ import { obterUsuarioAtual } from '@/services/auth'
 import { avisar } from '@/stores/toast'
 
 const usuario = ref(null)
+const autenticacaoCarregada = ref(false)
 
 onMounted(async () => {
   try {
     usuario.value = await obterUsuarioAtual()
   } catch (erro) {
     avisar(erro.message, { tipo: 'erro' })
+  } finally {
+    autenticacaoCarregada.value = true
   }
 })
 </script>
@@ -23,7 +26,13 @@ onMounted(async () => {
     @authenticated="usuario = $event"
     @logged-out="usuario = null"
   />
-  <RouterView :usuario="usuario" />
+  <RouterView v-slot="{ Component, route }">
+    <component
+      :is="Component"
+      @usuario-atualizado="usuario = $event"
+      v-bind="{ usuario, ...(route.name === 'conta' ? { autenticacaoCarregada } : {}) }"
+    />
+  </RouterView>
   <RodapeEw />
   <ToastAviso />
 </template>

@@ -14,7 +14,6 @@ class StoreAddressesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
             'recipient' => ['required', 'string', 'max:255'],
             'cep' => ['required', 'string', 'regex:/^\d{5}-?\d{3}$/'],
             'street' => ['required', 'string', 'max:255'],

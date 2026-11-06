@@ -15,8 +15,17 @@ class Address extends Model
         'complement',
         'district',
         'city',
-        'state'
+        'state',
+        'is_primary',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_primary' => 'boolean',
+        ];
+    }
+
     public $timestamps = false;
 
     public function user(): belongsTo{

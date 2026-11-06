@@ -21,6 +21,7 @@ class AddressResource extends JsonResource
             'district' => $this->district,
             'city' => $this->city,
             'state' => $this->state,
+            'is_primary' => $this->is_primary,
         ];
     }
 }

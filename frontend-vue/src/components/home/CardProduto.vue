@@ -1,19 +1,17 @@
 <script setup>
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { formatarMoeda } from '@/utils/formatadores'
-import { ROTULO_TIPO } from '@/utils/rotulos'
 
 const props = defineProps({
   produto: { type: Object, required: true },
 })
 
-defineEmits(['adicionar'])
-
 const semEstoque = computed(() => Number(props.produto.stock) <= 0)
 </script>
 
 <template>
-  <div class="col-12 col-sm-6 col-xl-4">
+  <div class="col-12 col-sm-6 col-xl-3">
     <article class="card produto-card h-100">
       <a class="produto-img text-decoration-none" href="#" @click.prevent>
         <img v-if="produto.image_url" :src="produto.image_url" :alt="produto.name" loading="lazy">
@@ -51,9 +49,12 @@ const semEstoque = computed(() => Number(props.produto.stock) <= 0)
               {{ semEstoque ? 'Esgotado' : `${produto.stock} em estoque` }}
             </div>
           </div>
-          <button type="button" class="btn btn-ew-accent" :disabled="semEstoque" @click="$emit('adicionar', produto)">
-            <i class="bi bi-cart-plus me-1" aria-hidden="true"></i>Adicionar
-          </button>
+          <RouterLink
+            class="btn btn-ew-accent"
+            :to="{ name: 'produto', params: { id: produto.id } }"
+          >
+            Ver detalhes
+          </RouterLink>
         </div>
       </div>
     </article>

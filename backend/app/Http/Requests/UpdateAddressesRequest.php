@@ -14,7 +14,6 @@ class UpdateAddressesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['sometimes', 'required', 'integer', 'exists:users,id'],
             'recipient' => ['sometimes', 'required', 'string', 'max:255'],
             'cep' => ['sometimes', 'required', 'string', 'regex:/^\d{5}-?\d{3}$/'],
             'street' => ['sometimes', 'required', 'string', 'max:255'],
@@ -23,6 +22,7 @@ class UpdateAddressesRequest extends FormRequest
             'district' => ['sometimes', 'required', 'string', 'max:255'],
             'city' => ['sometimes', 'required', 'string', 'max:255'],
             'state' => ['sometimes', 'required', 'string', 'size:2', 'regex:/^[A-Z]{2}$/'],
+            'is_primary' => ['sometimes', 'accepted'],
         ];
     }
 }

@@ -6,7 +6,7 @@ defineProps({
   enderecos: { type: Array, required: true },
 })
 
-const emit = defineEmits(['salvar', 'remover'])
+const emit = defineEmits(['salvar', 'remover', 'principal'])
 
 const modalAberto = ref(false)
 const enderecoEditado = ref(null) // null = novo endereco
@@ -37,6 +37,7 @@ function salvar(dados, id) {
           <article class="endereco-card h-100 p-3 d-flex flex-column gap-2">
             <h3 class="h6 fw-bold mb-0">
               <i class="bi bi-geo-alt-fill text-success me-1" aria-hidden="true"></i>{{ endereco.recipient }}
+              <span v-if="endereco.is_primary" class="badge text-bg-success ms-2">Principal</span>
             </h3>
             <p class="small text-secondary mb-0">
               {{ endereco.street }}, {{ endereco.number }}<template v-if="endereco.complement"> - {{ endereco.complement }}</template><br>
@@ -44,6 +45,14 @@ function salvar(dados, id) {
               CEP {{ endereco.cep }}
             </p>
             <div class="mt-auto d-flex gap-2 pt-2">
+              <button
+                v-if="!endereco.is_primary"
+                type="button"
+                class="btn btn-sm btn-outline-ew"
+                @click="emit('principal', endereco.id)"
+              >
+                Definir como principal
+              </button>
               <button type="button" class="btn btn-sm btn-outline-ew" @click="abrirModal(endereco)">
                 <i class="bi bi-pencil me-1"></i>Editar
               </button>

@@ -11,8 +11,6 @@ import {
   produtos,
   produtosFiltrados,
 } from '@/stores/catalogo'
-import { adicionarAoCarrinho, erroCarrinho } from '@/stores/carrinho'
-import { avisar } from '@/stores/toast'
 
 onMounted(() => {
   if (produtos.value.length === 0) {
@@ -33,15 +31,6 @@ const contagem = computed(() => {
   return `${total} ${total === 1 ? 'veículo encontrado' : 'veículos encontrados'}`
 })
 
-function adicionar(produto) {
-  if (adicionarAoCarrinho(produto)) {
-    avisar(`${produto.name} foi adicionado ao carrinho.`)
-  } else if (erroCarrinho.value) {
-    avisar(erroCarrinho.value, { tipo: 'erro' })
-  } else {
-    avisar(`Você já tem todo o estoque de ${produto.name} no carrinho.`, { tipo: 'info' })
-  }
-}
 </script>
 
 <template>
@@ -92,14 +81,13 @@ function adicionar(produto) {
 
 
         <!-- ===== Cards dos veiculos ===== -->
-        <div class="col-lg-9">
+        <div class="col-12">
           <p class="small text-secondary mb-3" aria-live="polite">{{ contagem }}</p>
           <div class="row g-4" aria-live="polite">
             <CardProduto
               v-for="produto in produtosFiltrados"
               :key="produto.id"
               :produto="produto"
-              @adicionar="adicionar"
             />
           </div>
             <!-- mensagem de erro se nao tiver veiculo encontrados -->

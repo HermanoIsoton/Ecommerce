@@ -44,4 +44,16 @@ class AuthService
         $request->session()->invalidate();
         $request->session()->regenerateToken();
     }
+
+    public function updateProfile(User $user, array $data): User
+    {
+        $user->update($data);
+
+        return $user->refresh();
+    }
+
+    public function changePassword(User $user, string $password): void
+    {
+        $user->update(['password' => $password]);
+    }
 }

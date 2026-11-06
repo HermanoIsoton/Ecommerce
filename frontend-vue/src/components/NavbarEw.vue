@@ -1,13 +1,19 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { totalUnidades } from '@/stores/carrinho'
 import { filtroTipo, termoBusca } from '@/stores/catalogo'
 import { avisar } from '@/stores/toast'
+import {
+  carregandoEnderecos,
+  enderecos,
+  iniciarEnderecosDoUsuario,
+} from '@/stores/enderecos'
 import { logout } from '@/services/auth'
+import { listarEnderecos } from '@/services/enderecos'
 import AuthModal from '@/components/AuthModal.vue'
 
-defineProps({
+const props = defineProps({
   usuario: {
     type: Object,
     default: null,
@@ -20,9 +26,20 @@ const rota = useRoute()
 const router = useRouter()
 const contaRef = ref(null)
 const campoBusca = ref(termoBusca.value)
-const enderecoEntrega = ref('')
+const iniciaisUsuario = computed(() =>
+  props.usuario?.name
+    ?.split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((parte) => parte[0].toUpperCase())
+    .join('') || '--'
+)
+const enderecoPrincipal = computed(() =>
+  enderecos.value.find((endereco) => endereco.is_primary) ?? enderecos.value[0] ?? null
+)
 const menuContaAberto = ref(false)
 const modalAutenticacao = ref('')
+const navegarParaEnderecosAposLogin = ref(false)
 
 watch(() => rota.fullPath, () => {
   menuContaAberto.value = false
@@ -31,6 +48,26 @@ watch(() => rota.fullPath, () => {
 watch(termoBusca, (termo) => {
   campoBusca.value = termo
 })
+
+async function carregarEnderecoPrincipal() {
+  const userId = props.usuario?.id
+  iniciarEnderecosDoUsuario(userId ?? null)
+  if (!userId) {
+    return
+  }
+
+  try {
+    await listarEnderecos(userId)
+  } catch (erro) {
+    avisar(erro.message, { tipo: 'erro' })
+  }
+}
+
+watch(
+  () => props.usuario?.id,
+  carregarEnderecoPrincipal,
+  { immediate: true }
+)
 
 function fecharMenuAoClicarFora(evento) {
   if (!contaRef.value?.contains(evento.target)) {
@@ -63,6 +100,26 @@ function abrirModalAutenticacao(modo) {
   modalAutenticacao.value = modo
 }
 
+async function abrirEnderecos() {
+  if (!props.usuario) {
+    navegarParaEnderecosAposLogin.value = true
+    abrirModalAutenticacao('login')
+    return
+  }
+
+  await router.push({ name: 'conta', query: { aba: 'enderecos' } })
+}
+
+async function aposAutenticacao(usuario) {
+  emit('authenticated', usuario)
+  modalAutenticacao.value = ''
+
+  if (navegarParaEnderecosAposLogin.value) {
+    navegarParaEnderecosAposLogin.value = false
+    await router.push({ name: 'conta', query: { aba: 'enderecos' } })
+  }
+}
+
 async function sair() {
   menuContaAberto.value = false
 
@@ -88,17 +145,19 @@ async function sair() {
           <span>Eletric<span class="way">Way</span></span>
         </RouterLink>
 
-        <label class="ew-location" for="enderecoEntrega">
+        <button class="ew-location" type="button" @click="abrirEnderecos">
           <i class="bi bi-geo-alt" aria-hidden="true"></i>
-          <span class="visually-hidden">Endereço de entrega</span>
-          <input
-            id="enderecoEntrega"
-            v-model="enderecoEntrega"
-            type="text"
-            placeholder="Informe seu endereço"
-            autocomplete="street-address"
-          >
-        </label>
+          <span class="ew-location-copy">
+            <small>Entrega</small>
+            <strong v-if="carregandoEnderecos">Carregando endereço...</strong>
+            <template v-else-if="enderecoPrincipal">
+              <strong>{{ enderecoPrincipal.street }}, {{ enderecoPrincipal.number }}</strong>
+              <small>{{ enderecoPrincipal.city }}/{{ enderecoPrincipal.state }} · CEP {{ enderecoPrincipal.cep }}</small>
+            </template>
+            <strong v-else-if="usuario">Adicione um endereço</strong>
+            <strong v-else>Entre para adicionar endereço</strong>
+          </span>
+        </button>
 
         <form class="ew-search-form" role="search" @submit.prevent="buscar">
           <label class="visually-hidden" for="campoBusca">Buscar veículos</label>
@@ -133,7 +192,12 @@ async function sair() {
               @click="menuContaAberto = true"
               @keydown.esc="menuContaAberto = false"
             >
-              <i class="bi bi-person-circle" aria-hidden="true"></i>
+              <span
+                v-if="usuario"
+                class="ew-account-avatar"
+                aria-hidden="true"
+              >{{ iniciaisUsuario }}</span>
+              <i v-else class="bi bi-person-circle" aria-hidden="true"></i>
               <span>
                 <small>Olá, {{ usuario?.name || 'entre' }}</small>
                 <strong>Minha conta</strong>
@@ -202,7 +266,7 @@ async function sair() {
       :mode="modalAutenticacao"
       @close="modalAutenticacao = ''"
       @change-mode="modalAutenticacao = $event"
-      @authenticated="emit('authenticated', $event)"
+      @authenticated="aposAutenticacao"
     />
   </header>
 </template>

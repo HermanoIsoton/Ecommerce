@@ -2,15 +2,18 @@
 import { ref, watch } from 'vue'
 import { formatarData } from '@/utils/formatadores'
 import { ROTULO_PAPEL } from '@/utils/rotulos'
+import { atualizarPerfil } from '@/services/auth'
+import { avisar } from '@/stores/toast'
 
 const props = defineProps({
   usuario: { type: Object, required: true },
 })
 
-const emit = defineEmits(['salvar'])
+const emit = defineEmits(['atualizado'])
 
 const nome = ref('')
 const email = ref('')
+const salvando = ref(false)
 
 // Preenche (e repreenche, depois de salvar) o formulario com os dados do usuario
 watch(
@@ -22,13 +25,26 @@ watch(
   { immediate: true, deep: true }
 )
 
-function enviar(evento) {
+async function enviar(evento) {
   const formulario = evento.target
   if (!formulario.checkValidity()) {
     formulario.reportValidity()
     return
   }
-  emit('salvar', { name: nome.value.trim(), email: email.value.trim() })
+
+  salvando.value = true
+  try {
+    const usuario = await atualizarPerfil({
+      name: nome.value.trim(),
+      email: email.value.trim(),
+    })
+    emit('atualizado', usuario)
+    avisar('Dados da conta atualizados com sucesso.')
+  } catch (erro) {
+    avisar(erro.message, { tipo: 'erro' })
+  } finally {
+    salvando.value = false
+  }
 }
 </script>
 
@@ -56,7 +72,9 @@ function enviar(evento) {
           </div>
         </div>
         <div class="mt-4">
-          <button type="submit" class="btn btn-ew px-4">Salvar alterações</button>
+          <button type="submit" class="btn btn-ew px-4" :disabled="salvando">
+            {{ salvando ? 'Salvando...' : 'Salvar alterações' }}
+          </button>
         </div>
       </form>
     </div>

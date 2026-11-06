@@ -27,6 +27,8 @@ Route::apiResource('products', ProductController::class)
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('me', [AuthController::class, 'me']);
+    Route::put('me', [AuthController::class, 'updateProfile']);
+    Route::put('me/password', [AuthController::class, 'changePassword']);
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::apiResource('orders', OrderController::class)
@@ -46,10 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->whereNumber('cart_item');
 
     Route::apiResource('addresses', AddressController::class)
-        ->only(['index', 'show'])
+        ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->whereNumber('address');
-
-   
 
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('users', UserController::class)
@@ -75,10 +75,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('cart_items', Cart_itemController::class)
             ->only(['store', 'update', 'destroy'])
             ->whereNumber('cart_item');
-
-        Route::apiResource('addresses', AddressController::class)
-            ->only(['store', 'update', 'destroy'])
-            ->whereNumber('address');
 
         Route::apiResource('categories', CategorieController::class)
             ->only(['store', 'update', 'destroy'])

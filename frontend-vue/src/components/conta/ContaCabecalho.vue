@@ -19,7 +19,7 @@ const iniciais = computed(() =>
 </script>
 
 <template>
-  <section class="card card-ew mb-4" aria-label="Resumo da conta">
+  <section class="card card-ew conta-resumo mb-4" aria-label="Resumo da conta">
     <div class="card-body d-flex flex-wrap align-items-center gap-3">
       <div class="avatar" aria-hidden="true">{{ iniciais || '--' }}</div>
       <div class="flex-grow-1">
