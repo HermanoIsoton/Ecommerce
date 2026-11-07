@@ -64,6 +64,9 @@ services:
       context: ./frontend-vue
       dockerfile: Dockerfile
     container_name: pagina
+    depends_on:
+      api:
+        condition: service_healthy
     ports:
       - "8080:80"
 
