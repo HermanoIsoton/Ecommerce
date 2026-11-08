@@ -241,32 +241,60 @@ async function sair() {
       </div>
     </div>
 
-    <nav class="ew-subnav" aria-label="Navegação de produtos">
-      <div class="container ew-subnav-inner">
+  </header>
+
+  <nav class="ew-subnav" aria-label="Navegação principal">
+    <div class="container ew-subnav-inner">
+      <RouterLink
+        class="ew-subnav-link"
+        :class="{ active: rota.name === 'home' }"
+        :to="{ name: 'home' }"
+        :aria-current="rota.name === 'home' ? 'page' : undefined"
+      >
+        <i class="bi bi-house-door" aria-hidden="true"></i>Início
+      </RouterLink>
+      <RouterLink
+        class="ew-subnav-link"
+        :class="{ active: rota.name === 'home' && filtroTipo === 'autopropelido' }"
+        :to="{ name: 'home', hash: '#catalogo' }"
+        @click="filtrarPor('autopropelido')"
+      >Autopropelidos</RouterLink>
+      <RouterLink
+        class="ew-subnav-link"
+        :class="{ active: rota.name === 'home' && filtroTipo === 'ciclomotor' }"
+        :to="{ name: 'home', hash: '#catalogo' }"
+        @click="filtrarPor('ciclomotor')"
+      >Ciclomotores</RouterLink>
+      <RouterLink class="ew-subnav-link" :to="{ name: 'home', hash: '#tipos' }">
+        Qual escolher?
+      </RouterLink>
+      <div v-if="usuario" class="ew-subnav-actions">
         <RouterLink
           class="ew-subnav-link"
-          :class="{ active: rota.name === 'home' && filtroTipo === 'autopropelido' }"
-          :to="{ name: 'home', hash: '#catalogo' }"
-          @click="filtrarPor('autopropelido')"
-        >Autopropelidos</RouterLink>
+          :class="{ active: rota.name === 'carrinho' }"
+          :to="{ name: 'carrinho' }"
+          :aria-current="rota.name === 'carrinho' ? 'page' : undefined"
+        >
+          <i class="bi bi-cart3" aria-hidden="true"></i>Carrinho
+          <span v-if="totalUnidades > 0" class="ew-subnav-badge">{{ totalUnidades }}</span>
+        </RouterLink>
         <RouterLink
           class="ew-subnav-link"
-          :class="{ active: rota.name === 'home' && filtroTipo === 'ciclomotor' }"
-          :to="{ name: 'home', hash: '#catalogo' }"
-          @click="filtrarPor('ciclomotor')"
-        >Ciclomotores</RouterLink>
-        <RouterLink class="ew-subnav-link" :to="{ name: 'home', hash: '#tipos' }">
-          Qual escolher?
+          :class="{ active: rota.name === 'conta' }"
+          :to="{ name: 'conta' }"
+          :aria-current="rota.name === 'conta' ? 'page' : undefined"
+        >
+          <i class="bi bi-person-circle" aria-hidden="true"></i>Minha conta
         </RouterLink>
       </div>
-    </nav>
+    </div>
+  </nav>
 
-    <AuthModal
-      v-if="modalAutenticacao"
-      :mode="modalAutenticacao"
-      @close="modalAutenticacao = ''"
-      @change-mode="modalAutenticacao = $event"
-      @authenticated="aposAutenticacao"
-    />
-  </header>
+  <AuthModal
+    v-if="modalAutenticacao"
+    :mode="modalAutenticacao"
+    @close="modalAutenticacao = ''"
+    @change-mode="modalAutenticacao = $event"
+    @authenticated="aposAutenticacao"
+  />
 </template>
