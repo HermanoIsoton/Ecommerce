@@ -19,4 +19,8 @@ RUN composer validate --no-check-publish \
 EXPOSE 8000
 
 
-CMD ["php", "artisan", "serve", "--host=0.0.0.0"]
+CMD ["sh", "-c", "[ -f .env ] ||
+ cp .env.example .env; grep -q '^APP_KEY=.\\+' .env
+ || php artisan key:generate --no-interaction;
+  php artisan migrate --no-interaction &&
+   exec php artisan serve --host=0.0.0.0 --no-reload"]

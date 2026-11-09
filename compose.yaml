@@ -3,8 +3,8 @@ services:
     image: mysql:8.4
     container_name: mysql
     environment:
-      MYSQL_DATABASE: "amperemotor"
-      MYSQL_USER: "amperemotor"
+      MYSQL_DATABASE: "eletricway"
+      MYSQL_USER: "eletricway"
       MYSQL_PASSWORD: "eletric"
       MYSQL_ROOT_PASSWORD: "eletric"
     ports:
@@ -21,15 +21,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
-    environment:
-      PHP_CLI_SERVER_WORKERS: 4
-    command: >
-      sh -c "
-      [ -f .env ] || cp .env.example .env;
-      grep -q '^APP_KEY=.\+' .env || php artisan key:generate --no-interaction;
-      php artisan migrate --no-interaction &&
-      php artisan serve --host=0.0.0.0 --no-reload
-      "
     depends_on:
       mysql:
         condition: service_healthy
@@ -63,7 +54,7 @@ services:
     build:
       context: ./frontend-vue
       dockerfile: Dockerfile
-    container_name: pagina
+    container_name: front
     depends_on:
       api:
         condition: service_healthy

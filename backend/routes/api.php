@@ -76,7 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->whereNumber('address');
 
-// =protegido pelas role admin=
+ // =protegido pelas role admin=
     Route::middleware('role:admin')->group(function () {
         Route::apiResource('users', UserController::class)
             ->except(['store'])
