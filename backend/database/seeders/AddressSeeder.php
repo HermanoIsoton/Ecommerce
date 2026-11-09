@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Address;
+use Illuminate\Database\Seeder;
 
 class AddressSeeder extends Seeder
 {
@@ -20,6 +20,7 @@ class AddressSeeder extends Seeder
                 'district' => 'Sé',
                 'city' => 'São Paulo',
                 'state' => 'SP',
+                'is_primary' => true,
             ],
             [
                 'user_id' => 3,
@@ -31,6 +32,7 @@ class AddressSeeder extends Seeder
                 'district' => 'Centro',
                 'city' => 'Rio de Janeiro',
                 'state' => 'RJ',
+                'is_primary' => true,
             ],
             [
                 'user_id' => 4,
@@ -42,9 +44,10 @@ class AddressSeeder extends Seeder
                 'district' => 'Centro',
                 'city' => 'Belo Horizonte',
                 'state' => 'MG',
+                'is_primary' => true,
             ],
         ];
-        foreach($addresses as $address){
+        foreach ($addresses as $address) {
             Address::create($address);
         }
     }

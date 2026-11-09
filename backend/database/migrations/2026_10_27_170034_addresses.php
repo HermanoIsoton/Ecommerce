@@ -6,10 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
     public function up(): void
     {
-        Schema::create('addresses', function (Blueprint $table){
+        Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('recipient');
@@ -20,10 +19,10 @@ return new class extends Migration
             $table->string('district');
             $table->string('city');
             $table->char('state', 2);
+            $table->boolean('is_primary')->default(false);
         });
     }
 
-    
     public function down(): void
     {
         Schema::dropIfExists('addresses');

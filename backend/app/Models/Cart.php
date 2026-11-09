@@ -5,17 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+
 class Cart extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'user_id',
-        'token_hash'
+        'token_hash',
     ];
 
-      public function User(): belongsTo{
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
-     public function Cart_item(): hasMany{
+
+    public function items(): HasMany
+    {
         return $this->hasMany(Cart_item::class);
     }
 }

@@ -3,57 +3,81 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreCartsRequest;
-use App\Http\Requests\UpdateCartsRequest;
-use App\Http\Resources\CartResource;
-use App\Models\Cart;
+use App\Http\Requests\StoreCartItemsRequest;
+use App\Http\Requests\UpdateCartItemsRequest;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function __construct(
-        private CartService $cartService
-    ) {}
+    public function __construct(private CartService $cartService) {}
 
-    public function index(Request $request)
+    public function createSession()
     {
-        $carts = $request->user()->role === 'admin'
-            ? $this->cartService->listAll()
-            : Cart::query()->where('user_id', $request->user()->id)->get();
+        $session = $this->cartService->createGuestCart();
 
-        return CartResource::collection($carts);
+        return response()
+            ->json([
+                'data' => $session['cart'],
+                'token' => $session['token'],
+            ], 201)
+            ->header('Cache-Control', 'no-store');
     }
 
-    public function store(StoreCartsRequest $request)
+    public function show(Request $request)
     {
-        $cart = $this->cartService->create($request->validated());
-
-        return new CartResource($cart);
+        return response()->json([
+            'data' => $this->cartService->getCart(
+                $request->user(),
+                $request->header('X-Cart-Token'),
+            ),
+        ])->header('Cache-Control', 'no-store');
     }
 
-    public function show(Request $request, string $id)
+    public function addItem(StoreCartItemsRequest $request)
     {
-        $cart = $request->user()->role === 'admin'
-            ? $this->cartService->findById($id)
-            : Cart::query()
-                ->where('user_id', $request->user()->id)
-                ->findOrFail($id);
+        $validated = $request->validated();
+        $cart = $this->cartService->addItem(
+            $request->user(),
+            $request->header('X-Cart-Token'),
+            (int) $validated['product_id'],
+            (int) ($validated['quantity'] ?? 1),
+        );
 
-        return new CartResource($cart);
+        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
     }
 
-    public function update(UpdateCartsRequest $request, string $id)
+    public function updateItem(UpdateCartItemsRequest $request, int $item)
     {
-        $cart = $this->cartService->update($id, $request->validated());
+        $validated = $request->validated();
+        $cart = $this->cartService->updateItem(
+            $request->user(),
+            $request->header('X-Cart-Token'),
+            $item,
+            (int) $validated['quantity'],
+        );
 
-        return new CartResource($cart);
+        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
     }
 
-    public function destroy(string $id)
+    public function removeItem(Request $request, int $item)
     {
-        $this->cartService->delete($id);
+        $cart = $this->cartService->removeItem(
+            $request->user(),
+            $request->header('X-Cart-Token'),
+            $item,
+        );
 
-        return response()->noContent();
+        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
+    }
+
+    public function clear(Request $request)
+    {
+        $cart = $this->cartService->clear(
+            $request->user(),
+            $request->header('X-Cart-Token'),
+        );
+
+        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
     }
 }

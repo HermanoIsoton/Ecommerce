@@ -9,12 +9,14 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Services\AuthService;
+use App\Services\CartService;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
     public function __construct(
-        private AuthService $authService
+        private AuthService $authService,
+        private CartService $cartService,
     ) {}
 
     public function register(RegisterRequest $request)
@@ -22,6 +24,10 @@ class AuthController extends Controller
         $user = $this->authService->register(
             $request->validated(),
             $request
+        );
+        $this->cartService->mergeGuestCartIntoUser(
+            $request->header('X-Cart-Token'),
+            $user,
         );
 
         return (new UserResource($user))
@@ -35,6 +41,10 @@ class AuthController extends Controller
         $user = $this->authService->login(
             $request->validated(),
             $request
+        );
+        $this->cartService->mergeGuestCartIntoUser(
+            $request->header('X-Cart-Token'),
+            $user,
         );
 
         return (new UserResource($user))
