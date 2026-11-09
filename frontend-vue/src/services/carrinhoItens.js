@@ -1,55 +1,38 @@
-import { http } from './http'
+import {
+  adicionarItemCarrinho,
+  buscarCarrinho,
+  atualizarItemCarrinho,
+  removerItemCarrinho,
+  limparItensCarrinho,
+} from './carrinho'
 
 export async function listarCarrinhoItens() {
-    try {
-        const response = await http.get('/cart_items')
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para carregar os itens do carrinho'
-        throw new Error(message)
-    }
+  return (await buscarCarrinho()).items
 }
 
 export async function buscarCarrinhoItem(id) {
-    try {
-        const response = await http.get(`/cart_items/${id}`)
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para buscar o item do carrinho'
-        throw new Error(message)
-    }
+  const cart = await buscarCarrinho()
+  const item = cart.items.find((linha) => String(linha.id) === String(id))
+
+  if (!item) {
+    throw new Error('Este produto não está no carrinho.')
+  }
+
+  return item
 }
 
-export async function criarCarrinhoItem(dados) {
-    try {
-        const response = await http.post('/cart_items', dados)
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para criar o item do carrinho'
-        throw new Error(message)
-    }
+export function criarCarrinhoItem(dados) {
+  return adicionarItemCarrinho(dados)
 }
 
-export async function atualizarCarrinhoItem(id, dados) {
-    try {
-        const response = await http.put(`/cart_items/${id}`, dados)
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para atualizar o item do carrinho'
-        throw new Error(message)
-    }
+export function atualizarCarrinhoItem(id, dados) {
+  return atualizarItemCarrinho(id, dados)
 }
 
 export async function removerCarrinhoItem(id) {
-    try {
-        await http.delete(`/cart_items/${id}`)
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para deletar o item do carrinho'
-        throw new Error(message)
-    }
+  return removerItemCarrinho(id)
+}
+
+export async function limparCarrinhoItens() {
+  return limparItensCarrinho()
 }

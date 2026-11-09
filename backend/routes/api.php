@@ -10,22 +10,31 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
+// =rotas publicas=
+//autenticação basica
 Route::post('register', [AuthController::class, 'register'])
     ->middleware('throttle:6,1');
 
 Route::post('login', [AuthController::class, 'login'])
     ->middleware('throttle:6,1');
 
+//carrinho de compras
 Route::post('cart/session', [CartController::class, 'createSession'])
     ->middleware('throttle:10,1');
+
 Route::get('cart', [CartController::class, 'show']);
+
 Route::post('cart/items', [CartController::class, 'addItem']);
+
 Route::put('cart/items/{item}', [CartController::class, 'updateItem'])
     ->whereNumber('item');
+
 Route::delete('cart/items/{item}', [CartController::class, 'removeItem'])
     ->whereNumber('item');
+
 Route::delete('cart/items', [CartController::class, 'clear']);
 
+//leitura de catalogo
 Route::apiResource('products', ProductController::class)
     ->only(['index', 'show'])
     ->whereNumber('product');
@@ -34,20 +43,35 @@ Route::apiResource('categories', CategorieController::class)
     ->only(['index', 'show'])
     ->whereNumber('category');
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('me', [AuthController::class, 'me']);
-    Route::put('me', [AuthController::class, 'updateProfile']);
-    Route::put('me/password', [AuthController::class, 'changePassword']);
-    Route::post('logout', [AuthController::class, 'logout']);
 
+// =rotas protegidas=
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    //perfil e sessão
+    Route::get('me', [AuthController::class, 'me']);
+
+    Route::put('me', [AuthController::class, 'updateProfile']);
+
+    Route::put('me/password', [AuthController::class, 'changePassword']);
+
+    Route::post('logout', [AuthController::class, 'logout']);
+    
+    //encomendas e pedidos
     Route::apiResource('orders', OrderController::class)
         ->only(['index', 'show'])
+        ->whereNumber('order');
+
+    Route::post('orders/checkout', [OrderController::class, 'checkout']);
+
+    Route::post('orders/{order}/simulate-payment', [OrderController::class, 'simulatePayment'])
         ->whereNumber('order');
 
     Route::apiResource('order_items', Order_itemController::class)
         ->only(['index', 'show'])
         ->whereNumber('order_item');
 
+        //endereços
     Route::apiResource('addresses', AddressController::class)
         ->only(['index', 'show', 'store', 'update', 'destroy'])
         ->whereNumber('address');

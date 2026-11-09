@@ -71,6 +71,17 @@ function linhaTempo(pedido) {
                   </tbody>
                 </table>
               </div>
+              <div v-if="pedido.status === 'pendente'" class="alert alert-warning d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <span>
+                  Aguardando pagamento
+                  <template v-if="pedido.payment_expires_at">
+                    até {{ formatarDataHora(pedido.payment_expires_at) }}.
+                  </template>
+                </span>
+                <RouterLink :to="{ name: 'pagamento', params: { id: pedido.id } }" class="btn btn-sm btn-ew">
+                  Abrir pagamento
+                </RouterLink>
+              </div>
               <div class="row g-4 mt-1">
                 <div class="col-md-4">
                   <h4 class="h6 fw-bold">Resumo</h4>

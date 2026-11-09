@@ -122,7 +122,7 @@ class RoleAuthorizationTest extends TestCase
         $this->getJson('/api/users')->assertForbidden();
     }
 
-    public function test_regular_users_can_only_read_their_own_addresses(): void
+    public function test_regular_users_can_only_access_addresses_owned_by_their_account(): void
     {
         $owner = $this->createUser();
         $otherUser = $this->createUser();
@@ -138,7 +138,23 @@ class RoleAuthorizationTest extends TestCase
 
         $this->getJson("/api/addresses/{$ownAddress->id}")->assertOk();
         $this->getJson("/api/addresses/{$otherAddress->id}")->assertNotFound();
-        $this->postJson('/api/addresses', [])->assertForbidden();
+
+        $this->postJson('/api/addresses', [
+            'user_id' => $otherUser->id,
+            'recipient' => 'Novo endereço',
+            'cep' => '02000-000',
+            'street' => 'Rua da Conta',
+            'number' => '25',
+            'district' => 'Centro',
+            'city' => 'São Paulo',
+            'state' => 'SP',
+        ])->assertCreated()
+            ->assertJsonPath('data.user_id', $owner->id);
+
+        $this->assertDatabaseHas('addresses', [
+            'user_id' => $owner->id,
+            'recipient' => 'Novo endereço',
+        ]);
     }
 
     public function test_admins_can_read_users_and_all_addresses(): void

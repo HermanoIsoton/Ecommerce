@@ -8,7 +8,7 @@ export const ROTULO_TIPO = {
 export const ROTULO_PAPEL = { user: 'Cliente', admin: 'Administrador' }
 
 export const STATUS_PEDIDO = {
-  pendente: { rotulo: 'Pendente', classe: 'text-bg-warning' },
+  pendente: { rotulo: 'Aguardando pagamento', classe: 'text-bg-warning' },
   pago: { rotulo: 'Pago', classe: 'text-bg-info' },
   enviado: { rotulo: 'Enviado', classe: 'text-bg-primary' },
   entregue: { rotulo: 'Entregue', classe: 'text-bg-success' },

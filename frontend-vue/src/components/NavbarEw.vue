@@ -18,6 +18,10 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  autenticacaoCarregada: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['authenticated', 'logged-out'])
@@ -99,6 +103,8 @@ function abrirModalAutenticacao(modo) {
   menuContaAberto.value = false
   modalAutenticacao.value = modo
 }
+
+defineExpose({ abrirModalAutenticacao })
 
 async function abrirEnderecos() {
   if (!props.usuario) {
@@ -187,6 +193,7 @@ async function sair() {
             <button
               class="ew-action-btn"
               type="button"
+              :disabled="!autenticacaoCarregada"
               aria-haspopup="true"
               :aria-expanded="menuContaAberto"
               @click="menuContaAberto = true"

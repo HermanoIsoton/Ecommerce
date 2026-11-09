@@ -1,55 +1,66 @@
 import { http } from './http'
 
-export async function listarCarrinhos() {
-    try {
-        const response = await http.get('/carts')
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para carregar os carrinhos'
-        throw new Error(message)
-    }
+function tratarErro(error, mensagemPadrao) {
+  const errosValidacao = Object.values(error.response?.data?.errors || {}).flat()
+  const mensagem = errosValidacao[0] || error.response?.data?.message || mensagemPadrao
+  const erro = new Error(mensagem)
+  erro.status = error.response?.status
+  throw erro
 }
 
-export async function buscarCarrinho(id) {
-    try {
-        const response = await http.get(`/carts/${id}`)
-        return response.data.data
+export async function criarSessaoCarrinho() {
+  try {
+    const response = await http.post('/cart/session')
+    return {
+      cart: response.data.data,
+      token: response.data.token,
     }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para buscar o carrinho'
-        throw new Error(message)
-    }
+  } catch (error) {
+    tratarErro(error, 'Não foi possível iniciar o carrinho.')
+  }
 }
 
-export async function criarCarrinho(dados) {
-    try {
-        const response = await http.post('/carts', dados)
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para criar o carrinho'
-        throw new Error(message)
-    }
+export async function buscarCarrinho() {
+  try {
+    const response = await http.get('/cart')
+    return response.data.data
+  } catch (error) {
+    tratarErro(error, 'Não foi possível carregar o carrinho.')
+  }
 }
 
-export async function atualizarCarrinho(id, dados) {
-    try {
-        const response = await http.put(`/carts/${id}`, dados)
-        return response.data.data
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para atualizar o carrinho'
-        throw new Error(message)
-    }
+export async function adicionarItemCarrinho(dados) {
+  try {
+    const response = await http.post('/cart/items', dados)
+    return response.data.data
+  } catch (error) {
+    tratarErro(error, 'Não foi possível adicionar este produto ao carrinho.')
+  }
 }
 
-export async function removerCarrinho(id) {
-    try {
-        await http.delete(`/carts/${id}`)
-    }
-    catch (error) {
-        const message = error.response?.data?.message || 'Falha para deletar o carrinho'
-        throw new Error(message)
-    }
+export async function atualizarItemCarrinho(id, dados) {
+  try {
+    const response = await http.put(`/cart/items/${id}`, dados)
+    return response.data.data
+  } catch (error) {
+    tratarErro(error, 'Não foi possível atualizar a quantidade.')
+  }
+}
+
+export async function removerItemCarrinho(id) {
+  try {
+    const response = await http.delete(`/cart/items/${id}`)
+    return response.data.data
+  } catch (error) {
+    tratarErro(error, 'Não foi possível remover este produto do carrinho.')
+  }
+}
+
+export async function limparItensCarrinho() {
+  try {
+    const response = await http.delete('/cart/items')
+    return response.data.data
+  } catch (error) {
+    tratarErro(error, 'Não foi possível limpar o carrinho.')
+  }
 }

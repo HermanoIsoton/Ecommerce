@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import CarrinhoView from '@/views/CarrinhoView.vue'
 import ContaView from '@/views/ContaView.vue'
 import ProdutoView from '@/views/ProdutoView.vue'
+import PagamentoView from '@/views/PagamentoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +31,12 @@ const router = createRouter({
       name: 'conta',
       component: ContaView,
       meta: { titulo: 'Minha conta | EletricWay' },
+    },
+    {
+      path: '/pagamento/:id(\\d+)',
+      name: 'pagamento',
+      component: PagamentoView,
+      meta: { titulo: 'Pagamento | EletricWay' },
     },
     { path: '/:pathMatch(.*)*', redirect: { name: 'home' } },
   ],

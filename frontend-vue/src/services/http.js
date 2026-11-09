@@ -10,5 +10,19 @@ export const http = axios.create({
   timeout: 30000,
 })
 
+let tokenCarrinho = ''
+
+export function definirTokenCarrinho(token) {
+  tokenCarrinho = token
+}
+
+http.interceptors.request.use((config) => {
+  if (tokenCarrinho) {
+    config.headers.set('X-Cart-Token', tokenCarrinho)
+  }
+
+  return config
+})
+
 export const obterCsrf = () =>
   axios.get(`${raiz}/sanctum/csrf-cookie`, { withCredentials: true, timeout: 30000 })

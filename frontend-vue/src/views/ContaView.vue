@@ -107,6 +107,9 @@ async function salvarEndereco(dados, id) {
     }
 
     avisar('Endereço salvo com sucesso.')
+    if (route.query.checkout === '1' && !id) {
+      await router.push({ name: 'carrinho' })
+    }
   } catch (erro) {
     avisar(erro.message, { tipo: 'erro' })
   }

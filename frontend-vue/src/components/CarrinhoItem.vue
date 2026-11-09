@@ -4,14 +4,17 @@ import { formatarMoeda } from '@/utils/formatadores'
 import { ROTULO_TIPO } from '@/utils/rotulos'
 
 const props = defineProps({
-  item: { type: Object, required: true }, // linha de cart_items com `product`
+  item: { type: Object, required: true },
+  busy: { type: Boolean, default: false },
 })
 
 defineEmits(['aumentar', 'diminuir', 'remover'])
 
 const produto = computed(() => props.item.product)
-const subtotal = computed(() => produto.value.price * props.item.quantity)
-const noLimiteDoEstoque = computed(() => props.item.quantity >= produto.value.stock)
+const subtotal = computed(() => props.item.subtotal)
+const noLimiteDoEstoque = computed(() =>
+  !produto.value.is_active || props.item.quantity >= produto.value.stock
+)
 </script>
 
 <template>
@@ -34,21 +37,26 @@ const noLimiteDoEstoque = computed(() => props.item.quantity >= produto.value.st
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
           <div class="d-flex align-items-center gap-3">
             <div class="qtd-controle" role="group" :aria-label="`Quantidade de ${produto.name}`">
-              <button type="button" aria-label="Diminuir quantidade" :disabled="item.quantity <= 1" @click="$emit('diminuir')">
+              <button type="button" aria-label="Diminuir quantidade" :disabled="busy || item.quantity <= 1" @click="$emit('diminuir')">
                 <i class="bi bi-dash-lg"></i>
               </button>
               <span aria-live="polite">{{ item.quantity }}</span>
-              <button type="button" aria-label="Aumentar quantidade" :disabled="noLimiteDoEstoque" @click="$emit('aumentar')">
+              <button type="button" aria-label="Aumentar quantidade" :disabled="busy || noLimiteDoEstoque" @click="$emit('aumentar')">
                 <i class="bi bi-plus-lg"></i>
               </button>
             </div>
-            <span class="small text-secondary">{{ formatarMoeda(produto.price) }} cada</span>
+            <span class="small text-secondary">{{ formatarMoeda(item.unit_price) }} cada</span>
           </div>
-          <button type="button" class="btn btn-sm btn-outline-danger" @click="$emit('remover')">
+          <button type="button" class="btn btn-sm btn-outline-danger" :disabled="busy" @click="$emit('remover')">
             <i class="bi bi-trash me-1" aria-hidden="true"></i>Remover
           </button>
         </div>
-        <p v-if="noLimiteDoEstoque" class="small text-warning-emphasis mt-2 mb-0">Quantidade máxima disponível em estoque.</p>
+        <p v-if="!item.is_available" class="small text-danger mt-2 mb-0">
+          {{ item.availability_message }}. Reduza a quantidade ou remova este produto para continuar.
+        </p>
+        <p v-else-if="noLimiteDoEstoque" class="small text-warning-emphasis mt-2 mb-0">
+          Quantidade máxima disponível em estoque.
+        </p>
       </div>
     </div>
   </li>

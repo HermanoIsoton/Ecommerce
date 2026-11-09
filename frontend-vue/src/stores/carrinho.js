@@ -1,160 +1,274 @@
 import { computed, ref } from 'vue'
+import {
+  adicionarItemCarrinho,
+  buscarCarrinho,
+  criarSessaoCarrinho,
+  limparItensCarrinho,
+  removerItemCarrinho,
+  atualizarItemCarrinho,
+} from '@/services/carrinho'
+import { definirTokenCarrinho } from '@/services/http'
 
 const CHAVE_TOKEN = 'eletricway:cart-token'
-const PREFIXO_CARRINHO = 'eletricway:guest-cart:'
+const TOKEN_VALIDO = /^[a-f0-9]{64}$/
 
-function gerarToken() {
-  if (!globalThis.crypto?.getRandomValues) {
-    throw new Error('Este navegador não oferece suporte para criar um token seguro para o carrinho.')
-  }
-
-  const bytes = new Uint8Array(32)
-  globalThis.crypto.getRandomValues(bytes)
-  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
-}
-
-function obterToken() {
-  let token = localStorage.getItem(CHAVE_TOKEN)
-
-  if (!/^[a-f0-9]{64}$/.test(token ?? '')) {
-    token = gerarToken()
-    localStorage.setItem(CHAVE_TOKEN, token)
-  }
-
-  return token
-}
-
-const tokenCarrinho = ref('')
-const itens = ref([])
+export const carrinho = ref(null)
 export const erroCarrinho = ref('')
+export const carregandoCarrinho = ref(false)
+export const sincronizandoCarrinho = ref(false)
 
-function salvarCarrinho() {
+let inicializacaoAtual = null
+let carrinhoDaConta = false
+
+export const itensDoCarrinho = computed(() => carrinho.value?.items ?? [])
+export const totalUnidades = computed(() => carrinho.value?.total_units ?? 0)
+export const subtotalCarrinho = computed(() => carrinho.value?.subtotal ?? 0)
+export const totalCarrinho = computed(() => carrinho.value?.total ?? 0)
+
+function definirErro(erro, padrao) {
+  erroCarrinho.value = erro instanceof Error ? erro.message : padrao
+}
+
+function salvarToken(token) {
+  definirTokenCarrinho(token)
+
   try {
-    localStorage.setItem(`${PREFIXO_CARRINHO}${tokenCarrinho.value}`, JSON.stringify(itens.value))
-    erroCarrinho.value = ''
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CHAVE_TOKEN, token)
+    }
     return true
   } catch {
-    erroCarrinho.value = 'Não foi possível salvar o carrinho neste navegador.'
+    erroCarrinho.value = 'O carrinho está ativo, mas não será mantido após fechar este navegador.'
     return false
   }
 }
 
-function carregarCarrinho() {
+function apagarToken() {
+  definirTokenCarrinho('')
+
   try {
-    tokenCarrinho.value = obterToken()
-    const salvo = localStorage.getItem(`${PREFIXO_CARRINHO}${tokenCarrinho.value}`)
-    const dados = salvo ? JSON.parse(salvo) : []
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(CHAVE_TOKEN)
+    }
+  } catch {
+    erroCarrinho.value = 'Não foi possível remover a sessão anterior do carrinho neste navegador.'
+  }
+}
 
-    const dadosValidos = Array.isArray(dados) && dados.every((item) =>
-      item &&
-      Number.isInteger(Number(item.id)) &&
-      Number.isInteger(Number(item.product_id)) &&
-      Number.isInteger(Number(item.quantity)) &&
-      Number(item.quantity) > 0 &&
-      item.product &&
-      Number.isFinite(Number(item.product.price)) &&
-      Number.isFinite(Number(item.product.stock))
-    )
+function obterTokenSalvo() {
+  try {
+    return typeof window === 'undefined'
+      ? ''
+      : window.localStorage.getItem(CHAVE_TOKEN) ?? ''
+  } catch {
+    erroCarrinho.value = 'Não foi possível acessar a sessão salva do carrinho neste navegador.'
+    return ''
+  }
+}
 
-    if (!dadosValidos) {
-      throw new Error('Os dados salvos do carrinho são inválidos.')
+async function iniciarCarrinhoDeVisitante() {
+  erroCarrinho.value = ''
+  carregandoCarrinho.value = true
+
+  try {
+    const tokenSalvo = obterTokenSalvo()
+
+    if (TOKEN_VALIDO.test(tokenSalvo)) {
+      definirTokenCarrinho(tokenSalvo)
+      try {
+        carrinho.value = await buscarCarrinho()
+        carrinhoDaConta = false
+        return carrinho.value
+      } catch (erro) {
+        if (erro.status !== 401 && erro.status !== 404) {
+          throw erro
+        }
+      }
     }
 
-    itens.value = dados
+    apagarToken()
+    const sessao = await criarSessaoCarrinho()
+    salvarToken(sessao.token)
+    carrinho.value = sessao.cart
+    carrinhoDaConta = false
+    return carrinho.value
   } catch (erro) {
-    erroCarrinho.value = erro instanceof Error
-      ? erro.message
-      : 'Não foi possível carregar o carrinho salvo.'
-    itens.value = []
+    definirErro(erro, 'Não foi possível iniciar o carrinho.')
+    throw erro
+  } finally {
+    carregandoCarrinho.value = false
   }
 }
 
-if (typeof window !== 'undefined') {
-  carregarCarrinho()
+async function resolverCarrinhoDaSessao() {
+  erroCarrinho.value = ''
+  carregandoCarrinho.value = true
+
+  try {
+    const tokenSalvo = obterTokenSalvo()
+    if (TOKEN_VALIDO.test(tokenSalvo)) {
+      definirTokenCarrinho(tokenSalvo)
+    }
+
+    try {
+      carrinho.value = await buscarCarrinho()
+      carrinhoDaConta = false
+      return carrinho.value
+    } catch (erro) {
+      if (erro.status !== 401 && !(erro.status === 404 && TOKEN_VALIDO.test(tokenSalvo))) {
+        throw erro
+      }
+    }
+
+    apagarToken()
+    const sessao = await criarSessaoCarrinho()
+    salvarToken(sessao.token)
+    carrinho.value = sessao.cart
+    carrinhoDaConta = false
+    return carrinho.value
+  } catch (erro) {
+    definirErro(erro, 'Não foi possível iniciar o carrinho.')
+    throw erro
+  } finally {
+    carregandoCarrinho.value = false
+  }
 }
 
-export const tokenDoCarrinho = computed(() => tokenCarrinho.value)
-export const itensDoCarrinho = itens
+async function carregarCarrinhoDaConta() {
+  erroCarrinho.value = ''
+  carregandoCarrinho.value = true
+  apagarToken()
 
-export const totalUnidades = computed(() =>
-  itens.value.reduce((soma, item) => soma + Number(item.quantity), 0)
-)
+  try {
+    carrinho.value = await buscarCarrinho()
+    carrinhoDaConta = true
+    return carrinho.value
+  } catch (erro) {
+    definirErro(erro, 'Não foi possível carregar o carrinho da sua conta.')
+    throw erro
+  } finally {
+    carregandoCarrinho.value = false
+  }
+}
 
-export const subtotalCarrinho = computed(() =>
-  itens.value.reduce((soma, item) => soma + Number(item.product.price) * Number(item.quantity), 0)
-)
+export function iniciarCarrinho(usuario) {
+  return acompanharInicializacao(() => (
+    usuario === undefined
+      ? resolverCarrinhoDaSessao()
+      : usuario
+        ? carregarCarrinhoDaConta()
+        : iniciarCarrinhoDeVisitante()
+  ))
+}
+
+export function marcarCarrinhoComoDaConta() {
+  apagarToken()
+  carrinhoDaConta = true
+}
+
+export async function sincronizarCarrinhoAposAutenticacao() {
+  return acompanharInicializacao(carregarCarrinhoDaConta)
+}
+
+export async function iniciarCarrinhoAposLogout() {
+  carrinho.value = null
+  return acompanharInicializacao(iniciarCarrinhoDeVisitante)
+}
+
+export async function recarregarCarrinho() {
+  return acompanharInicializacao(() => (
+    carrinhoDaConta ? carregarCarrinhoDaConta() : iniciarCarrinhoDeVisitante()
+  ))
+}
+
+export function refletirPedidoCriado() {
+  if (!carrinho.value) return
+
+  carrinho.value = {
+    ...carrinho.value,
+    items: [],
+    total_units: 0,
+    subtotal: 0,
+    total: 0,
+  }
+}
+
+function acompanharInicializacao(inicializar) {
+  const tarefa = inicializar()
+  let tarefaMonitorada
+
+  tarefaMonitorada = tarefa.finally(() => {
+    if (inicializacaoAtual === tarefaMonitorada) {
+      inicializacaoAtual = null
+    }
+  })
+  inicializacaoAtual = tarefaMonitorada
+  return tarefaMonitorada
+}
+
+async function garantirCarrinhoInicializado() {
+  if (inicializacaoAtual) {
+    await inicializacaoAtual
+  }
+
+  if (!carrinho.value) {
+    throw new Error('O carrinho ainda não está disponível. Tente novamente.')
+  }
+}
+
+async function executarOperacao(operacao) {
+  if (sincronizandoCarrinho.value) {
+    return false
+  }
+
+  sincronizandoCarrinho.value = true
+  erroCarrinho.value = ''
+
+  try {
+    await garantirCarrinhoInicializado()
+    carrinho.value = await operacao()
+    return true
+  } catch (erro) {
+    definirErro(erro, 'Não foi possível atualizar o carrinho.')
+    return false
+  } finally {
+    sincronizandoCarrinho.value = false
+  }
+}
 
 export function adicionarAoCarrinho(produto, quantidade = 1) {
-  const quantidadeSolicitada = Number(quantidade)
-  const estoque = Number(produto.stock)
-
-  if (!Number.isInteger(quantidadeSolicitada) || quantidadeSolicitada < 1 || estoque < 1) {
-    return false
-  }
-
-  const existente = itens.value.find((item) => String(item.product_id) === String(produto.id))
-  const quantidadeAtual = Number(existente?.quantity ?? 0)
-
-  if (quantidadeAtual + quantidadeSolicitada > estoque) {
-    return false
-  }
-
-  if (existente) {
-    existente.quantity = quantidadeAtual + quantidadeSolicitada
-  } else {
-    const proximoId = itens.value.reduce((maior, item) => Math.max(maior, Number(item.id) || 0), 0) + 1
-    itens.value.push({
-      id: proximoId,
-      cart_id: null,
-      product_id: produto.id,
-      quantity: quantidadeSolicitada,
-      product: { ...produto },
-    })
-  }
-
-  return salvarCarrinho()
+  return executarOperacao(() => adicionarItemCarrinho({
+    product_id: produto.id,
+    quantity: quantidade,
+  }))
 }
 
 export function atualizarQuantidade(itemId, quantidade) {
-  const item = itens.value.find((linha) => String(linha.id) === String(itemId))
-  const novaQuantidade = Number(quantidade)
+  return executarOperacao(() => atualizarItemCarrinho(itemId, { quantity: quantidade }))
+}
 
-  if (!item || !Number.isInteger(novaQuantidade) || novaQuantidade < 1) {
+export async function aumentarQuantidade(itemId) {
+  const item = itensDoCarrinho.value.find((linha) => String(linha.id) === String(itemId))
+  if (!item || !item.product.is_active || item.quantity >= item.product.stock) {
     return false
   }
 
-  if (novaQuantidade > Number(item.product.stock)) {
+  return atualizarQuantidade(itemId, item.quantity + 1)
+}
+
+export async function diminuirQuantidade(itemId) {
+  const item = itensDoCarrinho.value.find((linha) => String(linha.id) === String(itemId))
+  if (!item || item.quantity <= 1) {
     return false
   }
 
-  item.quantity = novaQuantidade
-  return salvarCarrinho()
-}
-
-export function aumentarQuantidade(itemId) {
-  const item = itens.value.find((linha) => String(linha.id) === String(itemId))
-  if (!item) return false
-  return atualizarQuantidade(itemId, Number(item.quantity) + 1)
-}
-
-export function diminuirQuantidade(itemId) {
-  const item = itens.value.find((linha) => String(linha.id) === String(itemId))
-  if (!item || Number(item.quantity) <= 1) return false
-  return atualizarQuantidade(itemId, Number(item.quantity) - 1)
+  return atualizarQuantidade(itemId, item.quantity - 1)
 }
 
 export function removerDoCarrinho(itemId) {
-  const quantidadeAnterior = itens.value.length
-  itens.value = itens.value.filter((linha) => String(linha.id) !== String(itemId))
-
-  if (itens.value.length === quantidadeAnterior) {
-    return false
-  }
-
-  return salvarCarrinho()
+  return executarOperacao(() => removerItemCarrinho(itemId))
 }
 
 export function limparCarrinho() {
-  itens.value = []
-  return salvarCarrinho()
+  return executarOperacao(() => limparItensCarrinho())
 }

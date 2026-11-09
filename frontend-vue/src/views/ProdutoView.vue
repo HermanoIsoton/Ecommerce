@@ -3,7 +3,11 @@ import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { buscarProduto } from '@/services/produtos'
 import { produtos } from '@/stores/catalogo'
-import { adicionarAoCarrinho, erroCarrinho } from '@/stores/carrinho'
+import {
+  adicionarAoCarrinho,
+  erroCarrinho,
+  sincronizandoCarrinho,
+} from '@/stores/carrinho'
 import { avisar } from '@/stores/toast'
 import { formatarMoeda } from '@/utils/formatadores'
 import { ROTULO_TIPO } from '@/utils/rotulos'
@@ -12,7 +16,9 @@ const route = useRoute()
 const produto = ref(null)
 const carregando = ref(true)
 const erro = ref('')
-const semEstoque = computed(() => Number(produto.value?.stock ?? 0) <= 0)
+const semEstoque = computed(() =>
+  !produto.value?.is_active || Number(produto.value?.stock ?? 0) <= 0
+)
 
 async function carregarProduto() {
   const id = String(route.params.id)
@@ -33,15 +39,16 @@ async function carregarProduto() {
   }
 }
 
-function adicionar() {
+async function adicionar() {
   if (!produto.value || semEstoque.value) return
 
-  if (adicionarAoCarrinho(produto.value)) {
+  if (await adicionarAoCarrinho(produto.value)) {
     avisar(`${produto.value.name} foi adicionado ao carrinho.`)
-  } else if (erroCarrinho.value) {
-    avisar(erroCarrinho.value, { tipo: 'erro' })
   } else {
-    avisar(`Você já tem todo o estoque de ${produto.value.name} no carrinho.`, { tipo: 'info' })
+    avisar(
+      erroCarrinho.value || `Não foi possível adicionar ${produto.value.name} ao carrinho.`,
+      { tipo: 'erro' }
+    )
   }
 }
 
@@ -90,10 +97,11 @@ watch(() => route.params.id, carregarProduto, { immediate: true })
               <button
                 type="button"
                 class="btn btn-ew-accent btn-lg w-100 mb-3"
-                :disabled="semEstoque"
+                :disabled="semEstoque || sincronizandoCarrinho"
                 @click="adicionar"
               >
-                <i class="bi bi-cart-plus me-1" aria-hidden="true"></i>Adicionar ao carrinho
+                <i class="bi bi-cart-plus me-1" aria-hidden="true"></i>
+                {{ sincronizandoCarrinho ? 'Adicionando...' : 'Adicionar ao carrinho' }}
               </button>
               <section class="produto-detalhe-tecnico" aria-labelledby="tituloEspecificacoes">
                 <h2 class="h6 fw-bold mb-2" id="tituloEspecificacoes">Detalhes técnicos</h2>

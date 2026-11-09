@@ -7,7 +7,6 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderResource extends JsonResource
 {
-
     public function toArray(Request $request): array
     {
         return [
@@ -29,6 +28,16 @@ class OrderResource extends JsonResource
             'shipped_at' => $this->shipped_at,
             'delivered_at' => $this->delivered_at,
             'cancelled_at' => $this->cancelled_at,
+            'payment_expires_at' => $this->payment_expires_at,
+            'items' => $this->whenLoaded('orderItems', fn () => $this->orderItems->map(fn ($item) => [
+                'id' => $item->id,
+                'order_id' => $item->order_id,
+                'product_id' => $item->product_id,
+                'product_name' => $item->product_name,
+                'unit_price' => $item->unit_price,
+                'quantity' => $item->quantity,
+                'subtotal_cents' => $item->subtotal_cents,
+            ])),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
