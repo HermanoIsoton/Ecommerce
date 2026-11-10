@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutOrderRequest;
+use App\Http\Requests\ListOrdersRequest;
 use App\Http\Requests\StoreOrdersRequest;
-use App\Http\Requests\UpdateOrdersRequest;
+use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Services\CheckoutService;
@@ -19,12 +20,23 @@ class OrderController extends Controller
         private CheckoutService $checkoutService,
     ) {}
 
-    public function index(Request $request)
+    public function index(ListOrdersRequest $request)
     {
         $this->checkoutService->expirePendingOrders();
-        $orders = $request->user()->role === 'admin'
-            ? Order::query()->with('orderItems')->latest()->get()
-            : Order::query()->with('orderItems')->where('user_id', $request->user()->id)->latest()->get();
+        $status = $request->validated('status');
+        $query = Order::query()->with('orderItems')->latest();
+
+        if ($request->user()->role === 'admin') {
+            $query->with('user:id,name,email');
+        } else {
+            $query->where('user_id', $request->user()->id);
+        }
+
+        if (! empty($status)) {
+            $query->where('status', $status);
+        }
+
+        $orders = $query->get();
 
         return OrderResource::collection($orders);
     }
@@ -80,12 +92,14 @@ class OrderController extends Controller
         return new OrderResource($order);
     }
 
-    // soamente admin ->
-    public function update(UpdateOrdersRequest $request, string $id)
+    public function updateStatus(UpdateOrderStatusRequest $request, int $order)
     {
-        $order = $this->orderService->update($id, $request->validated());
+        $updatedOrder = $this->orderService->transitionStatus(
+            $order,
+            $request->validated('status'),
+        );
 
-        return new OrderResource($order);
+        return new OrderResource($updatedOrder);
     }
 
     public function destroy(string $id)

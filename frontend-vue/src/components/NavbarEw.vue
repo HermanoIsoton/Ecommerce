@@ -293,6 +293,17 @@ async function sair() {
         >
           <i class="bi bi-person-circle" aria-hidden="true"></i>Minha conta
         </RouterLink>
+        <RouterLink
+          v-if="usuario.role === 'admin'"
+          class="ew-subnav-link"
+          :class="{ active: rota.name === 'admin' }"
+          :to="{ name: 'admin' }"
+          :aria-current="rota.name === 'admin' ? 'page' : undefined"
+          aria-label="Abrir área administrativa"
+          title="Área administrativa"
+        >
+          <i class="bi bi-gear" aria-hidden="true"></i>Administração
+        </RouterLink>
       </div>
     </div>
   </nav>

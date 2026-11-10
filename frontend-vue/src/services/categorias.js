@@ -1,5 +1,10 @@
 import { http } from './http'
 
+function mensagemDoErro(error, mensagemPadrao) {
+    const errosValidacao = Object.values(error.response?.data?.errors || {}).flat()
+    return errosValidacao[0] || error.response?.data?.message || mensagemPadrao
+}
+
 export async function listarCategorias() {
     try {
         const response = await http.get('/categories')
@@ -30,8 +35,7 @@ export async function criarCategorias(dados) {
         return response.data.data
     }
     catch (error) {
-         const message = error.response?.data?.message || 'Falha para criar os categorias'
-        throw new Error(message)
+         throw new Error(mensagemDoErro(error, 'Falha para criar os categorias'))
     }
 }
 
@@ -42,8 +46,7 @@ export async function atualizarCategorias(id, dados) {
         return response.data.data
     }
     catch (error) {
-         const message = error.response?.data?.message || 'Falha para atualizar os categorias'
-        throw new Error(message)
+        throw new Error(mensagemDoErro(error, 'Falha para atualizar os categorias'))
     }
 }
 
@@ -53,7 +56,6 @@ export async function removerCategorias(id) {
         await http.delete(`/categories/${id}`)
     }
     catch (error) {
-        const message = error.response?.data?.message || 'Falha para deletar os categorias'
-        throw new Error(message)
+        throw new Error(mensagemDoErro(error, 'Falha para deletar os categorias'))
     }
 }

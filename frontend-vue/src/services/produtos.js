@@ -1,5 +1,10 @@
 import { http } from './http'
 
+function mensagemDoErro(error, mensagemPadrao) {
+    const errosValidacao = Object.values(error.response?.data?.errors || {}).flat()
+    return errosValidacao[0] || error.response?.data?.message || mensagemPadrao
+}
+
 export async function listarProdutos() {
     try {
         const response = await http.get('/products')
@@ -30,8 +35,7 @@ export async function criarProduto(dados) {
         return response.data.data
     }
     catch (error) {
-         const message = error.response?.data?.message || 'Falha para criar os produtos'
-        throw new Error(message)
+        throw new Error(mensagemDoErro(error, 'Falha para criar os produtos'))
     }
 }
 
@@ -42,8 +46,7 @@ export async function atualizarProduto(id, dados) {
         return response.data.data
     }
     catch (error) {
-         const message = error.response?.data?.message || 'Falha para atualizar os produtos'
-        throw new Error(message)
+        throw new Error(mensagemDoErro(error, 'Falha para atualizar os produtos'))
     }
 }
 
@@ -53,7 +56,6 @@ export async function removerProduto(id) {
         await http.delete(`/products/${id}`)
     }
     catch (error) {
-        const message = error.response?.data?.message || 'Falha para deletar os produtos'
-        throw new Error(message)
+        throw new Error(mensagemDoErro(error, 'Falha para deletar os produtos'))
     }
 }

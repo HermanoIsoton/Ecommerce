@@ -19,7 +19,6 @@ class Product extends Model
         'is_active',
         'model_year',
         'seating_capacity',
-        'doors_count',
         'trunk_capacity_l',
         'type',
         'power',

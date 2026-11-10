@@ -87,7 +87,10 @@ Route::middleware('auth:sanctum')->group(function () {
             ->whereNumber('product');
 
         Route::apiResource('orders', OrderController::class)
-            ->only(['store', 'update', 'destroy'])
+            ->only(['store', 'destroy'])
+            ->whereNumber('order');
+
+        Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])
             ->whereNumber('order');
 
         Route::apiResource('order_items', Order_itemController::class)

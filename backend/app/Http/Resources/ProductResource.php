@@ -26,7 +26,6 @@ class ProductResource extends JsonResource
             'is_active' => $this->is_active,
             'model_year' => $this->model_year,
             'seating_capacity' => $this->seating_capacity,
-            'doors_count' => $this->doors_count,
             'trunk_capacity_l' => $this->trunk_capacity_l,
             'type' => $this->type,
             'power' => $this->power,

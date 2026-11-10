@@ -12,6 +12,13 @@ class OrderResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
+            'customer' => $this->when(
+                $request->user()?->role === 'admin' && $this->relationLoaded('user'),
+                fn () => [
+                    'name' => $this->user->name,
+                    'email' => $this->user->email,
+                ],
+            ),
             'status' => $this->status,
             'subtotal_cents' => $this->subtotal_cents,
             'shipping_cents' => $this->shipping_cents,

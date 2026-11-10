@@ -22,7 +22,6 @@ return new class extends Migration
             // Gerais do Veículo
             $table->unsignedSmallInteger('model_year')->nullable();        
             $table->unsignedTinyInteger('seating_capacity')->nullable();   
-            $table->unsignedSmallInteger('doors_count')->nullable();   
             $table->unsignedMediumInteger('trunk_capacity_l')->nullable();
             $table->enum('type', ['autopropelido', 'ciclomotor']);
             //details

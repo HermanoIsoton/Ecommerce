@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Categorie;
 use Illuminate\Database\Eloquent\Collection;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
 class CategorieService
 {
@@ -33,6 +34,13 @@ class CategorieService
     public function delete(int $id): void
     {
         $categorie = Categorie::findOrFail($id);
+
+        if ($categorie->products()->exists()) {
+            throw new ConflictHttpException(
+                'Não é possível excluir esta categoria porque há produtos vinculados a ela.'
+            );
+        }
+
         $categorie->delete();
     }
 }

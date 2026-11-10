@@ -9,9 +9,11 @@ function tratarErro(error, mensagemPadrao) {
     throw falha
 }
 
-export async function listarPedidos() {
+export async function listarPedidos(status = '') {
     try {
-        const response = await http.get('/orders')
+        const response = await http.get('/orders', {
+            params: status ? { status } : {},
+        })
         return response.data.data
     }
     catch (error) {
@@ -66,6 +68,15 @@ export async function atualizarPedido(id, dados) {
     }
     catch (error) {
         tratarErro(error, 'Falha para atualizar o pedido.')
+    }
+}
+
+export async function atualizarStatusPedido(id, status) {
+    try {
+        const response = await http.patch(`/orders/${id}/status`, { status })
+        return response.data.data
+    } catch (error) {
+        tratarErro(error, 'Falha ao atualizar o status do pedido.')
     }
 }
 

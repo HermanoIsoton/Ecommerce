@@ -14,7 +14,7 @@ class ProductService
 
     public function create(array $data): product
     {
-        $data['slug'] = Str::slug($data['name']);
+        $data['slug'] = $data['slug'] ?? Str::slug($data['name']);
         $product = product::create($data);
 
         return $product;
@@ -27,8 +27,8 @@ class ProductService
 
     public function update(int $id, array $data): product
     {
-        if (isset($data['name'])){
-        $data['slug'] = Str::slug($data['name']);
+        if (isset($data['name']) && ! isset($data['slug'])) {
+            $data['slug'] = Str::slug($data['name']);
         }
 
         $product = product::findOrFail($id);
