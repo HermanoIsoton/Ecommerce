@@ -123,7 +123,7 @@ async function confirmarEnderecoEContinuar() {
 </script>
 
 <template>
-  <main class="py-4 py-lg-5">
+  <main class="flex-grow-1 py-4 py-lg-5">
     <div class="container">
       <h1 class="fw-bold mb-1">Seu carrinho</h1>
       <p class="text-secondary mb-4">{{ resumoQuantidade }}</p>

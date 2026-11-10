@@ -91,15 +91,15 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="ew-modal-backdrop">
+  <div class="ew-modal-backdrop position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3">
     <section
-      class="ew-auth-modal"
+      class="ew-auth-modal position-relative overflow-auto bg-white rounded-4 shadow"
       role="dialog"
       aria-modal="true"
       :aria-labelledby="mode === 'login' ? 'tituloLogin' : 'tituloCadastro'"
     >
       <button
-        class="ew-modal-close"
+        class="ew-modal-close position-absolute top-0 end-0 m-2 d-flex align-items-center justify-content-center border-0 rounded-circle"
         type="button"
         aria-label="Fechar"
         @click="emit('close')"

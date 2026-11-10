@@ -102,9 +102,9 @@ function linhaTempo(pedido) {
                 </div>
                 <div class="col-md-4">
                   <h4 class="h6 fw-bold">Andamento</h4>
-                  <ul class="linha-tempo">
-                    <li v-for="evento in linhaTempo(pedido)" :key="evento.rotulo">
-                      <i class="bi bi-check-circle-fill" aria-hidden="true"></i>
+                  <ul class="linha-tempo list-unstyled p-0 mb-0 d-grid gap-2">
+                    <li v-for="evento in linhaTempo(pedido)" :key="evento.rotulo" class="d-flex align-items-center gap-2 py-1 small">
+                      <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
                       <span>{{ evento.rotulo }} · {{ formatarDataHora(evento.data) }}</span>
                     </li>
                   </ul>

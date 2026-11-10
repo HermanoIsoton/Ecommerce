@@ -141,7 +141,7 @@ async function definirEnderecoPrincipal(id) {
 </script>
 
 <template>
-  <main v-if="usuario && autenticacaoCarregada" class="conta-page py-4 py-lg-5">
+  <main v-if="usuario && autenticacaoCarregada" class="conta-page flex-grow-1 py-4 py-lg-5">
     <div class="container">
 
       <!-- Cabecalho da conta (tabela users) -->
@@ -156,7 +156,7 @@ async function definirEnderecoPrincipal(id) {
                 <button
                   v-for="aba in abas"
                   :key="aba.id"
-                  class="nav-link"
+                  class="nav-link d-flex align-items-center gap-2 px-3 py-2 fw-semibold rounded-3"
                   :class="{ active: abaAtiva === aba.id }"
                   :id="`tab-${aba.id}`"
                   type="button"

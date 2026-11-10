@@ -56,7 +56,7 @@ watch(() => route.params.id, carregarProduto, { immediate: true })
 </script>
 
 <template>
-  <main class="py-4 py-lg-5">
+  <main class="flex-grow-1 py-4 py-lg-5">
     <div class="container">
       <RouterLink :to="{ name: 'home', hash: '#catalogo' }" class="btn btn-link px-0 mb-3">
         <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Continuar comprando
@@ -76,8 +76,8 @@ watch(() => route.params.id, carregarProduto, { immediate: true })
       <div v-else-if="produto" class="card card-ew produto-detalhe">
         <div class="row g-0">
           <div class="col-lg-6">
-            <div class="produto-detalhe-imagem">
-              <img v-if="produto.image_url" :src="produto.image_url" :alt="produto.name">
+            <div class="produto-detalhe-imagem d-flex align-items-center justify-content-center">
+              <img v-if="produto.image_url" class="d-block w-100 h-100 object-fit-contain" :src="produto.image_url" :alt="produto.name">
               <i v-else class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
             </div>
           </div>
@@ -103,19 +103,19 @@ watch(() => route.params.id, carregarProduto, { immediate: true })
                 <i class="bi bi-cart-plus me-1" aria-hidden="true"></i>
                 {{ sincronizandoCarrinho ? 'Adicionando...' : 'Adicionar ao carrinho' }}
               </button>
-              <section class="produto-detalhe-tecnico" aria-labelledby="tituloEspecificacoes">
+              <section class="produto-detalhe-tecnico border-top pt-3" aria-labelledby="tituloEspecificacoes">
                 <h2 class="h6 fw-bold mb-2" id="tituloEspecificacoes">Detalhes técnicos</h2>
-                <dl class="produto-especificacoes">
-                  <div><dt>Potência</dt><dd>{{ produto.power }} W</dd></div>
-                  <div><dt>Autonomia</dt><dd>{{ produto.range_km }} km</dd></div>
-                  <div><dt>Velocidade máxima</dt><dd>{{ produto.top_speed_kmh }} km/h</dd></div>
-                  <div><dt>Peso</dt><dd>{{ produto.weight_kg }} kg</dd></div>
-                  <div><dt>Capacidade da bateria</dt><dd>{{ produto.battery_capaciy }} Wh</dd></div>
-                  <div><dt>Tensão da bateria</dt><dd>{{ produto.battery_voltage_v }} V</dd></div>
-                  <div><dt>Bateria removível</dt><dd>{{ produto.is_battery_removable ? 'Sim' : 'Não' }}</dd></div>
-                  <div><dt>Tempo de recarga</dt><dd>{{ produto.charge_time_h }} h</dd></div>
-                  <div><dt>Potência máxima de recarga</dt><dd>{{ produto.max_charge_power_kw === null ? '—' : `${produto.max_charge_power_kw} kW` }}</dd></div>
-                  <div><dt>Garantia</dt><dd>{{ produto.warranty_months ? `${produto.warranty_months} meses` : '—' }}</dd></div>
+                <dl class="produto-especificacoes row row-cols-2 g-2 mb-0">
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Potência</dt><dd class="small fw-bold mb-0">{{ produto.power }} W</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Autonomia</dt><dd class="small fw-bold mb-0">{{ produto.range_km }} km</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Velocidade máxima</dt><dd class="small fw-bold mb-0">{{ produto.top_speed_kmh }} km/h</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Peso</dt><dd class="small fw-bold mb-0">{{ produto.weight_kg }} kg</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Capacidade da bateria</dt><dd class="small fw-bold mb-0">{{ produto.battery_capaciy }} Wh</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Tensão da bateria</dt><dd class="small fw-bold mb-0">{{ produto.battery_voltage_v }} V</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Bateria removível</dt><dd class="small fw-bold mb-0">{{ produto.is_battery_removable ? 'Sim' : 'Não' }}</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Tempo de recarga</dt><dd class="small fw-bold mb-0">{{ produto.charge_time_h }} h</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Potência máxima de recarga</dt><dd class="small fw-bold mb-0">{{ produto.max_charge_power_kw === null ? '—' : `${produto.max_charge_power_kw} kW` }}</dd></div>
+                  <div class="col bg-body-tertiary p-2 rounded-2"><dt class="small fw-medium text-secondary">Garantia</dt><dd class="small fw-bold mb-0">{{ produto.warranty_months ? `${produto.warranty_months} meses` : '—' }}</dd></div>
                 </dl>
               </section>
             </div>

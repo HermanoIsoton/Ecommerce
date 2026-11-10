@@ -1,36 +1,8 @@
 /* EletricWay - estilos compartilhados (Bootstrap 5.3 + ajustes da marca) */
 
-:root {
-  --ew-navy: #0b2a4a;
-  --ew-navy-2: #11406f;
-  --ew-green: #2ef08a;
-  --ew-green-dark: #00875a;
-  --ew-gray: #4a5b70;
-  --ew-bg: #f2f5f8;
-  --ew-hero-gradient: linear-gradient(135deg, var(--ew-navy) 0%, var(--ew-navy-2) 100%);
-  --bs-body-font-family: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --bs-body-bg: var(--ew-bg);
-  --bs-body-color: #1b2b3d;
-  --bs-link-color: var(--ew-navy-2);
-  --bs-link-hover-color: var(--ew-navy);
-}
-
-/* No Vue o conteudo fica dentro de #app (e nao direto no body), entao o #app e o flex container */
-#app {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-main {
-  flex: 1 0 auto;
-}
-  
 /* ---------- Navbar ---------- */
 .ew-header {
   z-index: 1020;
-  background: var(--ew-hero-gradient);
-  background-attachment: fixed;
 }
 
 .ew-navbar {
@@ -48,15 +20,10 @@ main {
 }
 
 .ew-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-weight: 800;
   font-size: 1.5rem;
+  font-weight: 800;
   letter-spacing: -0.04em;
   color: #fff;
-  text-decoration: none;
-  white-space: nowrap;
 }
 
 .ew-brand:hover {
@@ -67,18 +34,10 @@ main {
   color: var(--ew-green);
 }
 
-.ew-brand svg {
-  flex: 0 0 auto;
-}
-
 .ew-location {
   min-width: 0;
   min-height: 2.7rem;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
   padding: 0 0.7rem;
-  text-align: left;
   color: var(--ew-green);
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -92,10 +51,7 @@ main {
 }
 
 .ew-location-copy {
-  width: 100%;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
   gap: 0.08rem;
 }
 
@@ -123,7 +79,6 @@ main {
 }
 
 .ew-search {
-  width: 100%;
   overflow: hidden;
   background: #fff;
   border: 1px solid #ced4da;
@@ -163,25 +118,13 @@ main {
 }
 
 .ew-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.15rem;
-}
-
-.ew-account {
-  position: relative;
+  min-width: 0;
 }
 
 .ew-action-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  padding: 0.2rem 0;
   color: #fff;
   background: transparent;
   border: 0;
-  text-decoration: none;
-  white-space: nowrap;
 }
 
 .ew-action-btn > i:first-child,
@@ -191,11 +134,8 @@ main {
 }
 
 .ew-account-avatar {
-  display: grid;
-  place-items: center;
   width: 1.6rem;
   height: 1.6rem;
-  flex: 0 0 auto;
   color: var(--ew-navy);
   background: var(--ew-green);
   border-radius: 50%;
@@ -206,13 +146,6 @@ main {
 .ew-action-btn:hover,
 .ew-action-btn[aria-expanded="true"] {
   color: var(--ew-green);
-}
-
-.ew-action-btn span:not(.ew-cart-icon):not(.ew-account-avatar) {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  line-height: 1.15;
 }
 
 .ew-action-btn small {
@@ -243,15 +176,10 @@ main {
 }
 
 .ew-account-option {
-  display: block;
-  width: 100%;
   padding: 0.45rem 0.75rem;
   color: inherit;
   background: transparent;
   border: 0;
-  text-align: left;
-  text-decoration: none;
-  white-space: nowrap;
 }
 
 .ew-account-option:hover,
@@ -261,24 +189,15 @@ main {
 }
 
 .ew-modal-backdrop {
-  position: fixed;
-  inset: 0;
   z-index: 1055;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
   background: rgba(5, 20, 35, 0.65);
 }
 
 .ew-auth-modal {
-  position: relative;
-  width: min(100%, 28rem);
+  width: min(100%, 24rem);
   max-height: calc(100vh - 2rem);
-  overflow-y: auto;
   padding: 2rem;
   color: var(--bs-body-color);
-  background: #fff;
-  border-radius: 1rem;
   box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25);
 }
 
@@ -286,14 +205,11 @@ main {
   position: absolute;
   top: 0.8rem;
   right: 0.8rem;
-  display: grid;
-  place-items: center;
   width: 2rem;
   height: 2rem;
   color: var(--ew-gray);
   background: transparent;
   border: 0;
-  border-radius: 50%;
 }
 
 .ew-modal-close:hover {
@@ -306,21 +222,15 @@ main {
 }
 
 .ew-cart-icon {
-  position: relative;
-  display: inline-flex;
+  flex-shrink: 0;
 }
 
 .ew-badge {
-  position: absolute;
-  top: -0.5rem;
-  right: -0.6rem;
   min-width: 1.25rem;
   font-size: 0.7rem;
   font-weight: 700;
   color: var(--ew-navy);
   background: var(--ew-green);
-  border-radius: 999px;
-  padding: 0.1rem 0.35rem;
   text-align: center;
 }
 
@@ -330,20 +240,13 @@ main {
 }
 
 .ew-subnav-inner {
-  display: flex;
-  align-items: center;
-  gap: 1.75rem;
   min-height: 2.75rem;
 }
 
 .ew-subnav-link {
-  display: inline-flex;
-  align-items: center;
   color: #d5e0ec;
   font-size: 0.88rem;
   font-weight: 500;
-  text-decoration: none;
-  white-space: nowrap;
   transition: color 0.15s ease;
 }
 
@@ -401,12 +304,7 @@ main {
   .ew-header-actions {
     grid-column: 2;
     grid-row: 1;
-    gap: 0.8rem;
     padding-left: 0;
-  }
-
-  .ew-action-btn {
-    gap: 0.35rem;
   }
 
   .ew-action-btn > i:first-child,
@@ -442,7 +340,6 @@ main {
   }
 
   .ew-subnav-inner {
-    gap: 1.25rem;
     min-height: 2.6rem;
     overflow-x: auto;
     scrollbar-width: none;
@@ -452,121 +349,28 @@ main {
     display: none;
   }
 
-  .ew-subnav-link {
-    font-size: 0.8rem;
-  }
-
   .ew-auth-modal {
     padding: 1.5rem;
   }
-}
-
-/* ---------- Botoes da marca ---------- */
-.btn-ew {
-  --bs-btn-color: #fff;
-  --bs-btn-bg: var(--ew-navy);
-  --bs-btn-border-color: var(--ew-navy);
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--ew-navy-2);
-  --bs-btn-hover-border-color: var(--ew-navy-2);
-  --bs-btn-active-bg: var(--ew-navy-2);
-  --bs-btn-active-border-color: var(--ew-navy-2);
-  --bs-btn-disabled-bg: var(--ew-navy);
-  --bs-btn-disabled-border-color: var(--ew-navy);
-  font-weight: 600;
 }
 
 .ew-auth-modal .btn-ew:disabled {
   opacity: 1;
 }
 
-.btn-ew-accent {
-  --bs-btn-color: var(--ew-navy);
-  --bs-btn-bg: var(--ew-green);
-  --bs-btn-border-color: var(--ew-green);
-  --bs-btn-hover-color: var(--ew-navy);
-  --bs-btn-hover-bg: #5af6a5;
-  --bs-btn-hover-border-color: #5af6a5;
-  --bs-btn-active-bg: #5af6a5;
-  --bs-btn-active-border-color: #5af6a5;
-  font-weight: 700;
-}
-
-.btn-outline-ew {
-  --bs-btn-color: var(--ew-navy);
-  --bs-btn-border-color: var(--ew-navy);
-  --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: var(--ew-navy);
-  --bs-btn-hover-border-color: var(--ew-navy);
-  --bs-btn-active-bg: var(--ew-navy);
-  font-weight: 600;
-}
-
-.form-control:focus,
-.form-select:focus,
-.btn:focus-visible {
-  border-color: var(--ew-navy-2);
-  box-shadow: 0 0 0 0.25rem rgba(17, 64, 111, 0.25);
-}
-
 /* ---------- Hero (pagina inicial) ---------- */
 .hero {
   color: #fff;
-  background: var(--ew-hero-gradient);
-  background-attachment: fixed;
   overflow: hidden;
-}
-
-.hero h1 {
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
-
-.hero h1 .destaque {
-  color: var(--ew-green);
-}
-
-.hero .lead {
-  color: #c9d8e8;
-}
-
-.hero-visual {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-visual svg {
-  width: min(280px, 60vw);
-  height: auto;
-  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.35));
 }
 
 /* ---------- Beneficios ---------- */
 .beneficio {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-}
-
-.beneficio i {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  width: 2.75rem;
-  height: 2.75rem;
-  font-size: 1.25rem;
-  color: var(--ew-green-dark);
-  background: #e3f8ee;
-  border-radius: 0.75rem;
+  min-width: 0;
 }
 
 /* ---------- Cards de produto ---------- */
 .produto-card {
-  border: 0;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(11, 42, 74, 0.08);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -577,112 +381,24 @@ main {
 
 .produto-img {
   position: relative;
-  aspect-ratio: 4 / 3;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(160deg, #e4ecf4 0%, #cfdcea 100%);
-  color: var(--ew-navy-2);
   font-size: 4rem;
-}
-
-.produto-img img {
-  width: 100%;
-  height: 100%;
-  max-height: 280px;
-  object-fit: cover;
-}
-
-.produto-img .badge-tipo {
-  position: absolute;
-  top: 0.75rem;
-  left: 0.75rem;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.produto-detalhe {
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
 }
 
 .produto-detalhe-imagem {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 100%;
-  aspect-ratio: 1;
-  color: var(--ew-navy-2);
-  background: linear-gradient(160deg, #e4ecf4 0%, #cfdcea 100%);
   font-size: 4rem;
 }
 
-.produto-detalhe-imagem img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.produto-detalhe-tecnico {
-  border: 0;
-  margin-top: 1.25rem;
-}
-
 .produto-especificacoes {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin: 0;
-}
-
-.produto-especificacoes > div {
-  padding: 0.55rem 0.7rem;
-  background: var(--ew-bg);
-  border-radius: 0.55rem;
-}
-
-.produto-especificacoes dt {
-  color: var(--ew-gray);
-  font-size: 0.72rem;
-  font-weight: 500;
-}
-
-.produto-especificacoes dd {
-  margin: 0.1rem 0 0;
   color: var(--ew-navy);
-  font-size: 0.85rem;
-  font-weight: 700;
 }
 
 @media (max-width: 380px) {
-  .produto-especificacoes {
-    grid-template-columns: 1fr;
+  .produto-especificacoes.row-cols-2 > * {
+    width: 100%;
   }
 }
 
-.spec-lista {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.spec-lista li {
-  text-align: center;
-  padding: 0.45rem 0.25rem;
-  background: var(--ew-bg);
-  border-radius: 0.6rem;
-  font-size: 0.78rem;
-  color: var(--ew-gray);
-  line-height: 1.25;
-}
-
 .spec-lista strong {
-  display: block;
   font-size: 0.95rem;
   color: var(--ew-navy);
 }
@@ -737,47 +453,12 @@ main {
 
 /* ---------- Conta ---------- */
 .avatar {
-  display: grid;
-  place-items: center;
   width: 4.25rem;
   height: 4.25rem;
   font-size: 1.5rem;
   font-weight: 800;
   color: var(--ew-navy);
   background: var(--ew-green);
-  border-radius: 50%;
-}
-
-.conta-menu .nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  color: var(--ew-navy);
-  font-weight: 600;
-  border-radius: 0.75rem;
-  padding: 0.7rem 1rem;
-}
-
-.conta-menu .nav-link.active {
-  color: #fff;
-  background: var(--ew-navy);
-}
-
-.card-ew {
-  border: 0;
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px rgba(11, 42, 74, 0.08);
-}
-
-.endereco-card {
-  border: 1px solid #dde5ee;
-  border-radius: 0.9rem;
-  background: #fff;
-}
-
-.pedido-item .accordion-button:not(.collapsed) {
-  color: var(--ew-navy);
-  background: #eaf1f8;
 }
 
 .conta-page .card-ew,
@@ -829,29 +510,8 @@ main {
   border: 0 !important;
 }
 
-.linha-tempo {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.linha-tempo li {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.2rem 0;
-  font-size: 0.9rem;
-}
-
-.linha-tempo i {
-  color: var(--ew-green-dark);
-}
-
 /* ---------- Carrinho ---------- */
 .carrinho-img {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
   width: 5.5rem;
   height: 5.5rem;
   font-size: 2rem;
@@ -861,37 +521,12 @@ main {
   overflow: hidden;
 }
 
-.carrinho-img img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.qtd-controle {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #cfd9e4;
-  border-radius: 0.7rem;
-  background: #fff;
-}
-
-.qtd-controle button {
-  width: 2.4rem;
-  height: 2.4rem;
-  border: 0;
-  background: transparent;
-  color: var(--ew-navy);
-  font-size: 1.1rem;
-}
-
 .qtd-controle button:disabled {
   color: #a9b6c4;
 }
 
 .qtd-controle span {
   min-width: 2rem;
-  text-align: center;
-  font-weight: 700;
 }
 
 .resumo-sticky {
@@ -900,40 +535,13 @@ main {
 }
 
 /* ---------- Autopropelido x Ciclomotor ---------- */
-.tipo-card {
-  border: 1px solid #dde5ee;
-  border-top-width: 5px;
-  border-radius: 1rem;
-  background: #fff;
-}
 
-.tipo-autopropelido {
-  border-top-color: var(--ew-green);
-}
-
-.tipo-ciclomotor {
-  border-top-color: #ffc107;
-}
 
 .tipo-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  min-width: 0;
 }
 
-.tipo-lista li {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.tipo-lista i {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
+.tipo-lista-icon {
   width: 2rem;
   height: 2rem;
   color: var(--ew-navy-2);
@@ -942,20 +550,6 @@ main {
 }
 
 /* ---------- Rodape ---------- */
-.ew-footer {
-  background: var(--ew-navy);
-  color: #b8c7d9;
-}
-
-.ew-footer a {
-  color: #d5e0ec;
-  text-decoration: none;
-}
-
-.ew-footer a:hover {
-  color: var(--ew-green);
-}
-
 /* ---------- Identidade EletricWay ---------- */
 :root {
   --ew-navy: #12363c;
@@ -1081,7 +675,6 @@ h6 {
 
 .ew-subnav-inner {
   min-height: 2.65rem;
-  gap: 1.9rem;
 }
 
 .ew-subnav-link {
@@ -1095,20 +688,11 @@ h6 {
   margin-right: 0.4rem;
 }
 
-.ew-subnav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  margin-left: auto;
-}
-
 .ew-subnav-badge {
-  display: inline-grid;
   min-width: 1.15rem;
   height: 1.15rem;
   margin-left: 0.35rem;
   padding: 0 0.25rem;
-  place-items: center;
   color: var(--ew-navy);
   background: var(--ew-green);
   border-radius: 999px;
@@ -1328,7 +912,6 @@ a:focus-visible:not(.btn) {
 
 .produto-img img {
   padding: 1.15rem;
-  object-fit: contain;
 }
 
 .produto-img .badge-tipo {
@@ -1357,14 +940,11 @@ a:focus-visible:not(.btn) {
 }
 
 .spec-lista {
-  gap: 0.35rem;
+  min-width: 0;
 }
 
 .spec-lista li {
-  padding: 0.55rem 0.2rem;
-  color: #5c6e71;
-  background: #f2f6f4;
-  border-radius: 0.55rem;
+  min-width: 0;
 }
 
 .spec-lista strong,
@@ -1392,26 +972,6 @@ a:focus-visible:not(.btn) {
 
 .produto-detalhe-imagem img {
   padding: 1.5rem;
-  object-fit: contain;
-}
-
-.produto-detalhe-tecnico {
-  padding-top: 1.1rem;
-  border-top: 1px solid #e4ece8;
-}
-
-.produto-especificacoes {
-  gap: 0.55rem;
-}
-
-.produto-especificacoes > div {
-  padding: 0.65rem 0.75rem;
-  background: #f1f5f2;
-  border-radius: 0.6rem;
-}
-
-.produto-especificacoes dt {
-  color: #5c6e71;
 }
 
 .produto-especificacoes dd {
@@ -1433,11 +993,7 @@ a:focus-visible:not(.btn) {
   border-top-color: #d4ae53;
 }
 
-.tipo-lista {
-  gap: 0.85rem;
-}
-
-.tipo-lista i {
+.tipo-lista-icon {
   color: #3e6949;
   background: #edf3e7;
   border-radius: 0.65rem;
@@ -1458,7 +1014,6 @@ a:focus-visible:not(.btn) {
 
 .conta-menu .nav-link {
   color: #40585a;
-  border-radius: 0.65rem;
 }
 
 .conta-menu .nav-link:hover {
@@ -1510,7 +1065,6 @@ a:focus-visible:not(.btn) {
 
 .carrinho-img img {
   padding: 0.45rem;
-  object-fit: contain;
 }
 
 .list-group-item {
@@ -1518,9 +1072,7 @@ a:focus-visible:not(.btn) {
 }
 
 .qtd-controle {
-  overflow: hidden;
   border-color: #d2dfd9;
-  border-radius: 0.65rem;
 }
 
 .qtd-controle button:not(:disabled):hover {
@@ -1534,8 +1086,6 @@ a:focus-visible:not(.btn) {
 
 .ew-auth-modal {
   border: 1px solid rgba(220, 230, 226, 0.9);
-  border-radius: 1.1rem;
-  box-shadow: 0 24px 70px rgba(5, 23, 27, 0.28);
 }
 
 .ew-modal-backdrop {
@@ -1544,7 +1094,6 @@ a:focus-visible:not(.btn) {
 }
 
 .ew-footer {
-  margin-top: 2rem;
   color: #c4d5cf;
   background: #12363c;
 }
@@ -1615,11 +1164,7 @@ a:focus-visible:not(.btn) {
   }
 
   .ew-subnav-inner {
-    gap: 1.15rem;
-  }
-
-  .ew-subnav-actions {
-    gap: 1rem;
+    min-height: 2.6rem;
   }
 
   .hero::before {
@@ -1666,15 +1211,6 @@ a:focus-visible:not(.btn) {
   .produto-card .card-body > div:first-child > p.small {
     font-size: 0.72rem;
     line-height: 1.35;
-  }
-
-  .spec-lista {
-    gap: 0.2rem;
-  }
-
-  .spec-lista li {
-    padding: 0.35rem 0.1rem;
-    font-size: 0.62rem;
   }
 
   .spec-lista strong {

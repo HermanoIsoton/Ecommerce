@@ -13,7 +13,7 @@ defineProps({
 </script>
 
 <template>
-  <main>
+  <main class="flex-grow-1">
     <HeroSecao :usuario="usuario"/>
     <BeneficiosSecao />
     <TiposVeiculoSecao />

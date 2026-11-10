@@ -265,7 +265,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="container py-4 py-lg-5">
+  <main class="container flex-grow-1 py-4 py-lg-5">
     <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
       <div>
         <p class="text-uppercase text-secondary small fw-bold mb-1">Painel restrito</p>

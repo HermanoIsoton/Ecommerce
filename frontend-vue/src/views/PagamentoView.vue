@@ -92,7 +92,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <main class="py-4 py-lg-5">
+  <main class="flex-grow-1 py-4 py-lg-5">
     <div class="container">
       <RouterLink :to="{ name: 'carrinho' }" class="btn btn-link px-0 mb-3">
         <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>Voltar ao carrinho

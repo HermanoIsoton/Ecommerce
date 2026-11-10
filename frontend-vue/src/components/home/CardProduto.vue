@@ -13,10 +13,10 @@ const semEstoque = computed(() => Number(props.produto.stock) <= 0)
 <template>
   <div class="col-12 col-sm-6 col-xl-3">
     <article class="card produto-card h-100">
-      <a class="produto-img text-decoration-none" href="#" @click.prevent>
-        <img v-if="produto.image_url" :src="produto.image_url" :alt="produto.name" loading="lazy">
+      <a class="produto-img d-flex align-items-center justify-content-center text-decoration-none" href="#" @click.prevent>
+        <img v-if="produto.image_url" class="w-100 h-100 object-fit-contain" :src="produto.image_url" :alt="produto.name" loading="lazy">
         <i v-else class="bi bi-lightning-charge-fill" aria-hidden="true"></i>
-        <span class="badge badge-tipo" >
+        <span class="badge badge-tipo position-absolute">
           {{ produto.category.name }}
         </span>
       </a>
@@ -26,10 +26,10 @@ const semEstoque = computed(() => Number(props.produto.stock) <= 0)
           <h3 class="h5 fw-bold mb-1">{{ produto.name }}</h3>
           <p class="small text-secondary mb-0">{{ produto.description }}</p>
         </div>
-        <ul class="spec-lista">
-          <li><strong>{{ produto.range_km }} km</strong>autonomia</li>
-          <li><strong>{{ produto.top_speed_kmh }} km/h</strong>velocidade</li>
-          <li><strong>{{ produto.power }} W</strong>potência</li>
+        <ul class="spec-lista row row-cols-3 g-1 list-unstyled">
+          <li class="col text-center small bg-body-tertiary rounded-3 p-1 p-sm-2"><strong class="d-block fs-6">{{ produto.range_km }} km</strong>autonomia</li>
+          <li class="col text-center small bg-body-tertiary rounded-3 p-1 p-sm-2"><strong class="d-block fs-6">{{ produto.top_speed_kmh }} km/h</strong>velocidade</li>
+          <li class="col text-center small bg-body-tertiary rounded-3 p-1 p-sm-2"><strong class="d-block fs-6">{{ produto.power }} W</strong>potência</li>
         </ul>
         <p class="small text-secondary mb-0">
           <template v-if="produto.is_battery_removable">

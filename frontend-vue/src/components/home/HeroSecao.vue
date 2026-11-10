@@ -22,7 +22,7 @@ defineProps({
             <RouterLink :to="{ name: 'conta' }" class="btn btn-outline-light btn-lg px-4">Minha conta</RouterLink>
           </div>
         </div>
-        <div class="col-lg-5 hero-visual" aria-hidden="true">
+        <div class="col-lg-5 hero-visual d-flex align-items-center justify-content-center" aria-hidden="true">
           <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
             <rect width="120" height="120" rx="30" fill="#0B2A4A" stroke="#2EF08A" stroke-opacity="0.35" stroke-width="1.5"/>
             <path d="M60 18 A42 42 0 1 1 22.5 79" fill="none" stroke="#2EF08A" stroke-width="8" stroke-linecap="round"/>

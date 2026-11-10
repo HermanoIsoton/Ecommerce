@@ -21,7 +21,7 @@ const iniciais = computed(() =>
 <template>
   <section class="card card-ew conta-resumo mb-4" aria-label="Resumo da conta">
     <div class="card-body d-flex flex-wrap align-items-center gap-3">
-      <div class="avatar" aria-hidden="true">{{ iniciais || '--' }}</div>
+      <div class="avatar d-flex align-items-center justify-content-center fw-bold rounded-circle" aria-hidden="true">{{ iniciais || '--' }}</div>
       <div class="flex-grow-1">
         <h1 class="h4 fw-bold mb-1">{{ usuario.name }}</h1>
         <p class="text-secondary mb-0">{{ usuario.email }}</p>

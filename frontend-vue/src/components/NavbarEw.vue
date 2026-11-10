@@ -143,17 +143,17 @@ async function sair() {
   <header class="ew-header">
     <div class="ew-navbar" data-bs-theme="dark">
       <div class="container ew-header-main">
-        <RouterLink class="ew-brand" :to="{ name: 'home' }" aria-label="EletricWay - página inicial">
-          <svg width="38" height="38" viewBox="0 0 120 120" role="img" aria-label="Símbolo EletricWay" xmlns="http://www.w3.org/2000/svg">
+        <RouterLink class="ew-brand d-inline-flex align-items-center gap-2 text-decoration-none text-nowrap" :to="{ name: 'home' }" aria-label="EletricWay - página inicial">
+          <svg class="flex-shrink-0" width="38" height="38" viewBox="0 0 120 120" role="img" aria-label="Símbolo EletricWay" xmlns="http://www.w3.org/2000/svg">
             <path d="M60 18 A42 42 0 1 1 22.5 79" fill="none" stroke="#2EF08A" stroke-width="8" stroke-linecap="round"/>
             <polygon points="66,30 40,64 56,64 50,92 80,54 63,54" fill="#FFFFFF"/>
           </svg>
           <span>Eletric<span class="way">Way</span></span>
         </RouterLink>
 
-        <button class="ew-location" type="button" @click="abrirEnderecos">
+        <button class="ew-location d-flex align-items-center gap-2 text-start" type="button" @click="abrirEnderecos">
           <i class="bi bi-geo-alt" aria-hidden="true"></i>
-          <span class="ew-location-copy">
+          <span class="ew-location-copy d-flex flex-column w-100">
             <small>Entrega</small>
             <strong v-if="carregandoEnderecos">Carregando endereço...</strong>
             <template v-else-if="enderecoPrincipal">
@@ -182,16 +182,16 @@ async function sair() {
           </div>
         </form>
 
-        <div class="ew-header-actions">
+        <div class="ew-header-actions d-flex align-items-center gap-3">
           <div
             ref="contaRef"
-            class="ew-account"
+            class="ew-account position-relative"
             @mouseenter="menuContaAberto = true"
             @mouseleave="menuContaAberto = false"
             @focusin="menuContaAberto = true"
           >
             <button
-              class="ew-action-btn"
+              class="ew-action-btn d-inline-flex align-items-center gap-2 py-1 text-nowrap"
               type="button"
               :disabled="!autenticacaoCarregada"
               aria-haspopup="true"
@@ -201,11 +201,11 @@ async function sair() {
             >
               <span
                 v-if="usuario"
-                class="ew-account-avatar"
+                class="ew-account-avatar d-flex align-items-center justify-content-center flex-shrink-0"
                 aria-hidden="true"
               >{{ iniciaisUsuario }}</span>
               <i v-else class="bi bi-person-circle" aria-hidden="true"></i>
-              <span>
+              <span class="d-flex flex-column text-start lh-sm">
                 <small>Olá, {{ usuario?.name || 'entre' }}</small>
                 <strong>Minha conta</strong>
               </span>
@@ -214,18 +214,18 @@ async function sair() {
 
             <div v-if="menuContaAberto" class="ew-account-menu">
               <template v-if="usuario">
-                <RouterLink class="ew-account-option" :to="{ name: 'conta' }">
+                <RouterLink class="ew-account-option d-block w-100 text-start text-decoration-none text-nowrap" :to="{ name: 'conta' }">
                   Informações da conta
                 </RouterLink>
-                <button type="button" class="ew-account-option" @click="sair">
+                <button type="button" class="ew-account-option d-block w-100 text-start text-nowrap" @click="sair">
                   Sair da conta
                 </button>
               </template>
               <template v-else>
-                <button type="button" class="ew-account-option" @click="abrirModalAutenticacao('login')">
+                <button type="button" class="ew-account-option d-block w-100 text-start text-nowrap" @click="abrirModalAutenticacao('login')">
                   Fazer login
                 </button>
-                <button type="button" class="ew-account-option" @click="abrirModalAutenticacao('register')">
+                <button type="button" class="ew-account-option d-block w-100 text-start text-nowrap" @click="abrirModalAutenticacao('register')">
                   Cadastrar-se
                 </button>
               </template>
@@ -233,16 +233,16 @@ async function sair() {
           </div>
 
           <RouterLink
-            class="ew-action-btn ew-cart-link"
+            class="ew-action-btn ew-cart-link d-inline-flex align-items-center gap-2 py-1 text-decoration-none text-nowrap"
             :to="{ name: 'carrinho' }"
             aria-label="Abrir carrinho"
             :aria-current="rota.name === 'carrinho' ? 'page' : undefined"
           >
-            <span class="ew-cart-icon">
+            <span class="ew-cart-icon position-relative d-inline-flex">
               <i class="bi bi-cart3" aria-hidden="true"></i>
-              <span v-if="totalUnidades > 0" class="ew-badge">{{ totalUnidades }}</span>
+              <span v-if="totalUnidades > 0" class="ew-badge position-absolute top-0 start-100 translate-middle badge rounded-pill text-center">{{ totalUnidades }}</span>
             </span>
-            <span><small>Seu</small><strong>Carrinho</strong></span>
+            <span class="d-flex flex-column text-start lh-sm"><small>Seu</small><strong>Carrinho</strong></span>
           </RouterLink>
         </div>
       </div>
@@ -251,9 +251,9 @@ async function sair() {
   </header>
 
   <nav class="ew-subnav" aria-label="Navegação principal">
-    <div class="container ew-subnav-inner">
+    <div class="container ew-subnav-inner d-flex align-items-center gap-4">
       <RouterLink
-        class="ew-subnav-link"
+        class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap"
         :class="{ active: rota.name === 'home' }"
         :to="{ name: 'home' }"
         :aria-current="rota.name === 'home' ? 'page' : undefined"
@@ -261,32 +261,32 @@ async function sair() {
         <i class="bi bi-house-door" aria-hidden="true"></i>Início
       </RouterLink>
       <RouterLink
-        class="ew-subnav-link"
+        class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap"
         :class="{ active: rota.name === 'home' && filtroTipo === 'autopropelido' }"
         :to="{ name: 'home', hash: '#catalogo' }"
         @click="filtrarPor('autopropelido')"
       >Autopropelidos</RouterLink>
       <RouterLink
-        class="ew-subnav-link"
+        class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap"
         :class="{ active: rota.name === 'home' && filtroTipo === 'ciclomotor' }"
         :to="{ name: 'home', hash: '#catalogo' }"
         @click="filtrarPor('ciclomotor')"
       >Ciclomotores</RouterLink>
-      <RouterLink class="ew-subnav-link" :to="{ name: 'home', hash: '#tipos' }">
+      <RouterLink class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap" :to="{ name: 'home', hash: '#tipos' }">
         Qual escolher?
       </RouterLink>
-      <div v-if="usuario" class="ew-subnav-actions">
+      <div v-if="usuario" class="ew-subnav-actions d-flex align-items-center gap-4 ms-auto">
         <RouterLink
-          class="ew-subnav-link"
+          class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap"
           :class="{ active: rota.name === 'carrinho' }"
           :to="{ name: 'carrinho' }"
           :aria-current="rota.name === 'carrinho' ? 'page' : undefined"
         >
           <i class="bi bi-cart3" aria-hidden="true"></i>Carrinho
-          <span v-if="totalUnidades > 0" class="ew-subnav-badge">{{ totalUnidades }}</span>
+          <span v-if="totalUnidades > 0" class="ew-subnav-badge d-inline-flex align-items-center justify-content-center">{{ totalUnidades }}</span>
         </RouterLink>
         <RouterLink
-          class="ew-subnav-link"
+          class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap"
           :class="{ active: rota.name === 'conta' }"
           :to="{ name: 'conta' }"
           :aria-current="rota.name === 'conta' ? 'page' : undefined"
@@ -295,7 +295,7 @@ async function sair() {
         </RouterLink>
         <RouterLink
           v-if="usuario.role === 'admin'"
-          class="ew-subnav-link"
+          class="ew-subnav-link d-inline-flex align-items-center text-decoration-none text-nowrap"
           :class="{ active: rota.name === 'admin' }"
           :to="{ name: 'admin' }"
           :aria-current="rota.name === 'admin' ? 'page' : undefined"

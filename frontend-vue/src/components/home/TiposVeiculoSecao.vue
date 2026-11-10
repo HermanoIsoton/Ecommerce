@@ -21,13 +21,13 @@ import { filtroTipo } from '@/stores/catalogo'
                 </div>
                 <span class="badge text-bg-success fs-6">Sem CNH</span>
               </div>
-              <ul class="tipo-lista mb-4">
-                <li><i class="bi bi-person-check" aria-hidden="true"></i><span><strong>Sem CNH:</strong> não precisa de habilitação para conduzir.</span></li>
-                <li><i class="bi bi-file-earmark-check" aria-hidden="true"></i><span><strong>Sem burocracia:</strong> não exige registro, emplacamento nem licenciamento.</span></li>
-                <li><i class="bi bi-speedometer2" aria-hidden="true"></i><span><strong>Velocidade limitada</strong> a 32 km/h.</span></li>
-                <li><i class="bi bi-lightning-charge" aria-hidden="true"></i><span><strong>Potência</strong> de até 1.000 W.</span></li>
-                <li><i class="bi bi-signpost-split" aria-hidden="true"></i><span>Circula em ciclovias, ciclofaixas e áreas liberadas pela prefeitura. Não pode andar em rodovias.</span></li>
-                <li><i class="bi bi-shield-check" aria-hidden="true"></i><span>Use sempre capacete. A obrigatoriedade pode variar conforme o município.</span></li>
+              <ul class="tipo-lista d-flex flex-column gap-3 p-0 mb-4 list-unstyled">
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-person-check" aria-hidden="true"></i><span><strong>Sem CNH:</strong> não precisa de habilitação para conduzir.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-file-earmark-check" aria-hidden="true"></i><span><strong>Sem burocracia:</strong> não exige registro, emplacamento nem licenciamento.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-speedometer2" aria-hidden="true"></i><span><strong>Velocidade limitada</strong> a 32 km/h.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-lightning-charge" aria-hidden="true"></i><span><strong>Potência</strong> de até 1.000 W.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-signpost-split" aria-hidden="true"></i><span>Circula em ciclovias, ciclofaixas e áreas liberadas pela prefeitura. Não pode andar em rodovias.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-shield-check" aria-hidden="true"></i><span>Use sempre capacete. A obrigatoriedade pode variar conforme o município.</span></li>
               </ul>
               <RouterLink :to="{ name: 'home', hash: '#catalogo' }" class="btn btn-ew mt-auto align-self-start" @click="filtroTipo = 'autopropelido'">Ver autopropelidos</RouterLink>
             </div>
@@ -44,13 +44,13 @@ import { filtroTipo } from '@/stores/catalogo'
                 </div>
                 <span class="badge text-bg-warning fs-6">CNH A ou ACC</span>
               </div>
-              <ul class="tipo-lista mb-4">
-                <li><i class="bi bi-person-vcard" aria-hidden="true"></i><span><strong>Habilitação:</strong> CNH categoria A ou ACC (Autorização para Conduzir Ciclomotor).</span></li>
-                <li><i class="bi bi-card-text" aria-hidden="true"></i><span><strong>Documentação:</strong> registro, emplacamento e licenciamento obrigatórios.</span></li>
-                <li><i class="bi bi-speedometer2" aria-hidden="true"></i><span><strong>Velocidade</strong> de até 50 km/h.</span></li>
-                <li><i class="bi bi-lightning-charge" aria-hidden="true"></i><span><strong>Potência</strong> do motor elétrico de 1.000 W até 4.000 W.</span></li>
-                <li><i class="bi bi-signpost-2" aria-hidden="true"></i><span>Circula nas vias comuns, com as mesmas regras das motocicletas.</span></li>
-                <li><i class="bi bi-shield-check" aria-hidden="true"></i><span>Capacete de moto obrigatório.</span></li>
+              <ul class="tipo-lista d-flex flex-column gap-3 p-0 mb-4 list-unstyled">
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-person-vcard" aria-hidden="true"></i><span><strong>Habilitação:</strong> CNH categoria A ou ACC (Autorização para Conduzir Ciclomotor).</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-card-text" aria-hidden="true"></i><span><strong>Documentação:</strong> registro, emplacamento e licenciamento obrigatórios.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-speedometer2" aria-hidden="true"></i><span><strong>Velocidade</strong> de até 50 km/h.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-lightning-charge" aria-hidden="true"></i><span><strong>Potência</strong> do motor elétrico de 1.000 W até 4.000 W.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-signpost-2" aria-hidden="true"></i><span>Circula nas vias comuns, com as mesmas regras das motocicletas.</span></li>
+                <li class="d-flex align-items-start gap-3"><i class="tipo-lista-icon d-flex align-items-center justify-content-center flex-shrink-0 bi bi-shield-check" aria-hidden="true"></i><span>Capacete de moto obrigatório.</span></li>
               </ul>
               <RouterLink :to="{ name: 'home', hash: '#catalogo' }" class="btn btn-ew mt-auto align-self-start" @click="filtroTipo = 'ciclomotor'">Ver ciclomotores</RouterLink>
             </div>
