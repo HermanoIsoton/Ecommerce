@@ -1,9 +1,7 @@
 import axios from 'axios'
 
-const raiz = import.meta.env.VITE_API_BASE_URL ?? ''  
-
 export const http = axios.create({
-  baseURL: `${raiz}/api`,
+  baseURL: '/api',
   headers: { Accept: 'application/json' },
   withCredentials: true,
   withXSRFToken: true,
@@ -25,4 +23,4 @@ http.interceptors.request.use((config) => {
 })
 
 export const obterCsrf = () =>
-  axios.get(`${raiz}/sanctum/csrf-cookie`, { withCredentials: true, timeout: 30000 })
+  axios.get('/sanctum/csrf-cookie', { withCredentials: true, timeout: 30000 })

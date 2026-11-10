@@ -9,9 +9,7 @@ class UserService
 {
     public function listAll(): Collection
     {
-        $users = User::all();
-
-        return $users;
+        return User::all();
     }
 
     public function update(int $id, array $data): User
