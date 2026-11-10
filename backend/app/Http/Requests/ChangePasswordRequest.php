@@ -18,4 +18,11 @@ class ChangePasswordRequest extends FormRequest
             'password' => ['required', 'string', 'min:8', 'max:255', 'confirmed'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'password.confirmed' => 'A confirmação da senha não corresponde à senha informada.',
+        ];
+    }
 }
