@@ -20,16 +20,16 @@ class CartService
 
         return [
             'token' => $token,
-            'cart' => $this->serialize($cart),
+            'cart' => $this->loadCart($cart),
         ];
     }
 
-    public function getCart(?User $user, ?string $token): array
+    public function getCart(?User $user, ?string $token): Cart
     {
-        return $this->serialize($this->resolveCart($user, $token));
+        return $this->loadCart($this->resolveCart($user, $token));
     }
 
-    public function addItem(?User $user, ?string $token, int $productId, int $quantity): array
+    public function addItem(?User $user, ?string $token, int $productId, int $quantity): Cart
     {
         return DB::transaction(function () use ($user, $token, $productId, $quantity): array {
             $cart = $this->lockCart($this->resolveCart($user, $token));
@@ -59,11 +59,11 @@ class CartService
                 ]);
             }
 
-            return $this->serialize($cart->fresh());
+            return $this->loadCart($cart->fresh());
         });
     }
 
-    public function updateItem(?User $user, ?string $token, int $itemId, int $quantity): array
+    public function updateItem(?User $user, ?string $token, int $itemId, int $quantity): Cart
     {
         return DB::transaction(function () use ($user, $token, $itemId, $quantity): array {
             $cart = $this->lockCart($this->resolveCart($user, $token));
@@ -81,24 +81,24 @@ class CartService
 
             $item->update(['quantity' => $quantity]);
 
-            return $this->serialize($cart->fresh());
+            return $this->loadCart($cart->fresh());
         });
     }
 
-    public function removeItem(?User $user, ?string $token, int $itemId): array
+    public function removeItem(?User $user, ?string $token, int $itemId): Cart
     {
         $cart = $this->resolveCart($user, $token);
         $cart->items()->findOrFail($itemId)->delete();
 
-        return $this->serialize($cart->fresh());
+        return $this->loadCart($cart->fresh());
     }
 
-    public function clear(?User $user, ?string $token): array
+    public function clear(?User $user, ?string $token): Cart
     {
         $cart = $this->resolveCart($user, $token);
         $cart->items()->delete();
 
-        return $this->serialize($cart->fresh());
+        return $this->loadCart($cart->fresh());
     }
 
     public function mergeGuestCartIntoUser(?string $token, User $user): void
@@ -181,48 +181,8 @@ class CartService
         return Cart::query()->whereKey($cart->id)->lockForUpdate()->firstOrFail();
     }
 
-    private function serialize(Cart $cart): array
+    private function loadCart(Cart $cart): Cart
     {
-        $cart->load('items.product');
-        $totalCents = 0;
-        $items = $cart->items->map(function (Cart_item $item) use (&$totalCents): array {
-            $product = $item->product;
-            $quantity = (int) $item->quantity;
-            $unitPriceCents = (int) round((float) $product->price * 100);
-            $subtotalCents = $unitPriceCents * $quantity;
-            $totalCents += $subtotalCents;
-            $isAvailable = (bool) $product->is_active && (int) $product->stock >= $quantity;
-
-            return [
-                'id' => $item->id,
-                'product_id' => $item->product_id,
-                'quantity' => $quantity,
-                'unit_price' => $unitPriceCents / 100,
-                'subtotal' => $subtotalCents / 100,
-                'is_available' => $isAvailable,
-                'availability_message' => ! $product->is_active
-                    ? 'Produto indisponível'
-                    : ((int) $product->stock < $quantity ? 'Estoque insuficiente' : null),
-                'product' => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'image_url' => $product->image_url,
-                    'price' => $unitPriceCents / 100,
-                    'stock' => (int) $product->stock,
-                    'is_active' => (bool) $product->is_active,
-                    'type' => $product->type,
-                    'range_km' => $product->range_km,
-                    'top_speed_kmh' => $product->top_speed_kmh,
-                ],
-            ];
-        });
-
-        return [
-            'id' => $cart->id,
-            'items' => $items->values(),
-            'total_units' => $items->sum('quantity'),
-            'subtotal' => $totalCents / 100,
-            'total' => $totalCents / 100,
-        ];
+        return $cart->load('items.product');
     }
 }

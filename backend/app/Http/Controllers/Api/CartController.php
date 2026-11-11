@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCartItemsRequest;
 use App\Http\Requests\UpdateCartItemsRequest;
+use App\Http\Resources\CartResource;
 use App\Services\CartService;
 use Illuminate\Http\Request;
 
@@ -18,7 +19,7 @@ class CartController extends Controller
 
         return response()
             ->json([
-                'data' => $session['cart'],
+                'data' => (new CartResource($session['cart']))->resolve(request()),
                 'token' => $session['token'],
             ], 201)
             ->header('Cache-Control', 'no-store');
@@ -27,10 +28,10 @@ class CartController extends Controller
     public function show(Request $request)
     {
         return response()->json([
-            'data' => $this->cartService->getCart(
+            'data' => (new CartResource($this->cartService->getCart(
                 $request->user(),
                 $request->header('X-Cart-Token'),
-            ),
+            )))->resolve($request),
         ])->header('Cache-Control', 'no-store');
     }
 
@@ -44,7 +45,7 @@ class CartController extends Controller
             (int) ($validated['quantity'] ?? 1),
         );
 
-        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
+        return response()->json(['data' => (new CartResource($cart))->resolve($request)])->header('Cache-Control', 'no-store');
     }
 
     public function updateItem(UpdateCartItemsRequest $request, int $item)
@@ -57,7 +58,7 @@ class CartController extends Controller
             (int) $validated['quantity'],
         );
 
-        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
+        return response()->json(['data' => (new CartResource($cart))->resolve($request)])->header('Cache-Control', 'no-store');
     }
 
     public function removeItem(Request $request, int $item)
@@ -68,7 +69,7 @@ class CartController extends Controller
             $item,
         );
 
-        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
+        return response()->json(['data' => (new CartResource($cart))->resolve($request)])->header('Cache-Control', 'no-store');
     }
 
     public function clear(Request $request)
@@ -78,6 +79,6 @@ class CartController extends Controller
             $request->header('X-Cart-Token'),
         );
 
-        return response()->json(['data' => $cart])->header('Cache-Control', 'no-store');
+        return response()->json(['data' => (new CartResource($cart))->resolve($request)])->header('Cache-Control', 'no-store');
     }
 }
