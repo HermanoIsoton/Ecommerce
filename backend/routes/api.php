@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\CategorieController;
 use App\Http\Controllers\Api\Order_itemController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
-use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
 // =rotas publicas=
@@ -78,16 +77,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
  // =protegido pelas role admin=
     Route::middleware('role:admin')->group(function () {
-        Route::apiResource('users', UserController::class)
-            ->except(['store'])
-            ->whereNumber('user');
-
         Route::apiResource('products', ProductController::class)
             ->only(['store', 'update', 'destroy'])
             ->whereNumber('product');
 
         Route::apiResource('orders', OrderController::class)
-            ->only(['store', 'destroy'])
+            ->only(['destroy'])
             ->whereNumber('order');
 
         Route::patch('orders/{order}/status', [OrderController::class, 'updateStatus'])

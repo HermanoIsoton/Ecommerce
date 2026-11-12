@@ -3,39 +3,28 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
-    public function listAll(): Collection
+    public function listAll(User $user, ?string $status = null): Collection
     {
-        $orders = order::all();
+        $query = Order::query()->with('orderItems')->latest();
 
-        return $orders;
-    }
+        if ($user->role === 'admin') {
+            $query->with('user:id,name,email');
+        } else {
+            $query->where('user_id', $user->id);
+        }
 
-    public function create(array $data): order
-    {
-        $order = order::create($data);
+        if (! empty($status)) {
+            $query->where('status', $status);
+        }
 
-        return $order;
-    }
-
-    public function findById(int $id): order
-    {
-        $order = order::findOrFail($id);
-
-        return $order;
-    }
-
-    public function update(int $id, array $data): order
-    {
-        $order = order::findOrFail($id);
-        $order->update($data);
-
-        return $order;
+        return $query->get();
     }
 
     public function delete(int $id): void

@@ -1,16 +1,25 @@
 <?php
 
 namespace App\Services;
+
+use App\Models\Order;
 use App\Models\Order_item;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 class Order_itemService
 {
-    public function listAll(): Collection
+    public function listAll(User $user): Collection
     {
-        $order_items = order_item::all();
+        $query = Order_item::query();
 
-        return $order_items;
+        if ($user->role !== 'admin') {
+            $query->whereIn('order_id', Order::query()
+                ->where('user_id', $user->id)
+                ->select('id'));
+        }
+
+        return $query->get();
     }
 
     public function create(array $data): order_item
@@ -20,11 +29,17 @@ class Order_itemService
         return $order_item;
     }
 
-    public function findById(int $id): order_item
+    public function findById(User $user, int $id): Order_item
     {
-        $order_item = order_item::findOrFail($id);
+        $query = Order_item::query();
 
-        return $order_item;
+        if ($user->role !== 'admin') {
+            $query->whereIn('order_id', Order::query()
+                ->where('user_id', $user->id)
+                ->select('id'));
+        }
+
+        return $query->findOrFail($id);
     }
 
     public function update(int $id, array $data): order_item

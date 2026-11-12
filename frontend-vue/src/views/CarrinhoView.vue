@@ -209,7 +209,7 @@ async function confirmarEnderecoEContinuar() {
               <h2 class="h5 fw-bold mb-3" id="tituloResumo">Resumo do pedido</h2>
 
               <div v-if="enderecoSelecionado" class="small text-secondary mb-3">
-                Frete fictício fixo para o CEP {{ enderecoSelecionado.cep }}.
+                Endereço de entrega: CEP {{ enderecoSelecionado.cep }}.
               </div>
               <div v-else-if="props.usuario && carregandoEnderecos" class="small text-secondary mb-3" role="status">
                 Carregando endereço de entrega...

@@ -96,7 +96,6 @@ class CheckoutService
             ]);
 
             foreach ($lines as $line) {
-                /** @var Product $product */
                 $product = $line['product'];
                 $quantity = $line['quantity'];
 

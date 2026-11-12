@@ -1,0 +1,1384 @@
+openapi: 3.0.3
+info:
+  title: API Ecommerce
+  version: 1.0.0
+  description: |
+    Documentação baseada nas rotas, Form Requests, Resources, serviços e regras de
+    autorização atuais do backend Laravel. As coleções são retornadas sem paginação.
+
+    A autenticação usa sessão/cookie do Sanctum, não token Bearer. Abra esta página
+    no mesmo host da API: o Swagger UI preserva cookies e, antes de cada operação
+    de escrita, obtém `/sanctum/csrf-cookie` e envia o cookie `XSRF-TOKEN` como
+    `X-XSRF-TOKEN`. Rotas protegidas exigem uma sessão iniciada por `/login` ou
+    `/register`. A criação/login limita tentativas a 6 por minuto.
+servers:
+  - url: /api
+    description: API no mesmo host que serve o Swagger UI
+security: []
+tags:
+  - name: Autenticação e perfil
+    description: Registro, login, sessão e dados do usuário atual.
+  - name: Carrinho
+    description: Carrinho de usuário autenticado ou visitante identificado por token.
+  - name: Produtos
+    description: Consulta pública e manutenção restrita a administradores.
+  - name: Categorias
+    description: Consulta pública e manutenção restrita a administradores.
+  - name: Endereços
+    description: Endereços associados a usuários autenticados.
+  - name: Pedidos
+    description: Checkout, consulta e fluxo de estado dos pedidos.
+  - name: Itens de pedido
+    description: Consulta de itens e manutenção restrita a administradores.
+paths:
+  /register:
+    post:
+      tags: [Autenticação e perfil]
+      summary: Criar conta e iniciar sessão
+      description: Cria um usuário com role `user`, autentica a sessão e tenta mesclar o carrinho visitante enviado em `X-Cart-Token`.
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterInput'
+      responses:
+        '201':
+          description: Usuário criado e sessão iniciada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /login:
+    post:
+      tags: [Autenticação e perfil]
+      summary: Iniciar sessão
+      description: Autentica com e-mail e senha; uma credencial inválida retorna erro de validação.
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: Sessão iniciada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /logout:
+    post:
+      tags: [Autenticação e perfil]
+      summary: Encerrar sessão
+      security: [{ sessionCookie: [] }]
+      responses:
+        '204':
+          description: Sessão invalidada; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+  /me:
+    get:
+      tags: [Autenticação e perfil]
+      summary: Consultar usuário autenticado
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Usuário atual.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+    put:
+      tags: [Autenticação e perfil]
+      summary: Atualizar nome e e-mail do usuário autenticado
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInput'
+      responses:
+        '200':
+          description: Perfil atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /me/password:
+    put:
+      tags: [Autenticação e perfil]
+      summary: Alterar senha
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordInput'
+      responses:
+        '204':
+          description: Senha alterada; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /cart/session:
+    post:
+      tags: [Carrinho]
+      summary: Criar carrinho de visitante
+      description: Gera um token aleatório; guarde-o e envie-o no cabeçalho `X-Cart-Token` nas operações seguintes do visitante.
+      responses:
+        '201':
+          description: Carrinho criado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GuestCartEnvelope'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /cart:
+    get:
+      tags: [Carrinho]
+      summary: Consultar carrinho
+      description: Usuário autenticado usa seu carrinho de conta; visitante deve enviar `X-Cart-Token`.
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      responses:
+        '200':
+          description: Carrinho e itens com informações do produto.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartEnvelope'
+        '401':
+          description: Token ausente ou malformado para visitante.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cart/items:
+    post:
+      tags: [Carrinho]
+      summary: Adicionar produto ao carrinho
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCartItemInput'
+      responses:
+        '200':
+          description: Carrinho atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartEnvelope'
+        '401':
+          description: Token de visitante ausente ou inválido.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Carrinho]
+      summary: Esvaziar carrinho
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      responses:
+        '200':
+          description: Carrinho vazio.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartEnvelope'
+        '401':
+          description: Token de visitante ausente ou inválido.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cart/items/{item}:
+    parameters:
+      - name: item
+        in: path
+        required: true
+        description: ID numérico do item do carrinho.
+        schema:
+          type: integer
+    put:
+      tags: [Carrinho]
+      summary: Alterar quantidade de um item
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartItemInput'
+      responses:
+        '200':
+          description: Carrinho atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartEnvelope'
+        '401':
+          description: Token de visitante ausente ou inválido.
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Carrinho]
+      summary: Remover item do carrinho
+      parameters:
+        - $ref: '#/components/parameters/CartToken'
+      responses:
+        '200':
+          description: Carrinho atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartEnvelope'
+        '401':
+          description: Token de visitante ausente ou inválido.
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /products:
+    get:
+      tags: [Produtos]
+      summary: Listar produtos
+      description: Rota pública; retorna todos os produtos sem paginação.
+      responses:
+        '200':
+          description: Lista de produtos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCollection'
+    post:
+      tags: [Produtos]
+      summary: Criar produto
+      description: Restrito a usuário autenticado com role `admin`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateInput'
+      responses:
+        '200':
+          description: Produto criado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /products/{product}:
+    parameters:
+      - name: product
+        in: path
+        required: true
+        description: ID numérico do produto.
+        schema:
+          type: integer
+    get:
+      tags: [Produtos]
+      summary: Consultar produto
+      description: Rota pública.
+      responses:
+        '200':
+          description: Produto e categoria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductEnvelope'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Produtos]
+      summary: Atualizar produto
+      description: Restrito a usuário autenticado com role `admin`; campos omitidos não são alterados.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdateInput'
+      responses:
+        '200':
+          description: Produto atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    patch:
+      tags: [Produtos]
+      summary: Atualizar produto
+      description: Mesmo comportamento e validação de `PUT`; campos omitidos não são alterados. Restrito a `admin`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdateInput'
+      responses:
+        '200':
+          description: Produto atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Produtos]
+      summary: Excluir produto
+      description: Restrito a usuário autenticado com role `admin`.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '204':
+          description: Produto excluído; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /categories:
+    get:
+      tags: [Categorias]
+      summary: Listar categorias
+      description: Rota pública; retorna todas as categorias sem paginação.
+      responses:
+        '200':
+          description: Lista de categorias.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryCollection'
+    post:
+      tags: [Categorias]
+      summary: Criar categoria
+      description: Restrito a usuário autenticado com role `admin`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateInput'
+      responses:
+        '200':
+          description: Categoria criada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /categories/{category}:
+    parameters:
+      - name: category
+        in: path
+        required: true
+        description: ID numérico da categoria.
+        schema:
+          type: integer
+    get:
+      tags: [Categorias]
+      summary: Consultar categoria
+      description: Rota pública.
+      responses:
+        '200':
+          description: Categoria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryEnvelope'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Categorias]
+      summary: Atualizar categoria
+      description: Restrito a `admin`; campos omitidos não são alterados.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdateInput'
+      responses:
+        '200':
+          description: Categoria atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    patch:
+      tags: [Categorias]
+      summary: Atualizar categoria
+      description: Mesmo comportamento e validação de `PUT`; campos omitidos não são alterados. Restrito a `admin`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryUpdateInput'
+      responses:
+        '200':
+          description: Categoria atualizada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Categorias]
+      summary: Excluir categoria
+      description: Restrito a `admin`; retorna conflito se houver produtos vinculados.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '204':
+          description: Categoria excluída; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Há produtos vinculados à categoria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageError'
+  /addresses:
+    get:
+      tags: [Endereços]
+      summary: Listar endereços
+      description: Requer sessão. Usuário comum vê apenas os próprios endereços; `admin` vê todos. Sem paginação.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Lista de endereços.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressCollection'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+    post:
+      tags: [Endereços]
+      summary: Criar endereço para o usuário autenticado
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressCreateInput'
+      responses:
+        '200':
+          description: Endereço criado. O primeiro endereço do usuário é definido como principal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /addresses/{address}:
+    parameters:
+      - name: address
+        in: path
+        required: true
+        description: ID numérico do endereço.
+        schema:
+          type: integer
+    get:
+      tags: [Endereços]
+      summary: Consultar endereço
+      description: Requer sessão. Usuário comum só acessa os próprios endereços; `admin` pode acessar qualquer endereço.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Endereço.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Endereços]
+      summary: Atualizar endereço
+      description: "Requer sessão; usuário comum só altera o próprio endereço. Para marcar como principal, envie `is_primary: true`; a validação não aceita `false`."
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressUpdateInput'
+      responses:
+        '200':
+          description: Endereço atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    patch:
+      tags: [Endereços]
+      summary: Atualizar endereço
+      description: Mesmo comportamento de `PUT`; campos omitidos não são alterados.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressUpdateInput'
+      responses:
+        '200':
+          description: Endereço atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Endereços]
+      summary: Excluir endereço
+      description: Requer sessão; usuário comum só exclui o próprio endereço. Se excluir o principal, o endereço restante de menor ID torna-se principal.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '204':
+          description: Endereço excluído; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /orders:
+    get:
+      tags: [Pedidos]
+      summary: Listar pedidos
+      description: Requer sessão. Usuário comum vê os próprios pedidos; `admin` vê todos e recebe dados do cliente. Esta consulta também expira pedidos vencidos. Sem paginação.
+      security: [{ sessionCookie: [] }]
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pendente, pago, enviado, entregue, cancelado]
+      responses:
+        '200':
+          description: Lista de pedidos com itens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCollection'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /orders/checkout:
+    post:
+      tags: [Pedidos]
+      summary: Criar pedido a partir do carrinho
+      description: Requer sessão; usa endereço pertencente ao usuário, reserva estoque, define vencimento do pagamento em 30 minutos e esvazia o carrinho.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [address_id]
+              properties:
+                address_id:
+                  type: integer
+      responses:
+        '201':
+          description: Pedido pendente criado com itens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          description: Endereço não encontrado ou não pertence ao usuário.
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /orders/{order}:
+    parameters:
+      - name: order
+        in: path
+        required: true
+        description: ID numérico do pedido.
+        schema:
+          type: integer
+    get:
+      tags: [Pedidos]
+      summary: Consultar pedido
+      description: Requer sessão. Usuário comum acessa apenas o próprio pedido; `admin` pode consultar qualquer pedido. Se pendente e vencido, o pedido é cancelado e o estoque restaurado.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Pedido com itens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [Pedidos]
+      summary: Excluir pedido
+      description: Restrito a usuário autenticado com role `admin`.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '204':
+          description: Pedido excluído; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /orders/{order}/simulate-payment:
+    parameters:
+      - name: order
+        in: path
+        required: true
+        description: ID numérico do pedido do usuário autenticado.
+        schema:
+          type: integer
+    post:
+      tags: [Pedidos]
+      summary: Simular pagamento do pedido
+      description: Requer sessão e só opera sobre pedido do usuário autenticado. Não integra com gateway de pagamento. Se o prazo expirou, cancela o pedido, restaura estoque e retorna 409.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Pedido marcado como pago.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Prazo expirado; pedido cancelado e estoque liberado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderConflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /orders/{order}/status:
+    parameters:
+      - name: order
+        in: path
+        required: true
+        description: ID numérico do pedido.
+        schema:
+          type: integer
+    patch:
+      tags: [Pedidos]
+      summary: Avançar status do pedido
+      description: Restrito a `admin`. O corpo aceita `enviado` ou `entregue`, mas só são válidas as transições `pago` → `enviado` e `enviado` → `entregue`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [enviado, entregue]
+      responses:
+        '200':
+          description: Status atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /order_items:
+    get:
+      tags: [Itens de pedido]
+      summary: Listar itens de pedido
+      description: Requer sessão. Usuário comum vê itens dos próprios pedidos; `admin` vê todos. Sem paginação.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Lista de itens.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItemCollection'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+    post:
+      tags: [Itens de pedido]
+      summary: Criar item de pedido
+      description: Restrito a usuário autenticado com role `admin`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderItemCreateInput'
+      responses:
+        '200':
+          description: Item criado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /order_items/{order_item}:
+    parameters:
+      - name: order_item
+        in: path
+        required: true
+        description: ID numérico do item de pedido.
+        schema:
+          type: integer
+    get:
+      tags: [Itens de pedido]
+      summary: Consultar item de pedido
+      description: Requer sessão. Usuário comum só acessa item de pedido próprio; `admin` pode consultar qualquer item.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '200':
+          description: Item de pedido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Itens de pedido]
+      summary: Atualizar item de pedido
+      description: Restrito a usuário autenticado com role `admin`; campos omitidos não são alterados.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderItemUpdateInput'
+      responses:
+        '200':
+          description: Item atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    patch:
+      tags: [Itens de pedido]
+      summary: Atualizar item de pedido
+      description: Mesmo comportamento de `PUT`; campos omitidos não são alterados. Restrito a `admin`.
+      security: [{ sessionCookie: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderItemUpdateInput'
+      responses:
+        '200':
+          description: Item atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderItemEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    delete:
+      tags: [Itens de pedido]
+      summary: Excluir item de pedido
+      description: Restrito a usuário autenticado com role `admin`.
+      security: [{ sessionCookie: [] }]
+      responses:
+        '204':
+          description: Item excluído; sem corpo.
+        '401':
+          $ref: '#/components/responses/Unauthenticated'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: laravel-session
+      description: Cookie de sessão emitido pelo backend após login ou registro. O navegador o envia automaticamente; obtenha CSRF em `/sanctum/csrf-cookie` antes de escritas.
+  parameters:
+    CartToken:
+      name: X-Cart-Token
+      in: header
+      required: false
+      description: Token de 64 caracteres hexadecimais retornado por `POST /api/cart/session`; obrigatório para operações do carrinho sem usuário autenticado. Ignorado quando existe usuário autenticado.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{64}$'
+  responses:
+    ValidationError:
+      description: Dados inválidos; Laravel retorna a mensagem e os erros por campo.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationError'
+    Unauthenticated:
+      description: Sessão ausente ou expirada.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+    Forbidden:
+      description: Usuário autenticado sem a role `admin` exigida pela rota.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+    NotFound:
+      description: Registro não encontrado ou fora do escopo de acesso do usuário.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+    TooManyRequests:
+      description: Limite de requisições excedido.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageError'
+  schemas:
+    MessageError:
+      type: object
+      properties:
+        message:
+          type: string
+        exception:
+          type: string
+        file:
+          type: string
+        line:
+          type: integer
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    ValidationError:
+      type: object
+      required: [message, errors]
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+    User:
+      type: object
+      required: [id, name, email, role, created_at]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        email: { type: string, format: email }
+        role: { type: string, enum: [user, admin] }
+        created_at: { type: string, format: date-time }
+    UserEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/User' }
+    RegisterInput:
+      type: object
+      required: [name, email, password, password_confirmation]
+      properties:
+        name: { type: string, maxLength: 255 }
+        email: { type: string, format: email, maxLength: 255 }
+        password: { type: string, minLength: 8, maxLength: 255 }
+        password_confirmation: { type: string }
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+    ProfileInput:
+      type: object
+      required: [name, email]
+      properties:
+        name: { type: string, maxLength: 255 }
+        email: { type: string, format: email, maxLength: 255 }
+    PasswordInput:
+      type: object
+      required: [current_password, password, password_confirmation]
+      properties:
+        current_password: { type: string }
+        password: { type: string, minLength: 8, maxLength: 255 }
+        password_confirmation: { type: string }
+    Category:
+      type: object
+      required: [id, name, slug]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        slug: { type: string }
+    CategoryEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Category' }
+    CategoryCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Category' }
+    CategoryCreateInput:
+      type: object
+      required: [name, slug]
+      properties:
+        name: { type: string, maxLength: 255 }
+        slug: { type: string, maxLength: 255 }
+    CategoryUpdateInput:
+      type: object
+      properties:
+        name: { type: string, maxLength: 255 }
+        slug: { type: string, maxLength: 255 }
+    Product:
+      type: object
+      required: [id, category_id, name, slug, description, image_url, price, stock, is_active, type, power, range_km, top_speed_kmh, weight_kg, charge_time_h, battery_capaciy, battery_voltage_v, is_battery_removable, created_at, updated_at]
+      properties:
+        id: { type: integer }
+        category_id: { type: integer }
+        category:
+          allOf:
+            - $ref: '#/components/schemas/Category'
+          description: Presente quando o controller carrega a relação de categoria.
+        name: { type: string }
+        slug: { type: string }
+        description: { type: string }
+        image_url: { type: string, format: uri }
+        price:
+          anyOf: [{ type: number }, { type: string }]
+        stock:
+          anyOf: [{ type: number }, { type: string }]
+        is_active:
+          anyOf:
+            - { type: boolean }
+            - { type: integer, enum: [0, 1] }
+        model_year: { type: integer, nullable: true }
+        seating_capacity: { type: integer, nullable: true }
+        trunk_capacity_l: { type: integer, nullable: true }
+        type: { type: string, enum: [autopropelido, ciclomotor] }
+        power: { type: integer }
+        range_km: { type: integer }
+        top_speed_kmh: { type: integer }
+        weight_kg: { anyOf: [{ type: number }, { type: string }] }
+        charge_time_h: { anyOf: [{ type: number }, { type: string }] }
+        battery_capaciy: { anyOf: [{ type: number }, { type: string }] }
+        max_charge_power_kw: { type: integer, nullable: true }
+        battery_voltage_v: { anyOf: [{ type: number }, { type: string }] }
+        is_battery_removable:
+          anyOf:
+            - { type: boolean }
+            - { type: integer, enum: [0, 1] }
+        warranty_months: { type: integer, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    ProductEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Product' }
+    ProductCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Product' }
+    ProductCreateInput:
+      type: object
+      required: [category_id, name, slug, description, image_url, price, stock, is_active, type, power, range_km, top_speed_kmh, weight_kg, charge_time_h, battery_capaciy, battery_voltage_v]
+      properties:
+        category_id: { type: integer }
+        name: { type: string, maxLength: 255 }
+        slug: { type: string, maxLength: 255 }
+        description: { type: string, maxLength: 5000 }
+        image_url: { type: string, format: uri, maxLength: 255, description: 'URL deve terminar em .jpg, .jpeg ou .webp.' }
+        price: { type: number, minimum: 0 }
+        stock: { type: integer, minimum: 0 }
+        is_active: { type: boolean }
+        model_year: { type: integer, minimum: 0, nullable: true }
+        seating_capacity: { type: integer, minimum: 1, nullable: true }
+        trunk_capacity_l: { type: integer, minimum: 0, nullable: true }
+        type: { type: string, enum: [autopropelido, ciclomotor] }
+        power: { type: integer, minimum: 1 }
+        range_km: { type: integer, minimum: 1 }
+        top_speed_kmh: { type: integer, minimum: 1 }
+        weight_kg: { type: number, minimum: 0 }
+        charge_time_h: { type: number, minimum: 0 }
+        battery_capaciy: { type: number, minimum: 0 }
+        max_charge_power_kw: { type: integer, minimum: 0, nullable: true }
+        battery_voltage_v: { type: number, minimum: 0 }
+        is_battery_removable: { type: boolean }
+        warranty_months: { type: integer, minimum: 0, nullable: true }
+    ProductUpdateInput:
+      type: object
+      description: Todos os campos são opcionais, mas quando enviados devem obedecer às mesmas regras de criação. `slug` é único exceto para o próprio produto.
+      properties:
+        category_id: { type: integer }
+        name: { type: string, maxLength: 255 }
+        slug: { type: string, maxLength: 255 }
+        description: { type: string, maxLength: 5000 }
+        image_url: { type: string, format: uri, maxLength: 255, description: 'URL deve terminar em .jpg, .jpeg ou .webp.' }
+        price: { type: number, minimum: 0 }
+        stock: { type: integer, minimum: 0 }
+        is_active: { type: boolean }
+        model_year: { type: integer, minimum: 0, nullable: true }
+        seating_capacity: { type: integer, minimum: 1, nullable: true }
+        trunk_capacity_l: { type: integer, minimum: 0, nullable: true }
+        type: { type: string, enum: [autopropelido, ciclomotor] }
+        power: { type: integer, minimum: 1 }
+        range_km: { type: integer, minimum: 1 }
+        top_speed_kmh: { type: integer, minimum: 1 }
+        weight_kg: { type: number, minimum: 0 }
+        charge_time_h: { type: number, minimum: 0 }
+        battery_capaciy: { type: number, minimum: 0 }
+        max_charge_power_kw: { type: integer, minimum: 0, nullable: true }
+        battery_voltage_v: { type: number, minimum: 0 }
+        is_battery_removable: { type: boolean }
+        warranty_months: { type: integer, minimum: 0, nullable: true }
+    Address:
+      type: object
+      required: [id, user_id, recipient, cep, street, number, complement, district, city, state, is_primary]
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        recipient: { type: string }
+        cep: { type: string }
+        street: { type: string }
+        number: { type: string }
+        complement: { type: string, nullable: true }
+        district: { type: string }
+        city: { type: string }
+        state: { type: string, minLength: 2, maxLength: 2 }
+        is_primary: { type: boolean }
+    AddressEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Address' }
+    AddressCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Address' }
+    AddressCreateInput:
+      type: object
+      required: [recipient, cep, street, number, district, city, state]
+      properties:
+        recipient: { type: string, maxLength: 255 }
+        cep: { type: string, pattern: '^\d{5}-?\d{3}$' }
+        street: { type: string, maxLength: 255 }
+        number: { type: string, maxLength: 255 }
+        complement: { type: string, maxLength: 255, nullable: true }
+        district: { type: string, maxLength: 255 }
+        city: { type: string, maxLength: 255 }
+        state: { type: string, pattern: '^[A-Z]{2}$' }
+    AddressUpdateInput:
+      type: object
+      properties:
+        recipient: { type: string, maxLength: 255 }
+        cep: { type: string, pattern: '^\d{5}-?\d{3}$' }
+        street: { type: string, maxLength: 255 }
+        number: { type: string, maxLength: 255 }
+        complement: { type: string, maxLength: 255, nullable: true }
+        district: { type: string, maxLength: 255 }
+        city: { type: string, maxLength: 255 }
+        state: { type: string, pattern: '^[A-Z]{2}$' }
+        is_primary: { type: boolean, enum: [true], description: O endpoint aceita apenas o valor true. }
+    CartProduct:
+      type: object
+      required: [id, name, image_url, price, stock, is_active, type, range_km, top_speed_kmh]
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        image_url: { type: string, format: uri }
+        price: { type: number }
+        stock: { type: integer }
+        is_active: { type: boolean }
+        type: { type: string }
+        range_km: { type: integer }
+        top_speed_kmh: { type: integer }
+    CartItem:
+      type: object
+      required: [id, product_id, quantity, unit_price, subtotal, is_available, availability_message, product]
+      properties:
+        id: { type: integer }
+        product_id: { type: integer }
+        quantity: { type: integer }
+        unit_price: { type: number }
+        subtotal: { type: number }
+        is_available: { type: boolean }
+        availability_message: { type: string, nullable: true }
+        product: { $ref: '#/components/schemas/CartProduct' }
+    Cart:
+      type: object
+      required: [id, items, total_units, subtotal, total]
+      properties:
+        id: { type: integer }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/CartItem' }
+        total_units: { type: integer }
+        subtotal: { type: number }
+        total: { type: number }
+    CartEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Cart' }
+    GuestCartEnvelope:
+      type: object
+      required: [data, token]
+      properties:
+        data: { $ref: '#/components/schemas/Cart' }
+        token: { type: string, pattern: '^[a-f0-9]{64}$' }
+    AddCartItemInput:
+      type: object
+      required: [product_id]
+      properties:
+        product_id: { type: integer }
+        quantity: { type: integer, minimum: 1, maximum: 999999, default: 1 }
+    UpdateCartItemInput:
+      type: object
+      required: [quantity]
+      properties:
+        quantity: { type: integer, minimum: 1, maximum: 999999 }
+    OrderItem:
+      type: object
+      required: [id, order_id, product_id, product_name, unit_price, quantity, subtotal_cents]
+      properties:
+        id: { type: integer }
+        order_id: { type: integer }
+        product_id: { type: integer, nullable: true }
+        product_name: { type: string }
+        unit_price: { anyOf: [{ type: number }, { type: string }] }
+        quantity: { anyOf: [{ type: number }, { type: string }] }
+        subtotal_cents: { anyOf: [{ type: number }, { type: string }] }
+    Order:
+      type: object
+      required: [id, user_id, status, subtotal_cents, shipping_cents, total_cents, ship_recipient, ship_cep, ship_street, ship_number, ship_complement, ship_district, ship_city, ship_state, paid_at, shipped_at, delivered_at, cancelled_at, payment_expires_at, items, created_at, updated_at]
+      properties:
+        id: { type: integer }
+        user_id: { type: integer }
+        customer:
+          type: object
+          description: Presente em listagens de admin quando a relação de usuário está carregada.
+          properties:
+            name: { type: string }
+            email: { type: string, format: email }
+        status: { type: string, enum: [pendente, pago, enviado, entregue, cancelado] }
+        subtotal_cents: { anyOf: [{ type: number }, { type: string }] }
+        shipping_cents: { anyOf: [{ type: number }, { type: string }] }
+        total_cents: { anyOf: [{ type: number }, { type: string }] }
+        ship_recipient: { type: string }
+        ship_cep: { type: string }
+        ship_street: { type: string }
+        ship_number: { type: string }
+        ship_complement: { type: string }
+        ship_district: { type: string }
+        ship_city: { type: string }
+        ship_state: { type: string }
+        paid_at: { type: string, format: date-time, nullable: true }
+        shipped_at: { type: string, format: date-time, nullable: true }
+        delivered_at: { type: string, format: date-time, nullable: true }
+        cancelled_at: { type: string, format: date-time, nullable: true }
+        payment_expires_at: { type: string, format: date-time, nullable: true }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/OrderItem' }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    OrderEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/Order' }
+    OrderCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Order' }
+    OrderConflict:
+      type: object
+      required: [message, data]
+      properties:
+        message: { type: string }
+        data: { $ref: '#/components/schemas/Order' }
+    OrderItemEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data: { $ref: '#/components/schemas/OrderItem' }
+    OrderItemCollection:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/OrderItem' }
+    OrderItemCreateInput:
+      type: object
+      required: [order_id, product_name, unit_price, quantity, subtotal_cents]
+      properties:
+        order_id: { type: integer }
+        product_id: { type: integer, nullable: true }
+        product_name: { type: string, maxLength: 255 }
+        unit_price: { type: number, minimum: 0 }
+        quantity: { type: number, minimum: 0, exclusiveMinimum: true }
+        subtotal_cents: { type: number, minimum: 0 }
+    OrderItemUpdateInput:
+      type: object
+      properties:
+        order_id: { type: integer }
+        product_id: { type: integer, nullable: true }
+        product_name: { type: string, maxLength: 255 }
+        unit_price: { type: number, minimum: 0 }
+        quantity: { type: number, minimum: 0, exclusiveMinimum: true }
+        subtotal_cents: { type: number, minimum: 0 }

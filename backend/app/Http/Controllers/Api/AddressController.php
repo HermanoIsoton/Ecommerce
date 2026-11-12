@@ -19,9 +19,7 @@ class AddressController extends Controller
 
     public function index(Request $request)
     {
-        $addresses = $request->user()->role === 'admin'
-            ? $this->addressService->listAll()
-            : Address::query()->where('user_id', $request->user()->id)->get();
+        $addresses = $this->addressService->listAll($request->user());
 
         return AddressResource::collection($addresses);
     }
@@ -46,13 +44,9 @@ class AddressController extends Controller
         return new AddressResource($address);
     }
 
-    public function show(Request $request, string $id)
+    public function show(Request $request, int $id)
     {
-        $address = $request->user()->role === 'admin'
-            ? $this->addressService->findById($id)
-            : Address::query()
-                ->where('user_id', $request->user()->id)
-                ->findOrFail($id);
+        $address = $this->addressService->findById($request->user(), $id);
 
         return new AddressResource($address);
     }
@@ -63,11 +57,7 @@ class AddressController extends Controller
             $user = $request->user()->newQuery()
                 ->lockForUpdate()
                 ->findOrFail($request->user()->id);
-            $address = $user->role === 'admin'
-                ? $this->addressService->findById($id)
-                : Address::query()
-                    ->where('user_id', $user->id)
-                    ->findOrFail($id);
+            $address = $this->addressService->findById($user, (int) $id);
             $data = $request->validated();
 
             if (($data['is_primary'] ?? false) === true) {
@@ -91,11 +81,7 @@ class AddressController extends Controller
             $user = $request->user()->newQuery()
                 ->lockForUpdate()
                 ->findOrFail($request->user()->id);
-            $address = $user->role === 'admin'
-                ? $this->addressService->findById($id)
-                : Address::query()
-                    ->where('user_id', $user->id)
-                    ->findOrFail($id);
+            $address = $this->addressService->findById($user, (int) $id);
             $wasPrimary = $address->is_primary;
             $ownerId = $address->user_id;
             $address->delete();

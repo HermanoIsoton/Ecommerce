@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckoutOrderRequest;
 use App\Http\Requests\ListOrdersRequest;
-use App\Http\Requests\StoreOrdersRequest;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
@@ -23,20 +22,10 @@ class OrderController extends Controller
     public function index(ListOrdersRequest $request)
     {
         $this->checkoutService->expirePendingOrders();
-        $status = $request->validated('status');
-        $query = Order::query()->with('orderItems')->latest();
-
-        if ($request->user()->role === 'admin') {
-            $query->with('user:id,name,email');
-        } else {
-            $query->where('user_id', $request->user()->id);
-        }
-
-        if (! empty($status)) {
-            $query->where('status', $status);
-        }
-
-        $orders = $query->get();
+        $orders = $this->orderService->listAll(
+            $request->user(),
+            $request->validated('status'),
+        );
 
         return OrderResource::collection($orders);
     }
@@ -71,13 +60,6 @@ class OrderController extends Controller
         return (new OrderResource($updatedOrder))
             ->response()
             ->header('Cache-Control', 'no-store');
-    }
-
-    public function store(StoreOrdersRequest $request)
-    {
-        $order = $this->orderService->create($request->validated());
-
-        return new OrderResource($order);
     }
 
     public function show(Request $request, string $id)

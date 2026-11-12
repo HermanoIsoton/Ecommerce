@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { buscarPedido, simularPagamentoPedido } from '@/services/pedidos'
+import { buscarPedido, confirmarPagamentoPedido } from '@/services/pedidos'
 import { avisar } from '@/stores/toast'
 import { formatarDataHora, formatarMoeda } from '@/utils/formatadores'
 
@@ -62,7 +62,7 @@ watch(segundosRestantes, async (segundos) => {
   }
 })
 
-async function simularPagamento() {
+async function confirmarPagamento() {
   if (!pedido.value || pedido.value.status !== 'pendente' || segundosRestantes.value === 0) {
     await carregarPedido()
     return
@@ -70,8 +70,8 @@ async function simularPagamento() {
 
   pagando.value = true
   try {
-    pedido.value = await simularPagamentoPedido(pedido.value.id)
-    avisar('Pagamento simulado e pedido confirmado.')
+    pedido.value = await confirmarPagamentoPedido(pedido.value.id)
+    avisar('Pagamento confirmado.')
   } catch (erro) {
     if (erro.data) pedido.value = erro.data
     avisar(erro.message, { tipo: 'erro' })
@@ -119,7 +119,7 @@ onBeforeUnmount(() => {
               <template v-if="pedido.status === 'pendente' && segundosRestantes > 0">
                 <h1 class="h3 fw-bold mb-2">Pedido #{{ pedido.id }} aguardando pagamento</h1>
                 <p class="text-secondary mb-4">
-                  O pedido e os itens estão reservados até o fim do prazo. Esta é uma simulação: nenhum valor será cobrado.
+                  O pedido e os itens estão reservados até o fim do prazo.
                 </p>
 
                 <div class="border rounded-3 p-4 mb-4 text-center">
@@ -133,7 +133,7 @@ onBeforeUnmount(() => {
                 <dl class="row">
                   <dt class="col-6 text-secondary fw-normal">Produtos</dt>
                   <dd class="col-6 text-end">{{ formatarMoeda(pedido.subtotal_cents) }}</dd>
-                  <dt class="col-6 text-secondary fw-normal">Frete fictício</dt>
+                  <dt class="col-6 text-secondary fw-normal">Frete</dt>
                   <dd class="col-6 text-end">{{ formatarMoeda(pedido.shipping_cents) }}</dd>
                   <dt class="col-6 fw-bold">Total</dt>
                   <dd class="col-6 text-end fw-bold">{{ formatarMoeda(pedido.total_cents) }}</dd>
@@ -143,19 +143,16 @@ onBeforeUnmount(() => {
                   type="button"
                   class="btn btn-ew-accent btn-lg w-100 mt-2"
                   :disabled="pagando || segundosRestantes === 0"
-                  @click="simularPagamento"
+                  @click="confirmarPagamento"
                 >
-                  {{ pagando ? 'Processando simulação...' : 'Simular pagamento' }}
+                  {{ pagando ? 'Processando pagamento...' : 'Confirmar pagamento' }}
                 </button>
-                <p class="small text-secondary text-center mt-3 mb-0">
-                  Este botão apenas atualiza o status do pedido; não há cobrança real.
-                </p>
               </template>
 
               <template v-else-if="pedido.status === 'pago'">
                 <div class="text-center py-3">
                   <i class="bi bi-check-circle-fill display-3 text-success" aria-hidden="true"></i>
-                  <h1 class="h3 fw-bold mt-3">Pagamento simulado com sucesso</h1>
+                  <h1 class="h3 fw-bold mt-3">Pagamento confirmado</h1>
                   <p class="text-secondary">O pedido #{{ pedido.id }} está confirmado.</p>
                 </div>
               </template>

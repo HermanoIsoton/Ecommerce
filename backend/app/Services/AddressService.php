@@ -1,16 +1,22 @@
 <?php
 
 namespace App\Services;
+
 use App\Models\Address;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 class AddressService
 {
-    public function listAll(): Collection
+    public function listAll(User $user): Collection
     {
-        $addresss = address::all();
+        $query = Address::query();
 
-        return $addresss;
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->get();
     }
 
     public function create(array $data): address
@@ -20,11 +26,15 @@ class AddressService
         return $address;
     }
 
-    public function findById(int $id): address
+    public function findById(User $user, int $id): Address
     {
-        $address = address::findOrFail($id);
+        $query = Address::query();
 
-        return $address;
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        return $query->findOrFail($id);
     }
 
     public function update(int $id, array $data): address

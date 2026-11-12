@@ -51,12 +51,12 @@ export async function criarPedidoCheckout(addressId) {
     }
 }
 
-export async function simularPagamentoPedido(id) {
+export async function confirmarPagamentoPedido(id) {
     try {
         const response = await http.post(`/orders/${id}/simulate-payment`)
         return response.data.data
     } catch (error) {
-        tratarErro(error, 'Não foi possível simular o pagamento.')
+        tratarErro(error, 'Não foi possível confirmar o pagamento.')
     }
 }
 

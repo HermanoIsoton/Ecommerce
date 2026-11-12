@@ -31,7 +31,7 @@ class CartService
 
     public function addItem(?User $user, ?string $token, int $productId, int $quantity): Cart
     {
-        return DB::transaction(function () use ($user, $token, $productId, $quantity): array {
+        return DB::transaction(function () use ($user, $token, $productId, $quantity): Cart {
             $cart = $this->lockCart($this->resolveCart($user, $token));
             $product = Product::query()->lockForUpdate()->findOrFail($productId);
 
@@ -65,7 +65,7 @@ class CartService
 
     public function updateItem(?User $user, ?string $token, int $itemId, int $quantity): Cart
     {
-        return DB::transaction(function () use ($user, $token, $itemId, $quantity): array {
+        return DB::transaction(function () use ($user, $token, $itemId, $quantity): Cart {
             $cart = $this->lockCart($this->resolveCart($user, $token));
             $item = $cart->items()->with('product')->lockForUpdate()->findOrFail($itemId);
             $product = $item->product;
