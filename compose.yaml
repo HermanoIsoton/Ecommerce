@@ -20,7 +20,7 @@ services:
     container_name: api
     build:
       context: ./backend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     depends_on:
       mysql:
         condition: service_healthy
