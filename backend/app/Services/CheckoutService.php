@@ -147,6 +147,26 @@ class CheckoutService
         return [$order, $expired];
     }
 
+    public function cancelPendingOrder(User $user, int $orderId): Order
+    {
+        return DB::transaction(function () use ($user, $orderId): Order {
+            $order = Order::query()
+                ->where('user_id', $user->id)
+                ->lockForUpdate()
+                ->findOrFail($orderId);
+
+            if ($order->status !== 'pendente') {
+                throw ValidationException::withMessages([
+                    'order' => ['Somente pedidos pendentes podem ser cancelados.'],
+                ]);
+            }
+
+            $this->cancelAndRestoreStock($order);
+
+            return $order->fresh()->load('orderItems');
+        });
+    }
+
     public function expirePendingOrders(): int
     {
         $expiredCount = 0;

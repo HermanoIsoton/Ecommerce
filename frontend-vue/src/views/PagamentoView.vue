@@ -62,7 +62,7 @@ watch(segundosRestantes, async (segundos) => {
   }
 })
 
-async function confirmarPagamento() {
+async function simularPagamento() {
   if (!pedido.value || pedido.value.status !== 'pendente' || segundosRestantes.value === 0) {
     await carregarPedido()
     return
@@ -71,7 +71,7 @@ async function confirmarPagamento() {
   pagando.value = true
   try {
     pedido.value = await confirmarPagamentoPedido(pedido.value.id)
-    avisar('Pagamento confirmado.')
+    avisar('Pagamento simulado com sucesso.')
   } catch (erro) {
     if (erro.data) pedido.value = erro.data
     avisar(erro.message, { tipo: 'erro' })
@@ -139,21 +139,27 @@ onBeforeUnmount(() => {
                   <dd class="col-6 text-end fw-bold">{{ formatarMoeda(pedido.total_cents) }}</dd>
                 </dl>
 
+                <p class="alert alert-info mb-3">
+                  Este é um pagamento simulado para demonstração. Nenhuma cobrança real será feita.
+                </p>
+
                 <button
                   type="button"
                   class="btn btn-ew-accent btn-lg w-100 mt-2"
                   :disabled="pagando || segundosRestantes === 0"
-                  @click="confirmarPagamento"
+                  @click="simularPagamento"
                 >
-                  {{ pagando ? 'Processando pagamento...' : 'Confirmar pagamento' }}
+                  {{ pagando ? 'Simulando pagamento...' : 'Simular pagamento' }}
                 </button>
               </template>
 
               <template v-else-if="pedido.status === 'pago'">
                 <div class="text-center py-3">
                   <i class="bi bi-check-circle-fill display-3 text-success" aria-hidden="true"></i>
-                  <h1 class="h3 fw-bold mt-3">Pagamento confirmado</h1>
-                  <p class="text-secondary">O pedido #{{ pedido.id }} está confirmado.</p>
+                  <h1 class="h3 fw-bold mt-3">Pagamento simulado com sucesso</h1>
+                  <p class="text-secondary">
+                    O pedido #{{ pedido.id }} foi marcado como pago. Nenhuma cobrança real foi feita.
+                  </p>
                 </div>
               </template>
 

@@ -62,6 +62,18 @@ class OrderController extends Controller
             ->header('Cache-Control', 'no-store');
     }
 
+    public function cancel(Request $request, int $order)
+    {
+        $cancelledOrder = $this->checkoutService->cancelPendingOrder(
+            $request->user(),
+            $order,
+        );
+
+        return (new OrderResource($cancelledOrder))
+            ->response()
+            ->header('Cache-Control', 'no-store');
+    }
+
     public function show(Request $request, string $id)
     {
         $order = $request->user()->role === 'admin'

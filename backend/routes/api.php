@@ -63,6 +63,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('orders/checkout', [OrderController::class, 'checkout']);
 
+    Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])
+        ->whereNumber('order');
+
     Route::post('orders/{order}/simulate-payment', [OrderController::class, 'simulatePayment'])
         ->whereNumber('order');
 

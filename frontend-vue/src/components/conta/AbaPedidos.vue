@@ -2,10 +2,14 @@
 import { ref } from 'vue'
 import { formatarData, formatarDataHora, formatarMoeda } from '@/utils/formatadores'
 import { STATUS_PEDIDO } from '@/utils/rotulos'
+import { cancelarPedido } from '@/services/pedidos'
+import { avisar } from '@/stores/toast'
 
 const props = defineProps({
   pedidos: { type: Array, required: true },
 })
+const emit = defineEmits(['pedido-atualizado'])
+const pedidoCancelando = ref(null)
 
 // Acordeao: so um pedido aberto por vez (o primeiro comeca aberto)
 const pedidoAberto = ref(props.pedidos[0]?.id ?? null)
@@ -22,6 +26,21 @@ function linhaTempo(pedido) {
     { rotulo: 'Entregue', data: pedido.delivered_at },
     { rotulo: 'Cancelado', data: pedido.cancelled_at },
   ].filter((evento) => evento.data)
+}
+
+async function cancelar(pedido) {
+  if (!window.confirm(`Cancelar o pedido #${pedido.id}? O estoque será liberado.`)) return
+
+  pedidoCancelando.value = pedido.id
+  try {
+    const pedidoAtualizado = await cancelarPedido(pedido.id)
+    emit('pedido-atualizado', pedidoAtualizado)
+    avisar(`Pedido #${pedido.id} cancelado com sucesso.`)
+  } catch (erro) {
+    avisar(erro.message, { tipo: 'erro' })
+  } finally {
+    pedidoCancelando.value = null
+  }
 }
 </script>
 
@@ -78,9 +97,19 @@ function linhaTempo(pedido) {
                     até {{ formatarDataHora(pedido.payment_expires_at) }}.
                   </template>
                 </span>
-                <RouterLink :to="{ name: 'pagamento', params: { id: pedido.id } }" class="btn btn-sm btn-ew">
-                  Abrir pagamento
-                </RouterLink>
+                <span class="d-flex flex-wrap gap-2">
+                  <RouterLink :to="{ name: 'pagamento', params: { id: pedido.id } }" class="btn btn-sm btn-ew">
+                    Abrir pagamento
+                  </RouterLink>
+                  <button
+                    class="btn btn-sm btn-outline-danger"
+                    type="button"
+                    :disabled="pedidoCancelando === pedido.id"
+                    @click="cancelar(pedido)"
+                  >
+                    {{ pedidoCancelando === pedido.id ? 'Cancelando...' : 'Cancelar pedido' }}
+                  </button>
+                </span>
               </div>
               <div class="row g-4 mt-1">
                 <div class="col-md-4">

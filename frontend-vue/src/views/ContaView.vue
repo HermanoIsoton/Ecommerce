@@ -81,6 +81,13 @@ function atualizarUsuario(usuarioAtualizado) {
   emit('usuario-atualizado', usuarioAtualizado)
 }
 
+function atualizarPedido(pedidoAtualizado) {
+  const indice = pedidos.value.findIndex((pedido) => pedido.id === pedidoAtualizado.id)
+  if (indice !== -1) {
+    pedidos.value[indice] = { ...pedidos.value[indice], ...pedidoAtualizado }
+  }
+}
+
 watch(
   () => route.query.aba,
   (aba) => {
@@ -189,7 +196,7 @@ async function definirEnderecoPrincipal(id) {
             </div>
 
             <div class="tab-pane fade" :class="{ show: abaAtiva === 'pedidos', active: abaAtiva === 'pedidos' }" id="aba-pedidos" role="tabpanel" aria-labelledby="tab-pedidos" tabindex="0">
-              <AbaPedidos :pedidos="pedidos" />
+              <AbaPedidos :pedidos="pedidos" @pedido-atualizado="atualizarPedido" />
             </div>
 
             <div class="tab-pane fade" :class="{ show: abaAtiva === 'seguranca', active: abaAtiva === 'seguranca' }" id="aba-seguranca" role="tabpanel" aria-labelledby="tab-seguranca" tabindex="0">

@@ -57,9 +57,7 @@ function apagarToken() {
 
 function obterTokenSalvo() {
   try {
-    return typeof window === 'undefined'
-      ? ''
-      : window.localStorage.getItem(CHAVE_TOKEN) ?? ''
+    return window.localStorage.getItem(CHAVE_TOKEN) ?? ''
   } catch {
     erroCarrinho.value = 'Não foi possível acessar a sessão salva do carrinho neste navegador.'
     return ''
@@ -151,13 +149,9 @@ async function carregarCarrinhoDaConta() {
   }
 }
 
-export function iniciarCarrinho(usuario) {
-  return acompanharInicializacao(() => (
-    usuario === undefined
-      ? resolverCarrinhoDaSessao()
-      : usuario
-        ? carregarCarrinhoDaConta()
-        : iniciarCarrinhoDeVisitante()
+export function iniciarCarrinho() {
+  return acompanharInicializacao(() => ( 
+      resolverCarrinhoDaSessao()
   ))
 }
 

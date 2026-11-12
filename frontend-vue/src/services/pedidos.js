@@ -60,6 +60,15 @@ export async function confirmarPagamentoPedido(id) {
     }
 }
 
+export async function cancelarPedido(id) {
+    try {
+        const response = await http.post(`/orders/${id}/cancel`)
+        return response.data.data
+    } catch (error) {
+        tratarErro(error, 'Não foi possível cancelar o pedido.')
+    }
+}
+
 
 export async function atualizarPedido(id, dados) {
     try {
